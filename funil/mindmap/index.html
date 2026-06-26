@@ -77,6 +77,7 @@ const ESTILOS = {
   'vsl':            {nome:'VSL (longo)',         formato:'16:9 ou 1:1, 3–20 min, rosto sentado', porque:'Estrutura problema→solução→prova→oferta→CTA agendar.'},
   'demonstracao':   {nome:'Demonstração',        formato:'Tela + narração, 30–90s',              porque:'Prova visual da plataforma/resultados reduz objeção.'},
   'comunicado':     {nome:'Comunicado segmentado',formato:'Meio-corpo, 20–40s, segmento no hook', porque:'Tom de aviso direto cria pertencimento ("é com você").'},
+  'ugc':            {nome:'Bastidor / espontâneo (UGC)', formato:'9:16 vertical, sem produção, 15–40s', porque:'Sem olhar p/ câmera, parece conteúdo orgânico/autêntico — tira a "cara de anúncio" e ganha confiança no público frio.'},
 };
 
 // Os cards (vídeos). Mínimo: id, nome, funcao, jornada, status.
@@ -92,7 +93,7 @@ const CARDS = [
   {id:'c22', nome:'Cota: ganhar ou perder',        funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-empe',    status:'confirmar'},
   {id:'c23', nome:'Cataclisma de confiança',       funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
 
-  {id:'c5',  nome:'Cadastro grátis — cidades',     funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c5',  nome:'Cadastro grátis — cidades',     funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'ugc',           status:'existe', resumo:'Formato bastidor/espontâneo ("tá gravando já?", sem olhar p/ câmera). Destaca 4 mi de pessoas procurando prestadores na Solutudo e que dá p/ cadastrar a empresa de graça, rápido, no botão de cadastro grátis.'},
   {id:'c6',  nome:'Cadastro grátis — último mês',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'urgência'},
   {id:'c7',  nome:'Cadastro grátis — variação',    funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'variação A/B do c6'},
   {id:'c13', nome:'Cadastro — construção civil',   funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
@@ -108,7 +109,7 @@ const CARDS = [
 
   {id:'VSL-PG', nome:'Vídeo da VSL',               funcao:'PG', jornada:'VSL',        etapa:'Fundo',       publico:'Morno/Quente', estilo:'vsl',         status:'falta',     obs:'PRIORIDADE — bloqueia high ticket'},
 
-  {id:'c4',  nome:'Menos de R$1 por dia',          funcao:'AD', jornada:'ANUNCIE',    etapa:'Fundo',       publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c4',  nome:'Menos de R$1 por dia',          funcao:'AD', jornada:'ANUNCIE',    etapa:'Fundo',       publico:'Frio/Morno', estilo:'rosto-empe',    status:'existe', resumo:'Agita a dor ("você tem que aparecer no Google, Instagram, Solutudo, criar conteúdo sempre…") + "o melhor lugar p/ esconder o corpo é a 2ª página do Google". Oferta: a Solutudo faz por você. CTA: clica p/ entender, a partir de R$1/dia.'},
 
   {id:'c16', nome:'Remarketing constr. civil',     funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
   {id:'c17', nome:'Remarketing — página anuncie',  funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
