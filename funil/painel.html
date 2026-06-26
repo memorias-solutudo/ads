@@ -104,6 +104,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--sol-cinza);col
 .vlink:hover{background:var(--sol-azul-claro)}
 .vlink-yt{background:#CC0000}.vlink-yt:hover{background:#990000}
 .vlink-av{background:#059669}.vlink-av:hover{background:#047857}
+.vlink-play{background:var(--sol-laranja)}.vlink-play:hover{background:var(--sol-laranja-escuro)}
+
+/* PLAYER EMBUTIDO */
+.embed-wrap{margin:10px 0;display:none}
+.embed-wrap.open{display:block}
+.embed-frame{position:relative;width:100%;padding-top:56.25%;border-radius:8px;overflow:hidden;background:#000;border:1px solid var(--sol-cinza-borda)}
+.embed-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.embed-note{font-size:10.5px;color:var(--sol-muted);margin-top:4px;line-height:1.4}
+.embed-note a{color:var(--sol-laranja-escuro)}
 
 /* TRANSCRIÇÃO COLAPSADA */
 details{border-top:1px solid var(--sol-cinza-borda);margin-top:4px}
@@ -348,6 +357,8 @@ function renderCard(v){
     const cls = x.t==='yt'?'vlink-yt':x.t==='av'?'vlink-av':'';
     return `<a class="vlink ${cls}" href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.l)}</a>`;
   }).join('');
+  const primario = (v.links||[])[0];
+  const playBtn = primario?`<button class="vlink vlink-play" onclick="toggleEmbed('${esc(v.id)}')">📺 Assistir aqui</button>`:'';
   return `
   <div class="card" data-jornada="${j}" data-status="${v.status}">
     <div class="card-top">
@@ -368,7 +379,8 @@ function renderCard(v){
         <span class="tag" style="background:#FFF7ED;color:#9A3412">👥 ${esc(v.publico||'—')}</span>
       </div>
       <div class="resumo">${esc(v.resumo||'')}</div>
-      ${links?`<div class="vlinks">${links}</div>`:''}
+      ${(links||playBtn)?`<div class="vlinks">${playBtn}${links}</div>`:''}
+      <div class="embed-wrap" id="emb-${esc(v.id)}"></div>
       <div class="plataformas">
         <div class="plat-titulo">Campanha recomendada</div>
         <div class="plat-row"><b>Meta:</b> ${esc(plat.meta||'—')}</div>
@@ -382,6 +394,25 @@ function renderCard(v){
       </details>
     </div>
   </div>`;
+}
+
+// Converte o link do vídeo em URL embutível (player dentro do card)
+function embedUrl(link){
+  if(!link) return null;
+  if(link.t==='yt'){ const m=link.u.match(/[?&]v=([^&]+)/); return m?'https://www.youtube.com/embed/'+m[1]:null; }
+  if(link.t==='d'){ const m=link.u.match(/\/file\/d\/([^/]+)/); return m?'https://drive.google.com/file/d/'+m[1]+'/preview':null; }
+  if(link.t==='av'){ return link.u; } // A Voz: tenta embutir a página do vídeo
+  return null;
+}
+function toggleEmbed(id){
+  const v = VIDEOS.find(x=>x.id===id); if(!v) return;
+  const wrap = document.getElementById('emb-'+id); if(!wrap) return;
+  if(wrap.classList.contains('open')){ wrap.classList.remove('open'); wrap.innerHTML=''; return; }
+  const link = (v.links||[])[0]; const url = embedUrl(link);
+  if(!url){ wrap.innerHTML='<div class="embed-note">Não foi possível embutir este vídeo.</div>'; wrap.classList.add('open'); return; }
+  wrap.innerHTML = `<div class="embed-frame"><iframe src="${url}" allow="autoplay; encrypted-media" allowfullscreen referrerpolicy="no-referrer"></iframe></div>`
+    + `<div class="embed-note">Se o player ficar em branco, o vídeo pode exigir permissão de acesso. Abra direto: <a href="${link.u}" target="_blank" rel="noopener">${link.l.replace('▶ ','')}</a></div>`;
+  wrap.classList.add('open');
 }
 
 let filtroJ='', filtroS='';
