@@ -81,13 +81,13 @@ const ESTILOS = {
 
 // Os cards (vídeos). Mínimo: id, nome, funcao, jornada, status.
 const CARDS = [
-  {id:'c1',  nome:'Problema do tráfego pago / IA', funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
-  {id:'c3',  nome:'O que é Solutudo?',             funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+  {id:'c1',  nome:'Problema do tráfego pago / IA', funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio (já faz tráfego pago)', estilo:'storytelling', status:'existe', resumo:'Maior erro de quem faz tráfego pago: investe na "cobertura" mas a "fundação" (site, Google sem resposta, Instagram parado, ausência em guias) está abandonada. A Solutudo arruma o básico do digital p/ você ser escolhido — inclusive pelas IAs, que "não compram propaganda, compram confiança". CTA: clica p/ diagnóstico de como sua empresa está.'},
+  {id:'c3',  nome:'O que é Solutudo?',             funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'existe', resumo:'Explica a missão: ajuda pessoas a escolherem e empresas a serem escolhidas. "Não é marketing digital, é verdade digital." Mesmo quem vive de indicação perde cliente sem estar no digital (90% checam online antes de escolher).'},
   {id:'c10', nome:'Quando as pessoas procuram',    funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
   {id:'c12', nome:'Tá vendo aquela cena ali',      funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
   {id:'c24', nome:'Escanteio e cabecear (YouTube)',funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
 
-  {id:'c2',  nome:'Dá pra confiar na Solutudo?',   funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
+  {id:'c2',  nome:'Dá pra confiar na Solutudo?',   funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'existe', resumo:'Quebra de objeção de confiança (~4min, conversa olho no olho). Provas: desde 2005, topo do Reclame Aqui, 4 mi/mês, 3.000+ clientes, mídia (Exame/Estadão), Sebrae 10 anos, sem multa de cancelamento, telefone direto do dono, parceiros há 20 anos.'},
   {id:'c11', nome:'Olha no meu olho (longo)',      funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
   {id:'c22', nome:'Cota: ganhar ou perder',        funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-empe',    status:'confirmar'},
   {id:'c23', nome:'Cataclisma de confiança',       funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
@@ -154,6 +154,7 @@ function showCard(c){
     <span class="tag">${c.funcao==='AD'?'AD · anúncio':'PG · vídeo de página'}</span>
     <span class="tag">${esc(j.nome||c.jornada)}</span>
     <span class="tag status-${c.status}">${sLabel}</span>
+    ${c.resumo?`<p>${esc(c.resumo)}</p>`:''}
     <div class="kv"><b>Etapa:</b> ${esc(c.etapa||'—')}</div>
     <div class="kv"><b>Público:</b> ${esc(c.publico||'—')}</div>
     ${c.obs?`<div class="kv"><b>Obs:</b> ${esc(c.obs)}</div>`:''}
