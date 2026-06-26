@@ -31,6 +31,8 @@
   #side .kv b{color:var(--muted);font-weight:600}
   .status-existe{color:var(--verde)} .status-confirmar{color:var(--amarelo)} .status-falta{color:var(--vermelho)}
   .hint{color:var(--muted);font-size:12px;margin-top:30px;line-height:1.5}
+  .vbtn{display:inline-block;background:#21262d;border:1px solid var(--azul);color:#cfe3ff;text-decoration:none;padding:5px 10px;border-radius:6px;font-size:12px;margin:4px 6px 4px 0}
+  .vbtn:hover{background:#1f6feb;color:#fff}
 </style>
 </head>
 <body>
@@ -80,6 +82,35 @@ const ESTILOS = {
   'ugc':            {nome:'Bastidor / espontâneo (UGC)', formato:'9:16 vertical, sem produção, 15–40s', porque:'Sem olhar p/ câmera, parece conteúdo orgânico/autêntico — tira a "cara de anúncio" e ganha confiança no público frio.'},
 };
 
+// Links dos vídeos (Drive / A Voz / YouTube) — viram botões "▶ abrir" no painel.
+const D='https://drive.google.com/file/d/', V='https://avoz.solutudo.com.br/videos/';
+const LINKS = {
+  c1:[{l:'▶ Drive',u:D+'1yySUEMhADXym9TIv0wWEBi_n-wkHjv7x/view'}],
+  c2:[{l:'▶ Drive',u:D+'1uGZakTe0Jnu7FmQRBa8CEeA40W2fV5KN/view'}],
+  c3:[{l:'▶ Drive',u:D+'1SGfzOApCckIztNkH8yU5_wRCyaK-0Go3/view'}],
+  c4:[{l:'▶ Drive',u:D+'1TzMwo5bKT-uk8t-lxqrhjd6dgolGKRa1/view'}],
+  c5:[{l:'▶ Drive',u:D+'18VBeH5XtFGJnbHF1J3ozAmGKf6qP96Bd/view'}],
+  c6:[{l:'▶ Drive',u:D+'1vVzNi_QWlVYNeZhvdtCDjyzRZi6I_EDX/view'}],
+  c7:[{l:'▶ Drive',u:D+'1YCoByAHY6SAry_xDy3YHghCd2vEKFtek/view'}],
+  c8:[{l:'▶ Drive',u:D+'1P0efa70Zb-5tppou_lwaF7dkxLRZ8n_B/view'},{l:'▶ A Voz',u:V+'300101'}],
+  c9:[{l:'▶ Drive',u:D+'12btuFCg6h9c1v4sKpdJ0Euy3epRNvZDp/view'},{l:'▶ A Voz',u:V+'300101'}],
+  c10:[{l:'▶ A Voz',u:V+'720102'}],
+  c11:[{l:'▶ Drive',u:D+'1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ/view'}],
+  c12:[{l:'▶ A Voz',u:V+'990101'}],
+  c13:[{l:'▶ Drive',u:D+'1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view'},{l:'▶ A Voz',u:V+'1050101'}],
+  c14:[{l:'▶ Drive',u:D+'1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view'}],
+  c15:[{l:'▶ A Voz',u:V+'1230101'}],
+  c16:[{l:'▶ Drive',u:D+'1EttIcDVtcTTy3tqRjzfBX76AvBlKrSyN/view'}],
+  c17:[{l:'▶ A Voz',u:V+'1350101'}],
+  c18:[{l:'▶ A Voz',u:V+'1290101'}],
+  c19:[{l:'▶ Drive',u:D+'1XSFMM-1WDSmtWpKjK8TjHOMUXMUwJoVl/view'},{l:'▶ A Voz',u:V+'1380101'}],
+  c20:[{l:'▶ Drive',u:D+'1nDNE1-4oKKNEqylIdfAJycPSm-N3VajI/view'}],
+  c21:[{l:'▶ Drive',u:D+'1QVa4qZ4jDYXxLceweUVWGr0IXnCM0lrY/view'},{l:'▶ A Voz',u:V+'660107'}],
+  c22:[{l:'▶ A Voz',u:V+'1590101'}],
+  c23:[{l:'▶ A Voz',u:V+'1620101'}],
+  c24:[{l:'▶ YouTube',u:'https://www.youtube.com/watch?v=TNvpFwNXzDw'}],
+};
+
 // Os cards (vídeos). Mínimo: id, nome, funcao, jornada, status.
 const CARDS = [
   {id:'c1',  nome:'Problema do tráfego pago / IA', funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio (já faz tráfego pago)', estilo:'storytelling', status:'existe', resumo:'Maior erro de quem faz tráfego pago: investe na "cobertura" mas a "fundação" (site, Google sem resposta, Instagram parado, ausência em guias) está abandonada. A Solutudo arruma o básico do digital p/ você ser escolhido — inclusive pelas IAs, que "não compram propaganda, compram confiança". CTA: clica p/ diagnóstico de como sua empresa está.'},
@@ -89,14 +120,14 @@ const CARDS = [
   {id:'c24', nome:'Escanteio e cabecear (YouTube)',funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
 
   {id:'c2',  nome:'Dá pra confiar na Solutudo?',   funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'existe', resumo:'Quebra de objeção de confiança (~4min, conversa olho no olho). Provas: desde 2005, topo do Reclame Aqui, 4 mi/mês, 3.000+ clientes, mídia (Exame/Estadão), Sebrae 10 anos, sem multa de cancelamento, telefone direto do dono, parceiros há 20 anos.'},
-  {id:'c11', nome:'Olha no meu olho (longo)',      funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
+  {id:'c11', nome:'Olha no meu olho (longo)',      funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'existe', resumo:'"Olha bem no meu olho" — vídeo longo de confiança (~3min). Empatia com o pequeno empresário, imprevisibilidade da indicação, 90% decidem no digital, "curtida não paga boleto". CTA: reunião + plano gratuito → porta p/ agendamento/high ticket.'},
   {id:'c22', nome:'Cota: ganhar ou perder',        funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-empe',    status:'confirmar'},
   {id:'c23', nome:'Cataclisma de confiança',       funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
 
   {id:'c5',  nome:'Cadastro grátis — cidades',     funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'ugc',           status:'existe', resumo:'Formato bastidor/espontâneo ("tá gravando já?", sem olhar p/ câmera). Destaca 4 mi de pessoas procurando prestadores na Solutudo e que dá p/ cadastrar a empresa de graça, rápido, no botão de cadastro grátis.'},
-  {id:'c6',  nome:'Cadastro grátis — último mês',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'urgência'},
-  {id:'c7',  nome:'Cadastro grátis — variação',    funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'variação A/B do c6'},
-  {id:'c13', nome:'Cadastro — construção civil',   funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
+  {id:'c6',  nome:'Cadastro grátis — último mês',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'existe', obs:'urgência/prova de volume', resumo:'Prova de volume + CTA de cadastro grátis: "só no último mês, +4 mi entraram p/ procurar empresas/prestadores locais". Pergunta: você estava lá? Cadastro é gratuito e rápido. CTA: clica e cadastre.'},
+  {id:'c7',  nome:'Cadastro grátis — variação',    funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'existe', obs:'variação do c6', resumo:'Variação do c6 (mesma oferta de cadastro grátis). Fecha com gancho de upsell: "se quiser melhorar seu cadastro, aí é outra história" — ponte p/ plano pago.'},
+  {id:'c13', nome:'Cadastro — construção civil',   funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'existe', resumo:'Comunicado direto à construção civil (pedreiro, pintor, encanador, mecânico, construtor…). +4 mi de acessos/mês procurando; cadastro gratuito no "maior guia de empresas do Brasil". CTA: clica e cadastre agora.'},
   {id:'c15', nome:'Cadastro — constr. civil (2)',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
   {id:'CAD-PG', nome:'Vídeo da página de cadastro',funcao:'PG', jornada:'CADASTRO',   etapa:'Meio',        publico:'—',          estilo:'rosto-sentado', status:'confirmar', obs:'avaliar se vale produzir'},
 
@@ -156,6 +187,7 @@ function showCard(c){
     <span class="tag">${esc(j.nome||c.jornada)}</span>
     <span class="tag status-${c.status}">${sLabel}</span>
     ${c.resumo?`<p>${esc(c.resumo)}</p>`:''}
+    ${(LINKS[c.id]||[]).length?`<div style="margin:8px 0">${(LINKS[c.id]||[]).map(x=>`<a class="vbtn" href="${x.u}" target="_blank" rel="noopener">${esc(x.l)}</a>`).join('')}</div>`:''}
     <div class="kv"><b>Etapa:</b> ${esc(c.etapa||'—')}</div>
     <div class="kv"><b>Público:</b> ${esc(c.publico||'—')}</div>
     ${c.obs?`<div class="kv"><b>Obs:</b> ${esc(c.obs)}</div>`:''}
