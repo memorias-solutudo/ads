@@ -16,13 +16,38 @@ Cada criativo é marcado por:
 
 | Dimensão | Para que serve |
 |---|---|
+| **Função do vídeo** | O papel dele no fluxo (ver tabela abaixo) — `AD` criativo de anúncio ou `PG` vídeo de página |
+| **Mecânica de conversão** | Como/onde converte: `VSL`, `CAD`, `WPP`, `ANUNCIE` (ver taxonomia) — **eixo principal** |
 | **Etapa do funil** | Onde ele atua: Topo / Meio / Fundo / Remarketing / Retenção |
-| **Tipo de campanha** | O destino de mídia (ver taxonomia abaixo) — **eixo principal** |
+| **Tipo de campanha** | O objetivo de mídia (taxonomia A–G abaixo) |
 | **Público** | Frio / Morno / Quente + segmento (geral, construção civil, etc.) |
-| **Objetivo da mensagem** | O que o vídeo quer provocar |
 | **Oferta / gancho** | Cadastro grátis, "< R$1/dia", live, prova social… |
-| **Destino / CTA** | Para onde manda: cadastro, página "anuncie", live, WhatsApp |
-| **Próximo passo** | Qual criativo/etapa vem depois (sequência) |
+| **Destino / CTA** | Para onde manda: página VSL, cadastro, anuncie, WhatsApp, live |
+| **Status** | ✅ existe / 🟡 a confirmar / ⛔ falta produzir |
+
+## Função do vídeo
+
+| Código | Função | Onde vive |
+|---|---|---|
+| **AD** | Criativo de anúncio — **leva** tráfego para um destino | Feed/Stories/YouTube (mídia paga) |
+| **PG** | Vídeo de página — vive **dentro** do destino (VSL, cadastro) | Na própria landing page |
+
+> Um mesmo destino normalmente tem **os dois**: um vídeo `PG` na página + um ou mais
+> criativos `AD` que levam tráfego até ela. Slots podem estar vazios (`⛔ falta`).
+
+## Mecânica de conversão / destino (eixo principal)
+
+Para onde o tráfego vai e **como** converte naquele destino:
+
+| Código | Destino | Como converte | Ticket |
+|---|---|---|---|
+| **VSL** | Página VSL | Vídeo VSL na página → **agendamento direto na própria página** (call com consultor) | High |
+| **WPP** | WhatsApp | Bot atende e **bifurca**: agenda call em vídeo c/ consultor (high) OU venda automática (low) | High **ou** Low |
+| **CAD** | Página de cadastro gratuito | Lead se cadastra (gratuito) → entra na base p/ remarketing | — (topo de monetização) |
+| **ANUNCIE** | Página "anuncie" | Conversão de anúncio/plano pago ("< R$1/dia") | Low |
+
+> A separação **high ticket × low ticket** é decidida: na VSL sempre vai para consultor (high);
+> no WhatsApp o **bot decide** caso a caso (high → call com consultor; low → venda automática).
 
 ## Taxonomia de tipos de campanha
 

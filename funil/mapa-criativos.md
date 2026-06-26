@@ -2,6 +2,11 @@
 
 > **Status:** rascunho preliminar, classificado SÓ pelos títulos. Confirmar/corrigir
 > conforme as transcrições forem chegando. Legenda dos tipos no `README.md`.
+>
+> Os 24 abaixo são, até prova em contrário, **criativos `AD`** (levam tráfego).
+> Cada um será encaixado numa das jornadas de `arquitetura.md` (VSL / Cadastro /
+> WhatsApp / Anuncie) quando a transcrição confirmar o destino. Slots de vídeo de
+> página (`PG`) e os que faltam produzir estão em `arquitetura.md`.
 
 | ID | Tema | Etapa | Tipo campanha | Público | Destino / CTA |
 |---|---|---|---|---|---|
