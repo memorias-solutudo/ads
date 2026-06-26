@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Funil Solutudo — Mind Map de Criativos</title>
+<script src="https://unpkg.com/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<style>
+  :root{
+    --bg:#0f1216; --panel:#171c23; --line:#2a323d; --txt:#e6edf3; --muted:#9aa7b4;
+    --verde:#2ea043; --amarelo:#d29922; --vermelho:#e5534b; --azul:#388bfd;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+  #app{display:flex;height:100vh}
+  #cy{flex:1;height:100%}
+  #side{width:380px;background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:20px}
+  header{position:absolute;top:0;left:0;right:380px;padding:12px 18px;display:flex;gap:16px;align-items:center;
+    background:linear-gradient(180deg,rgba(15,18,22,.95),rgba(15,18,22,0));pointer-events:none}
+  header h1{font-size:16px;margin:0;pointer-events:auto}
+  .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);pointer-events:auto}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .toolbar{margin-left:auto;display:flex;gap:8px;pointer-events:auto}
+  button{background:#21262d;color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:12px}
+  button:hover{border-color:var(--azul)}
+  #side h2{font-size:18px;margin:0 0 4px}
+  #side .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;background:#21262d;color:var(--muted);margin:0 6px 6px 0}
+  #side h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:18px 0 6px;border-bottom:1px solid var(--line);padding-bottom:4px}
+  #side p{font-size:13px;line-height:1.5;margin:6px 0;color:#cdd6df}
+  #side .kv{font-size:13px;margin:4px 0}
+  #side .kv b{color:var(--muted);font-weight:600}
+  .status-existe{color:var(--verde)} .status-confirmar{color:var(--amarelo)} .status-falta{color:var(--vermelho)}
+  .hint{color:var(--muted);font-size:12px;margin-top:30px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="cy"></div>
+  <header>
+    <h1>🎯 Funil Solutudo</h1>
+    <div class="legend">
+      <span><i class="dot" style="background:var(--verde)"></i>existe</span>
+      <span><i class="dot" style="background:var(--amarelo)"></i>a confirmar</span>
+      <span><i class="dot" style="background:var(--vermelho)"></i>falta produzir</span>
+    </div>
+    <div class="toolbar">
+      <button onclick="cy.fit(null,40)">Centralizar</button>
+    </div>
+  </header>
+  <div id="side">
+    <p style="color:var(--muted)">Clique em um nó do mapa para ver os detalhes do card,
+    a recomendação de plataforma e o estilo de criativo.</p>
+    <p class="hint">Para adicionar um vídeo, edite o array <code>CARDS</code> neste arquivo.</p>
+  </div>
+</div>
+
+<script>
+/* ============ DADOS (edite aqui para evoluir o sistema) ============ */
+
+// Jornadas = ramos do mind map. Cada uma traz a recomendação de plataforma.
+const JORNADAS = {
+  ATRACAO:    {nome:'Atração (topo)',        meta:'Reconhecimento / Engajamento (vídeo). Públicos frios amplos.', google:'Demand Gen (vídeo).', youtube:'In-stream pulável + Bumper 6s + Shorts.', kpi:'VTR, CPV, retenção'},
+  CONFIANCA:  {nome:'Confiança (meio)',      meta:'Tráfego/Engajamento p/ mornos (viram vídeo).', google:'Demand Gen remarketing.', youtube:'In-stream pulável (rosto sentado) + In-feed.', kpi:'Tempo de visualização, cliques'},
+  CADASTRO:   {nome:'Cadastro grátis',       meta:'Cadastros (Leads) — form instantâneo ou conversão no site.', google:'Search (intenção) + PMax.', youtube:'Vídeo de ação com CTA cadastro.', kpi:'CPL, taxa de cadastro'},
+  LIVE:       {nome:'Live / Evento',         meta:'Tráfego p/ inscrição → remarketing de lembrete.', google:'Demand Gen + YouTube promo.', youtube:'In-stream + comunidade.', kpi:'Inscritos, comparecimento'},
+  WHATSAPP:   {nome:'WhatsApp (bot)',        meta:'Engajamento → Cliques no WhatsApp / Mensagens (conversas).', google:'Search (secundário).', youtube:'Vídeo de ação c/ link.', kpi:'Conversas, qualificação high/low'},
+  VSL:        {nome:'VSL → high ticket',     meta:'Vendas (Conversões) otimizando Agendamento. Mornos/quentes.', google:'PMax + Search + Demand Gen.', youtube:'In-stream longo (VSL) + Vídeo de ação.', kpi:'Agendamentos, show-up, CAC'},
+  ANUNCIE:    {nome:'Anuncie → low ticket',  meta:'Vendas (Conversões) otimizando compra; remarketing quente.', google:'Search (alta intenção) + PMax.', youtube:'Vídeo de ação (remarketing).', kpi:'Vendas, ROAS, CPA'},
+  REMARKETING:{nome:'Remarketing',           meta:'Vendas/Leads com Públicos Personalizados (visitantes, lista, video viewers).', google:'Display/Demand Gen remarketing + RLSA.', youtube:'In-feed/In-stream p/ listas.', kpi:'ROAS, frequência, CPA'},
+};
+
+// Estilos de criativo. Ver guia-criativos.md.
+const ESTILOS = {
+  'storytelling':   {nome:'Storytelling',        formato:'9:16 15–45s (ou 16:9 YouTube), hook 3s', porque:'Narrativa antes do CTA prende público frio criando contexto/tensão.'},
+  'rosto-empe':     {nome:'Rosto — em pé',       formato:'9:16 15–30s, ritmo rápido',            porque:'Em pé = energia, urgência, comando. Ideal p/ ofertas, lives e ação.'},
+  'rosto-sentado':  {nome:'Rosto — sentado',     formato:'Câmera na altura dos olhos, 16:9/1:1', porque:'Sentado = proximidade e confiança olho no olho. Bom p/ consideração.'},
+  'vsl':            {nome:'VSL (longo)',         formato:'16:9 ou 1:1, 3–20 min, rosto sentado', porque:'Estrutura problema→solução→prova→oferta→CTA agendar.'},
+  'demonstracao':   {nome:'Demonstração',        formato:'Tela + narração, 30–90s',              porque:'Prova visual da plataforma/resultados reduz objeção.'},
+  'comunicado':     {nome:'Comunicado segmentado',formato:'Meio-corpo, 20–40s, segmento no hook', porque:'Tom de aviso direto cria pertencimento ("é com você").'},
+};
+
+// Os cards (vídeos). Mínimo: id, nome, funcao, jornada, status.
+const CARDS = [
+  {id:'c1',  nome:'Problema do tráfego pago / IA', funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+  {id:'c3',  nome:'O que é Solutudo?',             funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+  {id:'c10', nome:'Quando as pessoas procuram',    funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+  {id:'c12', nome:'Tá vendo aquela cena ali',      funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+  {id:'c24', nome:'Escanteio e cabecear (YouTube)',funcao:'AD', jornada:'ATRACAO',    etapa:'Topo',        publico:'Frio',       estilo:'storytelling',  status:'confirmar'},
+
+  {id:'c2',  nome:'Dá pra confiar na Solutudo?',   funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
+  {id:'c11', nome:'Olha no meu olho (longo)',      funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
+  {id:'c22', nome:'Cota: ganhar ou perder',        funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c23', nome:'Cataclisma de confiança',       funcao:'AD', jornada:'CONFIANCA',  etapa:'Meio',        publico:'Morno',      estilo:'rosto-sentado', status:'confirmar'},
+
+  {id:'c5',  nome:'Cadastro grátis — cidades',     funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c6',  nome:'Cadastro grátis — último mês',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'urgência'},
+  {id:'c7',  nome:'Cadastro grátis — variação',    funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Frio',       estilo:'rosto-empe',    status:'confirmar', obs:'variação A/B do c6'},
+  {id:'c13', nome:'Cadastro — construção civil',   funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
+  {id:'c15', nome:'Cadastro — constr. civil (2)',  funcao:'AD', jornada:'CADASTRO',   etapa:'Meio',        publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
+  {id:'CAD-PG', nome:'Vídeo da página de cadastro',funcao:'PG', jornada:'CADASTRO',   etapa:'Meio',        publico:'—',          estilo:'rosto-sentado', status:'confirmar', obs:'avaliar se vale produzir'},
+
+  {id:'c8',  nome:'Mundo mudando — chamada live',  funcao:'AD', jornada:'LIVE',       etapa:'Topo/Meio',   publico:'Frio/Morno', estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c9',  nome:'Convite p/ conteúdo (live)',    funcao:'AD', jornada:'LIVE',       etapa:'Topo/Meio',   publico:'Frio/Morno', estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c14', nome:'Fachadas do velho mundo (live)',funcao:'AD', jornada:'LIVE',       etapa:'Topo/Meio',   publico:'Frio/Morno', estilo:'storytelling',  status:'confirmar'},
+  {id:'c21', nome:'Guia "como ser escolhido 2026"',funcao:'AD', jornada:'LIVE',       etapa:'Topo/Meio',   publico:'Frio/Morno', estilo:'storytelling',  status:'confirmar'},
+
+  {id:'c19', nome:'Constr. civil — via WhatsApp',  funcao:'AD', jornada:'WHATSAPP',   etapa:'Meio/Fundo',  publico:'Constr. civil', estilo:'comunicado', status:'confirmar'},
+
+  {id:'VSL-PG', nome:'Vídeo da VSL',               funcao:'PG', jornada:'VSL',        etapa:'Fundo',       publico:'Morno/Quente', estilo:'vsl',         status:'falta',     obs:'PRIORIDADE — bloqueia high ticket'},
+
+  {id:'c4',  nome:'Menos de R$1 por dia',          funcao:'AD', jornada:'ANUNCIE',    etapa:'Fundo',       publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
+
+  {id:'c16', nome:'Remarketing constr. civil',     funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c17', nome:'Remarketing — página anuncie',  funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
+  {id:'c18', nome:'Remarketing — não cadastrou',   funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Morno/Quente', estilo:'rosto-empe',  status:'confirmar'},
+  {id:'c20', nome:'Remarketing — anuncie (2)',     funcao:'AD', jornada:'REMARKETING',etapa:'Remarketing', publico:'Quente',     estilo:'rosto-empe',    status:'confirmar'},
+];
+
+/* ============ RENDER ============ */
+const COR = {existe:'#2ea043', confirmar:'#d29922', falta:'#e5534b'};
+
+const elements = [{data:{id:'ROOT', label:'FUNIL\nSOLUTUDO', tipo:'root'}}];
+for(const j in JORNADAS){
+  elements.push({data:{id:j, label:JORNADAS[j].nome, tipo:'jornada'}});
+  elements.push({data:{id:'e_'+j, source:'ROOT', target:j}});
+}
+for(const c of CARDS){
+  elements.push({data:{id:c.id, label:c.id+'  '+c.nome, tipo:'card', status:c.status, ref:c.id}});
+  elements.push({data:{id:'e_'+c.id, source:c.jornada, target:c.id}});
+}
+
+const cy = cytoscape({
+  container: document.getElementById('cy'),
+  elements,
+  style:[
+    {selector:'node', style:{'label':'data(label)','color':'#e6edf3','font-size':'11px','text-wrap':'wrap','text-max-width':'130px','text-valign':'center','text-halign':'center'}},
+    {selector:'node[tipo="root"]', style:{'background-color':'#388bfd','shape':'round-rectangle','width':'110px','height':'70px','font-size':'14px','font-weight':'bold','text-outline-color':'#388bfd','text-outline-width':2}},
+    {selector:'node[tipo="jornada"]', style:{'background-color':'#30363d','shape':'round-rectangle','width':'140px','height':'46px','border-width':1,'border-color':'#4b5563','font-weight':'600'}},
+    {selector:'node[tipo="card"]', style:{'background-color':ele=>COR[ele.data('status')]||'#6e7681','shape':'round-rectangle','width':'150px','height':'40px','text-max-width':'140px'}},
+    {selector:'edge', style:{'width':1.5,'line-color':'#39414d','curve-style':'bezier','target-arrow-shape':'none','opacity':.7}},
+    {selector:'node:selected', style:{'border-width':3,'border-color':'#fff'}},
+  ],
+  layout:{name:'breadthfirst', directed:true, roots:['ROOT'], spacingFactor:1.05, padding:40},
+  wheelSensitivity:0.25,
+});
+
+function esc(s){return (s||'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]))}
+
+function showCard(c){
+  const j = JORNADAS[c.jornada]||{}; const e = ESTILOS[c.estilo]||{};
+  const sLabel = {existe:'✅ existe', confirmar:'🟡 a confirmar', falta:'⛔ falta produzir'}[c.status];
+  document.getElementById('side').innerHTML = `
+    <h2>${esc(c.id)} — ${esc(c.nome)}</h2>
+    <span class="tag">${c.funcao==='AD'?'AD · anúncio':'PG · vídeo de página'}</span>
+    <span class="tag">${esc(j.nome||c.jornada)}</span>
+    <span class="tag status-${c.status}">${sLabel}</span>
+    <div class="kv"><b>Etapa:</b> ${esc(c.etapa||'—')}</div>
+    <div class="kv"><b>Público:</b> ${esc(c.publico||'—')}</div>
+    ${c.obs?`<div class="kv"><b>Obs:</b> ${esc(c.obs)}</div>`:''}
+
+    <h3>🎬 Criativo recomendado</h3>
+    <div class="kv"><b>Estilo:</b> ${esc(e.nome||c.estilo||'—')}</div>
+    <div class="kv"><b>Formato:</b> ${esc(e.formato||'—')}</div>
+    <p>${esc(e.porque||'')}</p>
+
+    <h3>📣 Plataformas / campanha</h3>
+    <div class="kv"><b>Meta:</b> ${esc(j.meta||'—')}</div>
+    <div class="kv"><b>Google:</b> ${esc(j.google||'—')}</div>
+    <div class="kv"><b>YouTube:</b> ${esc(j.youtube||'—')}</div>
+    <div class="kv"><b>KPI:</b> ${esc(j.kpi||'—')}</div>
+  `;
+}
+function showJornada(id){
+  const j = JORNADAS[id]; const n = CARDS.filter(c=>c.jornada===id).length;
+  document.getElementById('side').innerHTML = `
+    <h2>${esc(j.nome)}</h2>
+    <span class="tag">${n} criativo(s)</span>
+    <h3>📣 Plataformas / campanha</h3>
+    <div class="kv"><b>Meta:</b> ${esc(j.meta)}</div>
+    <div class="kv"><b>Google:</b> ${esc(j.google)}</div>
+    <div class="kv"><b>YouTube:</b> ${esc(j.youtube)}</div>
+    <div class="kv"><b>KPI:</b> ${esc(j.kpi)}</div>
+    <p class="hint">Clique em um card deste ramo para ver o detalhe do vídeo.</p>`;
+}
+cy.on('tap','node', e=>{
+  const d = e.target.data();
+  if(d.tipo==='card') showCard(CARDS.find(c=>c.id===d.ref));
+  else if(d.tipo==='jornada') showJornada(d.id);
+  else document.getElementById('side').innerHTML='<p style="color:#9aa7b4">Clique num ramo ou card.</p>';
+});
+</script>
+</body>
+</html>
