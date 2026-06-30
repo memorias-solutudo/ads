@@ -760,13 +760,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       if (sel && sel.type === 'card') { const c = this.state.cards.find(x => x.id === sel.id); if (c) { const w = this.getCardWorld(c); this.centerOn(w.x, w.y); } }
     });
   }
-  posWrap(key, x, y, child, z, portId) {
+  posWrap(key, x, y, child, z, portId, selected) {
     if (!portId) return this.el('div', { key, style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } }, child);
-    const linking = !!this.state.linking;
-    const dot = (k, pos) => this.el('div', { key:'pt'+k, onMouseDown:(e)=>this.startLink(e, portId), onMouseUp:(e)=>this.finishLink(e, portId), title:'Arraste para conectar a outro bloco', style: Object.assign({ position:'absolute', width:13, height:13, borderRadius:999, background:'var(--white)', border:'2px solid var(--brand-purple)', cursor:'crosshair', zIndex:30, boxShadow:'0 1px 5px rgba(167,1,253,.45)', opacity: linking ? 1 : 0.85 }, pos) });
-    return this.el('div', { key, className:'sol-node', onMouseUp:(e)=>this.finishLink(e, portId), style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } },
+    const dot = (k, pos) => this.el('div', { key:'pt'+k, className:'sol-port', onMouseDown:(e)=>this.startLink(e, portId), onMouseUp:(e)=>this.finishLink(e, portId), title:'Arraste para conectar a outro bloco', style: Object.assign({ position:'absolute', width:13, height:13, borderRadius:999, background:'var(--white)', border:'2px solid var(--brand-purple)', cursor:'crosshair', zIndex:30, boxShadow:'0 1px 5px rgba(167,1,253,.45)' }, pos) });
+    return this.el('div', { key, className:'sol-node' + (selected ? ' is-sel' : ''), onMouseUp:(e)=>this.finishLink(e, portId), style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } },
       child,
-      dot('tl', { top:-7, left:-7 }), dot('tr', { top:-7, right:-7 }), dot('bl', { bottom:-7, left:-7 }), dot('br', { bottom:-7, right:-7 })
+      dot('top', { top:-7, left:'50%', transform:'translateX(-50%)' }),
+      dot('bottom', { bottom:-7, left:'50%', transform:'translateX(-50%)' }),
+      dot('left', { left:-7, top:'50%', transform:'translateY(-50%)' }),
+      dot('right', { right:-7, top:'50%', transform:'translateY(-50%)' })
     );
   }
   curve(ax, ay, bx, by, bend) {
@@ -965,7 +967,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
         )
       )
     );
-    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id);
+    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id, sel);
   }
   renderCard(c, jr, x, y) {
     if (c.kind && c.kind !== 'video') return this.renderFlowCard(c, jr, x, y, c.kind);
@@ -995,7 +997,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
       style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+jr.color:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(jr.color,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
     }, media, content);
-    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id);
+    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id, sel);
   }
 
   renderGhost(fn, jr, x, y) {
@@ -1208,7 +1210,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
         this.el('div', { style:{ fontSize:9.5, fontWeight:800, letterSpacing:'.08em', textTransform:'uppercase', color:col, marginBottom:1 } }, 'Fluxo'),
         this.el('div', { style:{ fontSize:16, fontWeight:800, letterSpacing:'-0.02em', color:'var(--ink)', lineHeight:1.15, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:230 } }, c.name || 'Novo fluxo'))
     );
-    return this.posWrap('titulo-'+c.id, x, y, inner, sel?20:5, c.id);
+    return this.posWrap('titulo-'+c.id, x, y, inner, sel?20:5, c.id, sel);
   }
   TITULO_CORES = ['#A701FD','#FC0097','#FF6849','#FFC700','#16A34A','#0EA5E9','#0369A1','#7C3AED','#DC2626','#6B7280'];
   buildTitlePanel(card) {

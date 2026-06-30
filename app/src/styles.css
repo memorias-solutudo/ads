@@ -124,6 +124,11 @@ body {
 .vcard:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
 .vcard:hover .vplay { transform: translate(-50%,-50%) scale(1.08); background: #fff; }
 
+/* portas de conexão — só aparecem ao passar o mouse ou com o card selecionado */
+.sol-port { opacity: 0; transition: opacity .12s var(--ease-out); pointer-events: none; }
+.sol-node:hover .sol-port,
+.sol-node.is-sel .sol-port { opacity: 1; pointer-events: auto; }
+
 .solu-scroll::-webkit-scrollbar { width: 11px; height: 11px; }
 .solu-scroll::-webkit-scrollbar-thumb { background: rgba(21,21,21,.16); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
 .solu-scroll::-webkit-scrollbar-thumb:hover { background: rgba(21,21,21,.28); border-radius: 999px; border: 3px solid transparent; background-clip: content-box; }
