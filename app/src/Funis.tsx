@@ -301,6 +301,83 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     };
   }
 
+  // ---- atualização de conteúdo/orientações (base d1574c63-index.html) ----
+  // Enriquece cards existentes SEM tocar a transcrição já gravada.
+  contentPatch() {
+    return {
+      c1:{ objetivo:'Conscientizar sobre o erro do tráfego pago → diagnóstico (WhatsApp/bot)', etapa:'Topo', publico:'Frio (já faz/considera tráfego pago)', estilo:'Storytelling',
+        resumo:`Metáfora "cobertura × fundação": investir em tráfego sem cuidar do básico (site, Google, Instagram, guias) é erro. CTA de diagnóstico, não venda direta. IAs "não compram propaganda, compram confiança".`,
+        cta:`Diagnóstico: "clica aqui, a gente vai te explicar como sua empresa está" → Destino: WhatsApp/bot (roteia high/low ticket) ou página de agendamento`,
+        flag:'Não usar: como criativo de checkout / venda automática direta.' },
+      c2:{ objetivo:'Quebrar objeção de confiança (remarketing de aquecimento)', etapa:'Meio', publico:'Morno (já viu c1/c3, não converteu)', estilo:'Rosto sentado',
+        resumo:`100% quebra de objeção. Provas: desde 2005, topo Reclame Aqui, 4mi/mês, 3.000+ clientes, Exame/Estadão, Sebrae 10 anos, sem multa de cancelamento, telefone do dono, parceiros há 20 anos.`,
+        cta:`Sem CTA de produto — fecha com "espero que ajude sua empresa" → Destino: aquecer; próximo passo: c1 ou c11 (WhatsApp/VSL)`,
+        flag:'Não usar: em público frio (4min de prova social sem contexto não funciona).' },
+      c3:{ objetivo:'Explicar o que é a Solutudo (awareness institucional)', etapa:'Topo', publico:'Frio', estilo:'Storytelling',
+        resumo:`Dupla missão: ajuda pessoas a escolherem + empresas a serem escolhidas. "Não é marketing digital, é verdade digital." Mesmo quem vive de indicação perde cliente sem digital (90% checam online).`,
+        cta:`"Vem com a gente, Solutudo de bom" — SEM destino explícito → Destino: definir botão/overlay na plataforma; natural = CADASTRO grátis`,
+        flag:'Não usar: rodar sem antes definir o botão de destino na plataforma.' },
+      c4:{ objetivo:'Agitar dor de invisibilidade digital → consulta pelo bot (WhatsApp)', etapa:'Meio/Fundo', publico:'Frio/Morno', estilo:'Rosto em pé',
+        resumo:`Agita a dor ("você tem que aparecer no Google, Instagram, Solutudo, criar conteúdo sempre…"). "2ª página do Google é onde se esconde corpo." Oferta: a Solutudo faz por você.`,
+        cta:`"vai te EXPLICAR como fazer, a partir de R$1/dia" (consultivo) → Destino: WhatsApp bot (low automático ou sobe p/ consultor) ou página ANUNCIE`,
+        flag:'Não usar: checkout automático sem intermediação (o CTA não é "compre agora").' },
+      c5:{ objetivo:'Cadastro gratuito — espontâneo e autêntico (sem cara de anúncio)', etapa:'Meio', publico:'Frio', estilo:'Bastidor / UGC',
+        resumo:`Formato bastidor "tá gravando já?", sem olhar p/ câmera. 4mi acessam/mês procurando prestadores. Cadastro grátis e rápido. Estilo UGC tira a cara de anúncio.`,
+        cta:`"Clica ali, tem cadastro grátis" (botão de cadastro) → Destino: página de cadastro gratuito` },
+      c6:{ objetivo:'Cadastro gratuito — urgência + prova de volume (4mi/mês)', etapa:'Meio', publico:'Frio', estilo:'Rosto em pé',
+        resumo:`"Só no último mês, +4mi entraram p/ procurar empresas/prestadores locais." Pergunta-gatilho: você estava lá? Cadastro grátis e rápido.`,
+        cta:`"Clica aqui, cadastre, é rápido" → Destino: página de cadastro gratuito` },
+      c7:{ objetivo:'Cadastro gratuito + semente de upsell para plano pago', etapa:'Meio', publico:'Frio', estilo:'Rosto em pé',
+        resumo:`Variação do c6. Termina com semente de upsell — "se quiser MELHORAR seu cadastro, aí é outra história" — planta o plano pago sem forçar.`,
+        cta:`"Cadastre de graça; se quiser melhorar, é outra história" → Destino: cadastro grátis → remarketing ANUNCIE / WhatsApp low ticket` },
+      c11:{ objetivo:'Agendar reunião gratuita → high ticket (call com consultor)', etapa:'Meio/Fundo', publico:'Morno (já teve contato com c1/c2)', estilo:'Rosto sentado',
+        resumo:`Empatia profunda (~3min). Dor (correria, sem tempo) → conscientização (90% decidem online, "curtida não paga boleto") → CTA de reunião gratuita com análise. Sequência: c1/c2 → c11 → agendamento.`,
+        cta:`"Um plano pra você gratuitamente, com uma reunião" → Destino: página de agendamento (VSL) ou WhatsApp p/ marcar a call`,
+        flag:'Não usar: topo/frio (longo demais sem contexto prévio).' },
+      c13:{ objetivo:'Cadastro gratuito — segmento construção civil', etapa:'Meio', publico:'Construção civil', estilo:'Comunicado',
+        resumo:`"Comunicado às empresas de construção civil." Tom de aviso direto = pertencimento. Cobre pedreiro, jardineiro, pintor, encanador, mecânico, construtor. 4mi acessos/mês. "Maior guia de empresas do Brasil."`,
+        cta:`"Clica aqui e faça seu cadastro agora" → Destino: página de cadastro gratuito` },
+    };
+  }
+  newCreatives() {
+    const base = { funnelId:'solutudo', funcao:'AD', status:'existe', plataforma:'Meta', formato:'', iaParecer:'', iaRec:'', segmentacao:'', estiloPorque:'', kpi:'', cta:'', proximo:'', transcricao:'', dx:0, dy:0 };
+    return [
+      Object.assign({}, base, { id:'c10', journeyId:'whatsapp', etapa:'Topo/Meio', name:'Quando as pessoas procuram (genérico)',
+        pubTemp:'Frio', pubSeg:'Frio (empresas estabelecidas)', publico:'Frio (empresas estabelecidas)', estilo:'Storytelling',
+        driveId:'1cTDJ2LHIneO4sAtlT6_boQVFtdwOT2ph', avoz:'https://avoz.solutudo.com.br/videos/720102',
+        objetivo:'Conscientizar (90% decidem no digital) → diagnóstico (WhatsApp/bot)',
+        resumo:`Metáfora raiz × copa da árvore; consumidor = passarinho rápido e preguiçoso. 90% decidem antes de falar com a empresa. CTA de diagnóstico consultivo. Arquivo nomeado "construção" mas conteúdo genérico.`,
+        cta:`"Deixa a gente te apresentar a situação, o que precisa fazer, e você decide" → Destino: WhatsApp/bot (roteia high/low) ou página de diagnóstico`,
+        flag:'Não usar: como venda direta.' }),
+      Object.assign({}, base, { id:'c12', journeyId:'vsl', etapa:'Meio/Fundo', name:'Tá vendo aquela cena ali',
+        pubTemp:'Morno', pubSeg:'Morno (vive de indicação, 5+ anos)', publico:'Morno (vive de indicação, 5+ anos)', estilo:'Storytelling',
+        avoz:'https://avoz.solutudo.com.br/videos/990101',
+        objetivo:'Agendar reunião rápida → high ticket (gancho visual de cena)',
+        resumo:`Hook visual "tá vendo essa cena?" — alguém contratando no digital, "aquele ali podia ser você". 90% das escolhas online e você não está lá. Dor da indicação imprevisível. CTA de reunião rápida.`,
+        cta:`"Em uma reunião rápida a gente mostra como" → Destino: página de agendamento / WhatsApp p/ marcar a reunião` }),
+      Object.assign({}, base, { id:'c14', journeyId:'confianca', etapa:'Meio', name:'Fachadas do velho mundo (conteúdo longo)',
+        pubTemp:'Morno', pubSeg:'Morno', publico:'Morno', estilo:'Demonstração',
+        driveId:'1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG',
+        objetivo:'Educar com dados (ZMOT/Google) sobre a "fachada digital" → autoridade e consideração',
+        resumo:`Analogia fachada física → fachada digital. ZMOT: 90% decidem antes do "alô". Dados: 76% Google, 54% redes, 38% guias locais (Solutudo), 18% IA. Checklist (Google, Solutudo, redes, site), avaliações/fotos/história, multicanais, resposta <5min. Candidato a conteúdo de live.`,
+        cta:`Soft: "fala com a nossa equipe, manda uma mensagem" (diagnóstico) → Destino: WhatsApp/equipe; também serve como conteúdo de live`,
+        flag:'Não usar: como anúncio curto de conversão (é longo, ~10min, educativo).' }),
+      Object.assign({}, base, { id:'c17', journeyId:'remarketing', etapa:'Remarketing', name:'Remarketing: visitou a página de anúncio',
+        pubTemp:'Quente', pubSeg:'Quente (visitou página anuncie, não converteu)', publico:'Quente (visitou página anuncie, não converteu)', estilo:'Rosto em pé',
+        avoz:'https://avoz.solutudo.com.br/videos/1350101',
+        objetivo:'Reengajar quem visitou a página "anuncie" e não converteu → falar com a equipe',
+        resumo:`Remarketing direto: reconhece que o lead visitou a página "anuncie" e ficou na dúvida. Cita pesquisa do Google com 310 mil jornadas de compra. Oferece esclarecer e apresentar.`,
+        cta:`"Você foi até a nossa página de anúncio, ficou na dúvida… clica aqui" → Destino: equipe / WhatsApp (esclarecer e apresentar)`,
+        flag:'Não usar: em público frio (pressupõe ter visitado a página anuncie).' }),
+      Object.assign({}, base, { id:'c22', journeyId:'confianca', etapa:'Meio', name:'Cota: ganhar ou perder (motivos p/ estar no digital)',
+        pubTemp:'Morno', pubSeg:'Morno', publico:'Morno', estilo:'Storytelling',
+        avoz:'https://avoz.solutudo.com.br/videos/1590101',
+        objetivo:'Reframe — o motivo nº1 do digital é NÃO PERDER clientes → consideração',
+        resumo:`Reframe ganhar × perder. Orgânico mostra só 3-5% dos seguidores. O 1º motivo do digital não é conseguir cliente — é NÃO PERDER (orçamentos e indicações que te procuram online e não te acham). Consultam até 3 fontes antes de decidir. Inclui o esquete do empresário que bate escanteio e corre na área (relacionado ao c24).`,
+        cta:`Soft: "se precisar de ajuda, Solutudo faz isso" → Destino: equipe / WhatsApp` }),
+    ];
+  }
+
   constructor(props) {
     super(props);
     const saved = this.load();
@@ -320,6 +397,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       trash: (saved && saved.trash) || [], trashOpen: false,
       flowSeeded: !!(saved && saved.flowSeeded), addNodeOpen: false,
       vslPgSeeded: !!(saved && saved.vslPgSeeded),
+      contentV: (saved && saved.contentV) || 0,
     };
     if (!this.state.flowSeeded) {
       this.state.cards = this.state.cards.concat(this.seedFlowNodes());
@@ -330,6 +408,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     if (!this.state.vslPgSeeded && !this.state.cards.some(c => c.id === 'vslpg')) {
       this.state.cards = this.state.cards.concat([this.vslPgCard()]);
       this.state.vslPgSeeded = true;
+      this.save();
+    }
+    // atualização de conteúdo/orientações (v2): enriquece existentes (mantém transcrição) + novos criativos
+    if (this.state.contentV < 2) {
+      const patch = this.contentPatch();
+      this.state.cards = this.state.cards.map(c => patch[c.id] ? Object.assign({}, c, patch[c.id]) : c);
+      const have = new Set(this.state.cards.map(c => c.id));
+      this.newCreatives().forEach(nc => { if (!have.has(nc.id)) this.state.cards.push(nc); });
+      this.state.contentV = 2;
       this.save();
     }
     this._drag = null; this._pan = null; this._vp = null;
@@ -344,7 +431,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   // ---- persistence ----
   KEY = 'solu-funis-v3';
   load() { try { return JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch (e) { return null; } }
-  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded })); } catch (e) {} }
+  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV })); } catch (e) {} }
 
   // ---- helpers ----
   el(tag, props, ...kids) { return React.createElement(tag, props, ...kids); }
