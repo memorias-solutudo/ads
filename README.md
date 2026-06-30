@@ -21,12 +21,14 @@ roxa `#A701FD`, gradientes da marca).
   objetivo, função/estilo/público/status, resumo e alerta. Dock de filtro por
   jornada no rodapé; filtro de status no topo. O card abre um drawer de 90% com
   player (Drive), "onde anunciar" e a transcrição completa.
-- **🕸️ Mapa de funil** — canvas com pan/zoom; fluxo da esquerda → direita
-  (Ângulo/jornada → Gatilho → Anúncio Meta → Vídeo → Destino), cards arrastáveis,
-  "fantasmas" tracejados do que falta produzir, nós de fluxo (Meta/Página/WhatsApp)
-  com prévia e conectores curvos. Painel lateral editável distinguindo campos
-  **[manual]** vs **[IA → colar]**; painéis de jornada e de funil; seletor de funil;
-  lixeira (excluir/restaurar); modais de novo funil e de novo item.
+- **🕸️ Mapa de funil** — **quadro livre** com pan/zoom: blocos posicionáveis,
+  conexões curvas manuais (modo "Conectar"; clique numa linha para apagá-la),
+  **clique no fundo abre um dropdown** para adicionar blocos tipados (Vídeo,
+  Criativo Meta, Landing Page, WhatsApp/Bot, Imagem/Carrossel, Texto vazio a
+  produzir) e copiar/colar (Duplicar ou Ctrl+C/V). Os criativos do Meta aparecem
+  conectados ao bloco do anúncio. Painel lateral editável distinguindo campos
+  **[manual]** vs **[IA → colar]**; o bloco de Landing Page mostra preview por link;
+  seletor de funil; lixeira (excluir/restaurar).
 
 Estado persistido em `localStorage` (`solu-funis-v3`). Semeado com 9 vídeos reais
 (c1–c13) + 5 nós de fluxo.

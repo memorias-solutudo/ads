@@ -398,6 +398,10 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       flowSeeded: !!(saved && saved.flowSeeded), addNodeOpen: false,
       vslPgSeeded: !!(saved && saved.vslPgSeeded),
       contentV: (saved && saved.contentV) || 0,
+      // quadro livre
+      edges: (saved && saved.edges) || [],
+      freeV: (saved && saved.freeV) || 0,
+      connectMode: false, connectFrom: null, addMenu: null,
     };
     if (!this.state.flowSeeded) {
       this.state.cards = this.state.cards.concat(this.seedFlowNodes());
@@ -419,6 +423,28 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       this.state.contentV = 2;
       this.save();
     }
+    // quadro livre (v1): semeia posições fx/fy e linhas a partir do layout estruturado atual
+    if (this.state.freeV < 1) {
+      try {
+        const L = this.fullLayout();
+        const pos = {}; const edges = [];
+        L.blocks.forEach(block => block.lanes.forEach(lane => {
+          const stamp = (slot) => slot.forEach(s => { if (s.card) pos[s.card.id] = { x:s.x, y:s.y }; });
+          stamp(lane.anu); stamp(lane.vid); stamp(lane.dst);
+          lane.anu.forEach(a => lane.vid.forEach(v => { if (a.card && v.card) edges.push({ from:a.card.id, to:v.card.id }); }));
+          lane.vid.forEach(v => lane.dst.forEach(d => { if (v.card && d.card) edges.push({ from:v.card.id, to:d.card.id }); }));
+        }));
+        let fb = 0;
+        this.state.cards = this.state.cards.map(c => {
+          if (pos[c.id]) return Object.assign({}, c, { fx:pos[c.id].x, fy:pos[c.id].y, dx:0, dy:0 });
+          if (c.fx == null) { fb++; return Object.assign({}, c, { fx:240, fy:140 + fb*120, dx:0, dy:0 }); }
+          return c;
+        });
+        this.state.edges = edges;
+      } catch (e) {}
+      this.state.freeV = 1;
+      this.save();
+    }
     this._drag = null; this._pan = null; this._vp = null;
     this._setVp = (n) => {
       if (this._vp && this._onWheelNative && this._vp !== n) { this._vp.removeEventListener('wheel', this._onWheelNative); this._wheelNode = null; }
@@ -431,7 +457,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   // ---- persistence ----
   KEY = 'solu-funis-v3';
   load() { try { return JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch (e) { return null; } }
-  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV })); } catch (e) {} }
+  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, edges: this.state.edges || [], freeV: this.state.freeV })); } catch (e) {} }
 
   // ---- helpers ----
   el(tag, props, ...kids) { return React.createElement(tag, props, ...kids); }
@@ -498,17 +524,28 @@ Reaproveitar: empatia do c11 + prova do c2.`,
 
   componentDidMount() {
     this._onMove = (e) => this.onMove(e);
-    this._onUp = () => this.onUp();
+    this._onUp = (e) => this.onUp(e);
+    this._onKey = (e) => this.onKey(e);
     window.addEventListener('mousemove', this._onMove);
     window.addEventListener('mouseup', this._onUp);
+    window.addEventListener('keydown', this._onKey);
     // center the view
     try { window.__funis = this; } catch (e) {}
     this.setState({ ready: true });
     setTimeout(() => this.fitView(), 90);
   }
+  onKey(e) {
+    if (this.state.mode === 'funil' && this.state.selected && this.state.selected.type === 'card') {
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'c') { this._clip = this.state.cards.find(c => c.id === this.state.selected.id) || null; }
+      else if ((e.ctrlKey || e.metaKey) && e.key === 'v') { if (this._clip) this.duplicateCard(this._clip.id); }
+    }
+  }
   componentWillUnmount() {
     window.removeEventListener('mousemove', this._onMove);
     window.removeEventListener('mouseup', this._onUp);
+    window.removeEventListener('keydown', this._onKey);
     if (this._vp && this._onWheelNative) this._vp.removeEventListener('wheel', this._onWheelNative);
   }
 
@@ -517,22 +554,30 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       if (Math.abs(e.clientX - this._drag.sx) + Math.abs(e.clientY - this._drag.sy) > 3) this._drag.moved = true;
       const dx = (e.clientX - this._drag.sx) / this.state.zoom;
       const dy = (e.clientY - this._drag.sy) / this.state.zoom;
-      const cards = this.state.cards.map(c => c.id === this._drag.id ? { ...c, dx: this._drag.ox + dx, dy: this._drag.oy + dy } : c);
+      const cards = this.state.cards.map(c => c.id === this._drag.id ? { ...c, fx: this._drag.ox + dx, fy: this._drag.oy + dy } : c);
       this.setState({ cards });
     } else if (this._pan) {
+      if (Math.abs(e.clientX - this._pan.sx) + Math.abs(e.clientY - this._pan.sy) > 3) this._pan.moved = true;
       this.setState({ panX: this._pan.px + (e.clientX - this._pan.sx), panY: this._pan.py + (e.clientY - this._pan.sy) });
     }
   }
-  onUp() {
+  onUp(e) {
     if (this._drag) { const moved = this._drag.moved; this._drag = null; this.save(); if (moved) { this._suppressClick = true; setTimeout(() => { this._suppressClick = false; }, 0); } }
-    if (this._pan) this._pan = null;
+    if (this._pan) {
+      const p = this._pan; this._pan = null;
+      // clique no fundo (sem arrastar) → abre menu de adicionar bloco (ou cancela conexão)
+      if (!p.moved && e) {
+        if (this.state.connectMode) { this.setState({ connectFrom: null }); }
+        else this.openAddMenu(e.clientX, e.clientY);
+      }
+    }
   }
   startDrag(e, id) {
     e.stopPropagation();
     const c = this.state.cards.find(x => x.id === id) || {};
-    this._drag = { id, sx: e.clientX, sy: e.clientY, ox: c.dx || 0, oy: c.dy || 0 };
+    this._drag = { id, sx: e.clientX, sy: e.clientY, ox: c.fx || 0, oy: c.fy || 0 };
   }
-  startPan(e) { this._pan = { sx: e.clientX, sy: e.clientY, px: this.state.panX, py: this.state.panY }; }
+  startPan(e) { this._pan = { sx: e.clientX, sy: e.clientY, px: this.state.panX, py: this.state.panY, moved: false }; }
   onWheel(e) {
     e.preventDefault();
     const r = this._vp.getBoundingClientRect();
@@ -608,7 +653,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
           tcount ? this.el('span', { style:{ position:'absolute', top:-4, right:-4, minWidth:18, height:18, padding:'0 4px', borderRadius:999, background:'var(--brand-purple)', color:'#fff', fontSize:10, fontWeight:800, display:'inline-flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 0 2px var(--white)' } }, String(tcount)) : null
         ),
         this.el('button', { onClick:()=>this.openAddFunnel(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'9px 15px', fontSize:13, fontWeight:700, background:'var(--white)', color:'var(--ink)', boxShadow:'var(--ring-hairline)' } }, '+ Funil'),
-        this.el('button', { onClick:()=>this.openAddNode(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'9px 17px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)' } }, '+ Adicionar')
+        this.el('button', { onClick:()=>this.openAddMenuCenter(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'9px 17px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)' } }, '+ Adicionar')
       )
     );
   }
@@ -798,6 +843,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       pagina:   { label:'Página de vendas', short:'Página', accent:'#0E9384' },
       whatsapp: { label:'Bloco de WhatsApp', short:'WhatsApp', accent:'#1FA855' },
       video:    { label:'Vídeo', short:'Vídeo', accent:'#7C3AED' },
+      imagem:   { label:'Imagem / Carrossel', short:'Imagem', accent:'#0EA5E9' },
+      texto:    { label:'Texto · a produzir', short:'Texto', accent:'#6B7280' },
     };
     return m[kind] || m.video;
   }
@@ -806,6 +853,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     if (kind === 'meta') return this.el('svg', st, this.el('rect', { key:1, x:3, y:3, width:18, height:18, rx:5 }), this.el('path', { key:2, d:'M7.5 16.5v-5a2.5 2.5 0 0 1 4.5-1.5 2.5 2.5 0 0 1 4.5 1.5v5' }));
     if (kind === 'pagina') return this.el('svg', st, this.el('rect', { key:1, x:3, y:4, width:18, height:16, rx:2.5 }), this.el('path', { key:2, d:'M3 9h18' }), this.el('path', { key:3, d:'M7 6.5h.01' }), this.el('path', { key:4, d:'M7 13h7' }), this.el('path', { key:5, d:'M7 16.5h10' }));
     if (kind === 'whatsapp') return this.el('svg', st, this.el('path', { key:1, d:'M4 11.5a7.5 7.5 0 1 1 3.7 6.45L4 19l1.1-3.6A7.4 7.4 0 0 1 4 11.5z' }), this.el('path', { key:2, d:'M9.3 8.9c.3 2.9 1.9 4.5 4.8 4.8l.9-1.3 1.8.7c0 1.1-1 1.9-2.1 1.8-3-.3-5.3-2.6-5.6-5.6-.1-1.1.7-2 1.8-2z' }));
+    if (kind === 'imagem') return this.el('svg', st, this.el('rect', { key:1, x:3, y:3, width:18, height:18, rx:2.5 }), this.el('circle', { key:2, cx:8.5, cy:8.5, r:1.6 }), this.el('path', { key:3, d:'M21 15l-5-5L5 21' }));
+    if (kind === 'texto') return this.el('svg', st, this.el('path', { key:1, d:'M4 6h16' }), this.el('path', { key:2, d:'M4 12h16' }), this.el('path', { key:3, d:'M4 18h10' }));
     return this.el('svg', st, this.el('path', { key:1, d:'M8 5v14l11-7z' }));
   }
   renderFlowCard(c, jr, x, y, kind) {
@@ -818,7 +867,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       : (c.waAbertura || c.objetivo);
     const inner = this.el('div', {
       onMouseDown:(e)=>this.startDrag(e, c.id),
-      onClick:(e)=>{ if(this._suppressClick) return; this.select({ type:'card', id:c.id, funnelId:c.funnelId }); },
+      onClick:(e)=>this.nodeClick(e, c),
       onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
       style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+km.accent:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(km.accent,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
@@ -862,7 +911,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     );
     const inner = this.el('div', {
       onMouseDown:(e)=>this.startDrag(e, c.id),
-      onClick:(e)=>{ if(this._suppressClick) return; this.select({ type:'card', id:c.id, funnelId:c.funnelId }); },
+      onClick:(e)=>this.nodeClick(e, c),
       onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
       style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+jr.color:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(jr.color,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
@@ -995,40 +1044,121 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       this.el('path', { key:key+'-t', d:tip, fill:color, fillOpacity:0.6 })
     ];
   }
+  // ---- QUADRO LIVRE (canvas flexível) ----
+  edgePath(a, b) {
+    const HW = 103; // metade da largura do card
+    let ax = a.fx, ay = a.fy, bx = b.fx, by = b.fy;
+    if (bx >= ax) { ax += HW; bx -= HW; } else { ax -= HW; bx += HW; }
+    const mx = (ax + bx) / 2;
+    const d = `M ${ax.toFixed(1)} ${ay.toFixed(1)} C ${mx.toFixed(1)} ${ay.toFixed(1)}, ${mx.toFixed(1)} ${by.toFixed(1)}, ${bx.toFixed(1)} ${by.toFixed(1)}`;
+    const tip = `M ${(bx-9).toFixed(1)} ${(by-5).toFixed(1)} L ${bx.toFixed(1)} ${by.toFixed(1)} L ${(bx-9).toFixed(1)} ${(by+5).toFixed(1)} Z`;
+    return { d, tip, bx, by };
+  }
+  removeEdge(i) {
+    const edges = (this.state.edges || []).slice(); edges.splice(i, 1);
+    this.setState({ edges }, () => this.save());
+  }
   buildCanvas() {
-    const S = this.state, FL = this.FL;
-    const L = this.fullLayout();
-    const worldW = FL.worldW, worldH = Math.max(900, L.totalH);
-    const connectors = [], nodes = [], bands = [];
-    const headers = [['Ângulo / jornada', FL.railX], ['Quem entra · gatilho', FL.colGat], ['Anúncio (Meta)', FL.colAnu], ['Vídeo (criativo)', FL.colVid], ['Destino · conversão', FL.colDst]];
-    headers.forEach(([t,x]) => nodes.push(this.renderStageHeader(t, x, FL.headerY)));
-    let laneCount = 0;
-    L.blocks.forEach(block => {
-      if (block.headerY != null) nodes.push(this.renderFunnelHeader(block.fn, block.headerY, FL));
-      block.lanes.forEach(lane => {
-        const jr = lane.jr, kp = block.fn.id+'-'+jr.id;
-        bands.push(this.renderLaneBand(lane, laneCount, FL));
-        laneCount++;
-        lane.anu.forEach((a,ai) => connectors.push(...this.flowArrow(lane.gat.x, lane.gat.y, a.x, a.y, jr.color, 'g'+kp+ai)));
-        lane.anu.forEach((a,ai) => lane.vid.forEach((v,vi) => connectors.push(...this.flowArrow(a.x, a.y, v.x, v.y, jr.color, 'av'+kp+ai+'_'+vi))));
-        lane.vid.forEach((v,vi) => lane.dst.forEach((d,di) => connectors.push(...this.flowArrow(v.x, v.y, d.x, d.y, jr.color, 'vd'+kp+vi+'_'+di))));
-        nodes.push(this.renderLaneLabel(block.fn, jr, FL.railX, lane.cy));
-        nodes.push(this.renderGatilho(jr, lane.gat.x, lane.gat.y, kp));
-        lane.anu.forEach((s) => nodes.push(s.card ? this.renderCard(s.card, jr, s.x + (s.card.dx||0), s.y + (s.card.dy||0)) : this.renderColGhost(block.fn, jr, 'meta', s.x, s.y, 'Definir anúncio Meta')));
-        lane.vid.forEach((s) => nodes.push(s.card ? this.renderCard(s.card, jr, s.x + (s.card.dx||0), s.y + (s.card.dy||0)) : this.renderGhost(block.fn, jr, s.x, s.y)));
-        lane.dst.forEach((s) => nodes.push(s.card ? this.renderCard(s.card, jr, s.x + (s.card.dx||0), s.y + (s.card.dy||0)) : this.renderColGhost(block.fn, jr, this.destinoKind(jr.id), s.x, s.y, this.destinoHint(jr.id))));
-      });
+    const S = this.state;
+    const cards = this.visibleCards();
+    const byId = {}; cards.forEach(c => { byId[c.id] = c; });
+    const worldW = 4000, worldH = 2600;
+    const connectors = [];
+    (S.edges || []).forEach((ed, i) => {
+      const a = byId[ed.from], b = byId[ed.to];
+      if (!a || !b || a.fx == null || b.fx == null) return;
+      const jr = this.jById(a.journeyId); const col = jr.color;
+      const p = this.edgePath(a, b);
+      connectors.push(this.el('path', { key:'e'+i+'-l', d:p.d, stroke:col, strokeOpacity:0.55, strokeWidth:2.5, fill:'none', strokeLinecap:'round', style:{ pointerEvents:'stroke', cursor:'pointer' }, onClick:()=>this.removeEdge(i) }));
+      connectors.push(this.el('path', { key:'e'+i+'-t', d:p.tip, fill:col, fillOpacity:0.7 }));
+    });
+    const nodes = cards.map(c => {
+      const jr = this.jById(c.journeyId);
+      const fx = c.fx == null ? 240 : c.fx, fy = c.fy == null ? 200 : c.fy;
+      return (c.kind && c.kind !== 'video') ? this.renderFlowCard(c, jr, fx, fy, c.kind) : this.renderCard(c, jr, fx, fy);
     });
     const world = this.el('div', { style:{ position:'absolute', left:0, top:0, width:worldW, height:worldH, transformOrigin:'0 0', transform:`translate(${S.panX}px, ${S.panY}px) scale(${S.zoom})` } },
-      this.el('div', { key:'bands', style:{ position:'absolute', left:0, top:0, width:worldW, height:worldH } }, bands),
       this.el('svg', { key:'svg', width:worldW, height:worldH, style:{ position:'absolute', left:0, top:0, overflow:'visible', pointerEvents:'none' } }, connectors),
       nodes
     );
     return this.el('div', {
       ref: this._setVp,
       onMouseDown:(e)=>this.startPan(e),
-      style:{ position:'absolute', inset:0, overflow:'hidden', cursor: this._pan?'grabbing':'grab', background:'var(--surface-app)', backgroundImage:'radial-gradient(circle, rgba(21,21,21,.05) 1px, transparent 1px)', backgroundSize:'26px 26px' }
-    }, world, this.buildZoomControls());
+      style:{ position:'absolute', inset:0, overflow:'hidden', cursor: this.state.connectMode ? 'crosshair' : (this._pan?'grabbing':'grab'), background:'var(--surface-app)', backgroundImage:'radial-gradient(circle, rgba(21,21,21,.05) 1px, transparent 1px)', backgroundSize:'26px 26px' }
+    }, world, this.buildBoardToolbar(), this.buildZoomControls(), this.buildAddMenu());
+  }
+  // barra de ferramentas do quadro (conectar + adicionar)
+  buildBoardToolbar() {
+    const cm = this.state.connectMode;
+    return this.el('div', { style:{ position:'absolute', left:16, top:16, display:'flex', gap:8, alignItems:'center', zIndex:6 } },
+      this.el('button', { onClick:()=>this.toggleConnect(), onMouseDown:(e)=>e.stopPropagation(), style:{ display:'inline-flex', alignItems:'center', gap:6, border:'none', cursor:'pointer', borderRadius:10, padding:'9px 14px', fontSize:13, fontWeight:700, background: cm?'var(--ink)':'var(--white)', color: cm?'var(--white)':'var(--ink)', boxShadow:'var(--shadow-card), var(--ring-hairline)' } },
+        this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M9 12a3 3 0 0 1 3-3h3a3 3 0 0 1 0 6h-1' }), this.el('path', { key:2, d:'M15 12a3 3 0 0 1-3 3H9a3 3 0 0 1 0-6h1' })),
+        cm ? 'Conectando… (clique origem → destino)' : 'Conectar'),
+      this.el('button', { onClick:()=>this.openAddMenuCenter(), onMouseDown:(e)=>e.stopPropagation(), style:{ display:'inline-flex', alignItems:'center', gap:6, border:'none', cursor:'pointer', borderRadius:10, padding:'9px 14px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)' } },
+        this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2.2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M12 5v14' }), this.el('path', { key:2, d:'M5 12h14' })),
+        'Adicionar bloco'),
+      this.el('span', { style:{ fontSize:11.5, color:'var(--gray-500)', background:'var(--white)', borderRadius:8, padding:'6px 10px', boxShadow:'var(--ring-hairline)' } }, 'Clique no fundo para adicionar · arraste para mover · clique numa linha para apagá-la')
+    );
+  }
+  toggleConnect() { this.setState({ connectMode: !this.state.connectMode, connectFrom: null }); }
+  screenToWorld(clientX, clientY) {
+    const r = this._vp ? this._vp.getBoundingClientRect() : { left:0, top:0 };
+    return { wx: (clientX - r.left - this.state.panX) / this.state.zoom, wy: (clientY - r.top - this.state.panY) / this.state.zoom, sx: clientX - r.left, sy: clientY - r.top };
+  }
+  openAddMenu(clientX, clientY) {
+    const p = this.screenToWorld(clientX, clientY);
+    this.setState({ addMenu: { x:p.sx, y:p.sy, wx:p.wx, wy:p.wy } });
+  }
+  openAddMenuCenter() {
+    const r = this._vp ? this._vp.getBoundingClientRect() : { width:800, height:600 };
+    this.openAddMenu(r.left + r.width/2, r.top + r.height/2);
+  }
+  closeAddMenu() { this.setState({ addMenu: null }); }
+  buildAddMenu() {
+    const m = this.state.addMenu; if (!m) return null;
+    const opt = (kind, label) => { const km = this.kindMeta(kind); return this.el('button', { key:kind, onMouseDown:(e)=>e.stopPropagation(), onClick:()=>this.addNodeAt(kind, m.wx, m.wy), onMouseEnter:(e)=>{ e.currentTarget.style.background=this.hexA(km.accent,0.08); }, onMouseLeave:(e)=>{ e.currentTarget.style.background='transparent'; }, style:{ display:'flex', alignItems:'center', gap:10, width:'100%', textAlign:'left', border:'none', background:'transparent', cursor:'pointer', borderRadius:9, padding:'8px 10px', fontSize:13, fontWeight:600, color:'var(--ink)' } },
+      this.el('span', { style:{ width:28, height:28, flex:'none', borderRadius:8, background:this.hexA(km.accent,0.14), color:km.accent, display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.kindIcon(kind, 16, km.accent)),
+      label); };
+    return this.el('div', { onMouseDown:(e)=>e.stopPropagation() },
+      this.el('div', { onMouseDown:(e)=>{ e.stopPropagation(); this.closeAddMenu(); }, style:{ position:'absolute', inset:0, zIndex:7 } }),
+      this.el('div', { style:{ position:'absolute', left:Math.min(m.x, (this._vp?this._vp.getBoundingClientRect().width:900)-250), top:m.y, width:240, background:'var(--white)', borderRadius:14, boxShadow:'var(--shadow-lg)', padding:8, zIndex:8, animation:'solPop .15s var(--ease-out)' } },
+        this.el('div', { style:{ fontSize:10.5, fontWeight:800, letterSpacing:'.05em', textTransform:'uppercase', color:'var(--gray-400)', padding:'4px 10px 8px' } }, 'Adicionar bloco'),
+        opt('video', 'Vídeo'),
+        opt('meta', 'Criativo Meta'),
+        opt('pagina', 'Landing Page'),
+        opt('whatsapp', 'WhatsApp / Bot'),
+        opt('imagem', 'Imagem / Carrossel'),
+        opt('texto', 'Texto vazio (a produzir)')
+      )
+    );
+  }
+  nodeClick(e, c) {
+    if (this._suppressClick) return;
+    if (this.state.connectMode) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      if (!this.state.connectFrom) { this.setState({ connectFrom: c.id }); return; }
+      if (this.state.connectFrom === c.id) { this.setState({ connectFrom: null }); return; }
+      const edges = (this.state.edges || []).slice();
+      if (!edges.some(ed => ed.from === this.state.connectFrom && ed.to === c.id)) edges.push({ from: this.state.connectFrom, to: c.id });
+      this.setState({ edges, connectFrom: null }, () => this.save());
+      return;
+    }
+    this.select({ type:'card', id:c.id, funnelId:c.funnelId });
+  }
+  addNodeAt(kind, wx, wy) {
+    const fid = this.state.viewAll ? (this.state.funnels[0]||{}).id : this.state.funnelId;
+    const id = 'n' + Date.now().toString(36);
+    const base = { id, funnelId:fid, journeyId:'whatsapp', etapa:'Fundo', plataforma:'Meta', status:'falta', objetivo:'', resumo:'', segmentacao:'', estiloPorque:'', formato:'', kpi:'', cta:'', proximo:'', iaParecer:'', iaRec:'', fx:wx, fy:wy, dx:0, dy:0 };
+    let card;
+    if (kind === 'video') card = Object.assign(base, { funcao:'AD', name:'Novo vídeo', pubTemp:'Frio', pubSeg:'', publico:'', estilo:'', transcricao:'' });
+    else { const km = this.kindMeta(kind); card = Object.assign(base, { kind, funcao: kind==='meta'?'AD':'PG', name:'Novo: '+km.label, plataforma: kind==='meta'?'Meta':(kind==='pagina'?'LP':(kind==='whatsapp'?'WhatsApp':'—')) }); }
+    this.setState({ cards:[...this.state.cards, card], addMenu:null, selected:{ type:'card', id, funnelId:fid } }, () => this.save());
+  }
+  duplicateCard(id) {
+    const c = this.state.cards.find(x => x.id === id); if (!c) return;
+    const nid = 'n' + Date.now().toString(36);
+    const copy = Object.assign({}, c, { id:nid, name:(c.name||'') + ' (cópia)', fx:(c.fx||240)+40, fy:(c.fy||160)+40 });
+    this.setState({ cards:[...this.state.cards, copy], selected:{ type:'card', id:nid, funnelId:copy.funnelId } }, () => this.save());
   }
   updateCard(id, patch) {
     const cards = this.state.cards.map(c => c.id === id ? { ...c, ...patch } : c);
@@ -1040,7 +1170,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     if (!card) return;
     const fn = this.state.funnels.find(f => f.id === card.funnelId);
     const trashed = Object.assign({}, card, { deletedAt: Date.now(), trashFunnelName: fn ? fn.name : '' });
-    this.setState({ cards: this.state.cards.filter(c => c.id !== id), trash: [trashed, ...(this.state.trash || [])], selected: null }, () => this.save());
+    const edges = (this.state.edges || []).filter(e => e.from !== id && e.to !== id);
+    this.setState({ cards: this.state.cards.filter(c => c.id !== id), edges, trash: [trashed, ...(this.state.trash || [])], selected: null }, () => this.save());
   }
   restoreCard(id) {
     const t = (this.state.trash || []).find(c => c.id === id);
@@ -1070,18 +1201,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const d = Math.floor(h / 24); return 'há ' + d + (d === 1 ? ' dia' : ' dias');
   }
   getCardWorld(card) {
-    const FL = this.FL;
-    const L = this.fullLayout();
-    for (const block of L.blocks) {
-      if (block.fn.id !== card.funnelId) continue;
-      for (const lane of block.lanes) {
-        if (lane.jr.id !== card.journeyId) continue;
-        const col = card.kind==='meta' ? lane.anu : (card.kind==='pagina'||card.kind==='whatsapp') ? lane.dst : lane.vid;
-        const s = col.find(x => x.card && x.card.id === card.id);
-        if (s) return { x: s.x + (card.dx||0), y: s.y + (card.dy||0) };
-      }
-    }
-    return { x: FL.colVid, y: FL.laneTop + 200 };
+    return { x: card.fx == null ? 240 : card.fx, y: card.fy == null ? 200 : card.fy };
   }
   centerOn(wx, wy) {
     if (!this._vp) return; const r = this._vp.getBoundingClientRect(); const z = this.state.zoom;
@@ -1227,7 +1347,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
         this.txt(card, 'kpi', 'KPI principal', 'manual', 'ex.: CPL, ROAS, CTR'),
         this.txt(card, 'cta', 'CTA / destino', 'manual', 'ex.: Cadastrar grátis → LP'),
         this.txt(card, 'proximo', 'Próximo passo', 'manual', 'ex.: subir como Advantage+'),
-        this.el('button', { key:'del', onClick:()=>this.deleteCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:18 } }, 'Excluir criativo')
+        this.el('button', { key:'dup', onClick:()=>this.duplicateCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--ink)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:18 } }, 'Duplicar (copiar/colar)'),
+        this.el('button', { key:'del', onClick:()=>this.deleteCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:8 } }, 'Excluir criativo')
       ),
     ];
 
@@ -1240,6 +1361,17 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
 
   flowConfig(kind) {
+    if (kind === 'imagem') return { sec:'Imagem / Carrossel', fields:[
+      ['area','objetivo','Objetivo — o que comunica','Em uma linha: a mensagem central da peça.',2],
+      ['txt','formato','Formato','ex.: 1:1, 4:5, carrossel de 3 cartões'],
+      ['area','resumo','Descrição / roteiro visual','Cartões, headline, oferta, CTA…',4],
+      ['txt','cta','CTA / destino','ex.: Cadastre-se → LP'],
+    ]};
+    if (kind === 'texto') return { sec:'Espaço a produzir', fields:[
+      ['area','objetivo','O que deveria existir aqui','Descreva a peça/etapa que falta produzir.',2],
+      ['area','resumo','Orientação (como deveria ser)','Estrutura, referências, ordem…',5],
+      ['txt','proximo','Próximo passo','ex.: gravar / desenhar / contratar'],
+    ]};
     if (kind === 'meta') return { sec:'Anúncio no Meta', fields:[
       ['area','objetivo','Objetivo — para onde leva','Em uma linha: o que o anúncio provoca e para onde manda.',2],
       ['txt','metaHeadline','Título (headline)','ex.: Cadastre sua empresa grátis'],
@@ -1269,6 +1401,19 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
   flowPreview(card, km) {
     const kind = card.kind;
+    if (kind === 'imagem') {
+      return this.el('div', { style:{ border:'1px solid var(--gray-200)', borderRadius:14, overflow:'hidden', marginBottom:18 } },
+        this.el('div', { style:{ height:150, background:this.hexA(km.accent,0.10), display:'flex', alignItems:'center', justifyContent:'center', color:km.accent } }, this.kindIcon('imagem', 40, km.accent)),
+        this.el('div', { style:{ padding:'12px 14px' } },
+          this.el('div', { style:{ fontSize:13.5, fontWeight:700, color:'var(--ink)', lineHeight:1.3 } }, card.objetivo || 'Imagem / carrossel — descreva a peça'),
+          card.formato ? this.el('div', { style:{ fontSize:11.5, color:'var(--gray-500)', marginTop:5 } }, card.formato) : null));
+    }
+    if (kind === 'texto') {
+      return this.el('div', { style:{ border:'1.5px dashed var(--gray-300)', borderRadius:14, marginBottom:18, padding:'18px 16px', background:'var(--gray-100)', textAlign:'center' } },
+        this.el('div', { style:{ display:'inline-flex', width:40, height:40, borderRadius:11, background:'var(--white)', boxShadow:'var(--ring-hairline)', alignItems:'center', justifyContent:'center', color:'var(--gray-400)', marginBottom:8 } }, this.kindIcon('texto', 20, '#9D9D9D')),
+        this.el('div', { style:{ fontSize:13, fontWeight:700, color:'var(--gray-600)' } }, 'Espaço a produzir'),
+        this.el('div', { style:{ fontSize:11.5, color:'var(--gray-400)', lineHeight:1.4, marginTop:4 } }, card.objetivo || 'Descreva o que deveria existir aqui e ainda não foi produzido.'));
+    }
     if (kind === 'meta') {
       return this.el('div', { style:{ border:'1px solid var(--gray-200)', borderRadius:14, overflow:'hidden', marginBottom:18 } },
         this.el('div', { style:{ display:'flex', alignItems:'center', gap:8, padding:'10px 12px' } },
@@ -1359,7 +1504,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       this.journeySelect(card),
       this.sel(card, 'etapa', 'Etapa do funil', 'manual', ['Topo', 'Meio', 'Fundo', 'Remarketing']),
       this.el('div', { key:'fnote', style:{ fontSize:11.5, color:'var(--gray-500)', lineHeight:1.5, marginTop:4 } }, 'Este item entra na jornada acima — encadeado após o criativo (anúncio → página/WhatsApp → conversão).'),
-      this.el('button', { key:'del', onClick:()=>this.deleteCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:20 } }, 'Excluir item')
+      this.el('button', { key:'dup', onClick:()=>this.duplicateCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--ink)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:20 } }, 'Duplicar (copiar/colar)'),
+      this.el('button', { key:'del', onClick:()=>this.deleteCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:8 } }, 'Excluir item')
     );
     return this.panelWrap([header, body]);
   }
