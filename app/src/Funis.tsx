@@ -270,6 +270,37 @@ class Funis extends React.Component {
     ];
   }
 
+  // Vídeo que vive DENTRO da página da VSL (PG). Provisório: usa o c11 para não
+  // travar o funil; traz o roteiro ordenado da VSL definitiva a gravar.
+  vslPgCard() {
+    return {
+      id:'vslpg', funnelId:'solutudo', journeyId:'vsl', etapa:'Fundo', funcao:'PG',
+      name:'Vídeo da página VSL (provisório)', plataforma:'LP', status:'confirmar',
+      pubTemp:'Morno', pubSeg:'Morno/Quente', publico:'Morno/Quente', estilo:'VSL',
+      formato:'16:9 ou 1:1 · 3–20 min', dx:0, dy:0,
+      driveId:'1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ',
+      objetivo:'Vídeo dentro da página da VSL — conduzir do problema até o agendamento da call (high ticket)',
+      flag:'PROVISÓRIO — usando o c11 no lugar até gravar a VSL definitiva. Não é o vídeo ideal da página.',
+      estiloPorque:'Rosto sentado, olho no olho, ritmo controlado — sustenta um vídeo longo de decisão (high ticket).',
+      cta:'Agendar reunião gratuita (formulário da página)',
+      proximo:'Gravar a VSL completa e substituir o c11',
+      iaParecer:'nao',
+      iaRec:'Provisório: o c11 cobre empatia + CTA de agendamento, mas não tem oferta/ancoragem nem prova estruturada. Gravar uma VSL dedicada (roteiro abaixo).',
+      resumo:`PROVISÓRIO: usando o c11 como vídeo da página para não travar o funil. O certo é gravar a VSL completa.
+
+Como gravar (rosto sentado, 3–20 min, olho no olho) — nesta ordem:
+1) PROBLEMA — a dor de não aparecer onde 90% decidem a compra.
+2) AGITAÇÃO — o custo de ficar invisível no digital (reaproveitar a empatia do c11).
+3) SOLUÇÃO — o que a Solutudo faz: "verdade digital", 20 anos, 3.000+ empresas.
+4) PROVA — autoridade e provas (reaproveitar o c2: topo Reclame Aqui, sem multa, Sebrae, parceiros há 20 anos).
+5) OFERTA — a reunião gratuita + ancoragem do high ticket (o que a pessoa recebe na call).
+6) CTA — agendar a call, apontando direto para o formulário da página.
+
+Reaproveitar: empatia do c11 + prova do c2.`,
+      iaParecerNote:'', segmentacao:'', kpi:'Agendamentos, show-up, CAC', transcricao:'',
+    };
+  }
+
   constructor(props) {
     super(props);
     const saved = this.load();
@@ -288,10 +319,17 @@ class Funis extends React.Component {
       addFunnelOpen: false, draftFunnel: '',
       trash: (saved && saved.trash) || [], trashOpen: false,
       flowSeeded: !!(saved && saved.flowSeeded), addNodeOpen: false,
+      vslPgSeeded: !!(saved && saved.vslPgSeeded),
     };
     if (!this.state.flowSeeded) {
       this.state.cards = this.state.cards.concat(this.seedFlowNodes());
       this.state.flowSeeded = true;
+      this.save();
+    }
+    // injeta o vídeo PG provisório da VSL uma única vez (também p/ quem já tem dados salvos)
+    if (!this.state.vslPgSeeded && !this.state.cards.some(c => c.id === 'vslpg')) {
+      this.state.cards = this.state.cards.concat([this.vslPgCard()]);
+      this.state.vslPgSeeded = true;
       this.save();
     }
     this._drag = null; this._pan = null; this._vp = null;
@@ -306,7 +344,7 @@ class Funis extends React.Component {
   // ---- persistence ----
   KEY = 'solu-funis-v3';
   load() { try { return JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch (e) { return null; } }
-  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded })); } catch (e) {} }
+  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded })); } catch (e) {} }
 
   // ---- helpers ----
   el(tag, props, ...kids) { return React.createElement(tag, props, ...kids); }
