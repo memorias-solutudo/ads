@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Solutudo — Gestor de Funis de Criativos</title>
+<style>
+:root{
+  --sol-laranja:#F26522;--sol-laranja-escuro:#C84E0F;--sol-azul:#1A2B4A;--sol-azul-medio:#2C4370;
+  --sol-azul-claro:#3A6BB5;--sol-cinza:#F5F6F8;--sol-cinza-borda:#E2E6ED;--sol-texto:#1A2B4A;--sol-muted:#6B7A99;
+  --verde:#1A7A4A;--verde-bg:#E6F5EE;--amarelo:#8C6000;--amarelo-bg:#FFF8E1;--vermelho:#B91C1C;--vermelho-bg:#FEE2E2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--sol-cinza);color:var(--sol-texto);height:100vh;overflow:hidden}
+.header{background:var(--sol-azul);padding:12px 24px;display:flex;align-items:center;gap:16px;border-bottom:3px solid var(--sol-laranja)}
+.header-logo{font-size:20px;font-weight:800;color:#fff}.header-logo span{color:var(--sol-laranja)}
+.tabs{display:flex;gap:4px;margin-left:12px}
+.tab{padding:7px 16px;border-radius:7px;color:#C5D3E8;background:transparent;border:0;cursor:pointer;font-size:14px;font-weight:600}
+.tab.on{background:var(--sol-laranja);color:#fff}
+.toolbar{margin-left:auto;display:flex;gap:8px}
+.btn{background:#21304d;color:#fff;border:1px solid #3a4a6b;border-radius:6px;padding:7px 12px;font-size:12px;cursor:pointer}
+.btn:hover{border-color:var(--sol-laranja)}
+.btn-laranja{background:var(--sol-laranja);border-color:var(--sol-laranja)}.btn-laranja:hover{background:var(--sol-laranja-escuro)}
+.view{height:calc(100vh - 58px);overflow:auto;padding:20px 24px}
+.view.hidden{display:none}
+
+/* FILTROS */
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--sol-cinza-borda);background:#fff;color:var(--sol-muted);font-size:12px;cursor:pointer}
+.chip.on{border-color:var(--sol-laranja);background:var(--sol-laranja);color:#fff}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.card{background:#fff;border-radius:10px;border:1px solid var(--sol-cinza-borda);box-shadow:0 1px 4px rgba(0,0,0,.06);padding:14px 16px;cursor:pointer;transition:box-shadow .15s}
+.card:hover{box-shadow:0 4px 14px rgba(0,0,0,.12)}
+.card-h{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.card-id{font-size:11px;font-weight:700;color:var(--sol-muted);background:var(--sol-cinza);padding:2px 7px;border-radius:4px}
+.card-nome{font-size:14px;font-weight:700;color:var(--sol-azul)}
+.obj{background:#FEE9DC;border-left:3px solid var(--sol-laranja);color:var(--sol-laranja-escuro);padding:6px 9px;border-radius:0 6px 6px 0;font-size:12px;font-weight:600;margin-bottom:8px}
+.minitags{display:flex;flex-wrap:wrap;gap:5px}
+.t{font-size:10.5px;padding:2px 8px;border-radius:20px;font-weight:600}
+.t-existe{background:var(--verde-bg);color:var(--verde)}.t-confirmar{background:var(--amarelo-bg);color:var(--amarelo)}.t-falta{background:var(--vermelho-bg);color:var(--vermelho)}
+
+/* DRAWER */
+.drawer-bg{position:fixed;inset:0;background:rgba(10,15,25,.5);display:none;z-index:50}
+.drawer-bg.on{display:block}
+.drawer{position:fixed;top:0;right:0;width:min(460px,92vw);height:100vh;background:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.2);padding:20px 22px;overflow-y:auto;z-index:51;transform:translateX(100%);transition:transform .2s}
+.drawer.on{transform:translateX(0)}
+.drawer h3{font-size:16px;color:var(--sol-azul);margin-bottom:4px}
+.fld{margin:10px 0}
+.fld label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--sol-muted);margin-bottom:3px;font-weight:700}
+.fld input,.fld select,.fld textarea{width:100%;padding:8px 10px;border:1px solid var(--sol-cinza-borda);border-radius:6px;font-size:13px;font-family:inherit;color:var(--sol-texto)}
+.fld textarea{resize:vertical;min-height:60px}
+.drawer-actions{display:flex;gap:8px;margin-top:16px;position:sticky;bottom:0;background:#fff;padding:10px 0}
+.links-edit .lrow{display:flex;gap:6px;margin-bottom:5px}
+.links-edit input{flex:1}
+.del-link{background:var(--vermelho-bg);color:var(--vermelho);border:0;border-radius:5px;padding:0 10px;cursor:pointer}
+
+/* FLUXO */
+#fluxo-wrap{position:relative;width:3000px;height:1800px;background:
+  radial-gradient(circle, #dde3ec 1px, transparent 1px);background-size:22px 22px}
+.fluxo-toolbar{position:sticky;top:0;z-index:5;display:flex;gap:8px;align-items:center;background:var(--sol-cinza);padding:0 0 12px;flex-wrap:wrap}
+.node{position:absolute;width:170px;background:#fff;border:2px solid #ccc;border-radius:9px;padding:9px 11px;cursor:grab;box-shadow:0 2px 6px rgba(0,0,0,.1);user-select:none;font-size:12px}
+.node.connecting{outline:3px solid var(--sol-laranja);outline-offset:2px}
+.node-id{font-size:10px;font-weight:700;color:var(--sol-muted)}
+.node-nome{font-weight:700;color:var(--sol-azul);font-size:12px;line-height:1.25;margin:2px 0 4px}
+.node-obj{font-size:10.5px;color:#555;line-height:1.3}
+.node-jor{display:inline-block;font-size:9.5px;color:#fff;padding:1px 7px;border-radius:10px;margin-top:5px}
+svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+svg.edges path{stroke:var(--sol-azul-claro);stroke-width:2.5;fill:none;pointer-events:stroke;cursor:pointer}
+svg.edges path:hover{stroke:var(--vermelho);stroke-width:4}
+.hintbar{font-size:12px;color:var(--sol-muted);background:#fff;border:1px solid var(--sol-cinza-borda);border-radius:6px;padding:6px 10px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--sol-azul);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:99;opacity:0;transition:opacity .2s}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">Sol<span>u</span>tudo</div>
+  <div class="tabs">
+    <button class="tab on" id="tab-cards" onclick="setView('cards')">📇 Cards</button>
+    <button class="tab" id="tab-fluxo" onclick="setView('fluxo')">🔀 Fluxo</button>
+  </div>
+  <div class="toolbar">
+    <button class="btn" onclick="importJSON()">Importar JSON</button>
+    <button class="btn" onclick="exportJSON()">⬇ Exportar JSON</button>
+    <button class="btn" onclick="resetData()">↺ Resetar</button>
+  </div>
+</div>
+
+<!-- VIEW: CARDS -->
+<div class="view" id="view-cards">
+  <div class="filtros" id="filtros"></div>
+  <div style="margin-bottom:14px"><button class="btn btn-laranja" onclick="novoCard()">+ Novo card</button></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- VIEW: FLUXO -->
+<div class="view hidden" id="view-fluxo">
+  <div class="fluxo-toolbar">
+    <button class="btn btn-laranja" id="btn-conectar" onclick="toggleConnect()">🔗 Conectar</button>
+    <span class="hintbar" id="fluxo-hint">Arraste os nós para reorganizar. Clique em "Conectar" e depois em dois nós para ligar. Clique numa linha para excluí-la.</span>
+  </div>
+  <div id="fluxo-wrap">
+    <svg class="edges" id="edges"></svg>
+  </div>
+</div>
+
+<div class="drawer-bg" id="drawer-bg" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='solutudo_funil_v1';
+const COR_J={ATRACAO:'#7C3AED',CONFIANCA:'#D97706',REMARKETING:'#0369A1',CADASTRO:'#059669',WHATSAPP:'#16A34A',VSL:'#DC2626',ANUNCIE:'#EA580C',LIVE:'#9333EA'};
+const NOME_J={ATRACAO:'Atração',CONFIANCA:'Confiança',REMARKETING:'Remarketing',CADASTRO:'Cadastro',WHATSAPP:'WhatsApp',VSL:'VSL/High',ANUNCIE:'Anuncie/Low',LIVE:'Live'};
+const ORDEM_J=['ATRACAO','CONFIANCA','LIVE','CADASTRO','REMARKETING','WHATSAPP','VSL','ANUNCIE'];
+const CAMPOS=['objetivo','funcao','jornada','etapa','publico','estilo','status','cta','destino','naoUsar','resumo'];
+
+let state=null, filtroJ='', connectMode=false, connectFrom=null;
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
+function esc(s){return(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+
+async function boot(){
+  const saved=localStorage.getItem(KEY);
+  if(saved){ try{ state=JSON.parse(saved); }catch(e){ state=null; } }
+  if(!state){
+    try{
+      const seed=await (await fetch('./dados-criativos.json',{cache:'no-store'})).json();
+      state={
+        projeto:seed.projeto, atualizado:seed.atualizado,
+        taxonomias:seed.taxonomias||{},
+        criativos:seed.criativos||[],
+        fluxo:{nodes:{},edges:[]}
+      };
+      autoLayout();
+    }catch(e){
+      state={projeto:'Funil Solutudo',criativos:[],taxonomias:{},fluxo:{nodes:{},edges:[]}};
+      toast('Não carregou dados-criativos.json — comece com Importar JSON.');
+    }
+  }
+  if(!state.fluxo) state.fluxo={nodes:{},edges:[]};
+  renderFiltros(); renderGrid(); renderFluxo();
+}
+
+function autoLayout(){
+  const colW=220, rowH=120, padX=40, padY=80;
+  const counts={};
+  state.criativos.forEach(c=>{
+    const col=Math.max(0,ORDEM_J.indexOf(c.jornada));
+    counts[col]=(counts[col]||0);
+    state.fluxo.nodes[c.id]={x:padX+col*colW, y:padY+counts[col]*rowH};
+    counts[col]++;
+  });
+}
+
+/* ---------- CARDS ---------- */
+function renderFiltros(){
+  const jornadas=[...new Set(state.criativos.map(c=>c.jornada))].sort((a,b)=>ORDEM_J.indexOf(a)-ORDEM_J.indexOf(b));
+  let h=`<span class="chip ${!filtroJ?'on':''}" onclick="setFiltro('')">Todos (${state.criativos.length})</span>`;
+  jornadas.forEach(j=>{const n=state.criativos.filter(c=>c.jornada===j).length;
+    h+=`<span class="chip ${filtroJ===j?'on':''}" onclick="setFiltro('${j}')" style="${filtroJ===j?'':'border-color:'+(COR_J[j]||'#ccc')}">${NOME_J[j]||j} (${n})</span>`;});
+  document.getElementById('filtros').innerHTML=h;
+}
+function setFiltro(j){filtroJ=j;renderFiltros();renderGrid();}
+function renderGrid(){
+  const lista=state.criativos.filter(c=>!filtroJ||c.jornada===filtroJ);
+  document.getElementById('grid').innerHTML=lista.map(c=>`
+    <div class="card" onclick="editCard('${c.id}')">
+      <div class="card-h"><span class="card-id">${esc(c.id)}</span><span class="card-nome">${esc(c.nome||'')}</span></div>
+      <div class="obj">🎯 ${esc(c.objetivo||'(sem objetivo)')}</div>
+      <div class="minitags">
+        <span class="t t-${c.status}" >${esc(c.status||'')}</span>
+        <span class="t" style="background:${(COR_J[c.jornada]||'#888')}22;color:${COR_J[c.jornada]||'#888'}">${esc(NOME_J[c.jornada]||c.jornada||'')}</span>
+        <span class="t" style="background:#EEF2FF;color:#4338CA">${esc(c.funcao||'')}</span>
+      </div>
+    </div>`).join('') || '<p style="color:var(--sol-muted)">Nenhum card. Clique em “+ Novo card”.</p>';
+}
+
+/* ---------- DRAWER (editar) ---------- */
+function editCard(id){
+  const c=state.criativos.find(x=>x.id===id); if(!c) return;
+  const opts=(obj,val)=>Object.keys(obj||{}).map(k=>`<option value="${k}" ${k===val?'selected':''}>${k}</option>`).join('');
+  const jor=state.taxonomias.jornada||NOME_J, est=state.taxonomias.estilo||{}, sta=state.taxonomias.status||{status:1};
+  const d=document.getElementById('drawer');
+  d.innerHTML=`
+    <h3>${esc(c.id)} — editar</h3>
+    <div class="fld"><label>Nome</label><input id="f-nome" value="${esc(c.nome||'')}"></div>
+    <div class="fld"><label>🎯 Objetivo (destaque)</label><textarea id="f-objetivo">${esc(c.objetivo||'')}</textarea></div>
+    <div class="fld"><label>Jornada</label><select id="f-jornada">${opts(jor,c.jornada)}</select></div>
+    <div class="fld"><label>Função</label><select id="f-funcao"><option ${c.funcao==='AD'?'selected':''}>AD</option><option ${c.funcao==='PG'?'selected':''}>PG</option></select></div>
+    <div class="fld"><label>Etapa</label><input id="f-etapa" value="${esc(c.etapa||'')}"></div>
+    <div class="fld"><label>Público</label><input id="f-publico" value="${esc(c.publico||'')}"></div>
+    <div class="fld"><label>Estilo</label><input id="f-estilo" value="${esc(c.estilo||'')}" list="estilos"><datalist id="estilos">${Object.keys(est).map(k=>`<option value="${k}">`).join('')}</datalist></div>
+    <div class="fld"><label>Status</label><select id="f-status"><option value="existe" ${c.status==='existe'?'selected':''}>existe</option><option value="confirmar" ${c.status==='confirmar'?'selected':''}>confirmar</option><option value="falta" ${c.status==='falta'?'selected':''}>falta</option></select></div>
+    <div class="fld"><label>CTA</label><input id="f-cta" value="${esc(c.cta||'')}"></div>
+    <div class="fld"><label>Destino</label><input id="f-destino" value="${esc(c.destino||'')}"></div>
+    <div class="fld"><label>Não usar</label><input id="f-naoUsar" value="${esc(c.naoUsar||'')}"></div>
+    <div class="fld"><label>Resumo</label><textarea id="f-resumo">${esc(c.resumo||'')}</textarea></div>
+    <div class="fld links-edit"><label>Links</label><div id="links-box">${(c.links||[]).map((l,i)=>linkRow(l,i)).join('')}</div>
+      <button class="btn" style="margin-top:6px" onclick="addLinkRow()">+ link</button></div>
+    <div class="drawer-actions">
+      <button class="btn btn-laranja" style="flex:1" onclick="saveCard('${c.id}')">Salvar</button>
+      <button class="btn" onclick="closeDrawer()">Cancelar</button>
+      <button class="btn" style="background:var(--vermelho-bg);color:var(--vermelho);border-color:#f3bcbc" onclick="delCard('${c.id}')">Excluir</button>
+    </div>`;
+  document.getElementById('drawer-bg').classList.add('on');d.classList.add('on');
+}
+function linkRow(l,i){return `<div class="lrow"><input placeholder="rótulo" value="${esc(l.label||l.l||'')}" data-l="${i}"><input placeholder="url" value="${esc(l.url||l.u||'')}" data-u="${i}"><button class="del-link" onclick="this.parentElement.remove()">×</button></div>`;}
+function addLinkRow(){const b=document.getElementById('links-box');b.insertAdjacentHTML('beforeend',linkRow({},Date.now()));}
+function saveCard(id){
+  const c=state.criativos.find(x=>x.id===id); if(!c) return;
+  c.nome=val('f-nome');CAMPOS.forEach(f=>{const e=document.getElementById('f-'+f);if(e)c[f]=e.value;});
+  const links=[];document.querySelectorAll('#links-box .lrow').forEach(r=>{const l=r.querySelector('[data-l]').value,u=r.querySelector('[data-u]').value;if(u){let tipo='link';if(u.includes('drive.google'))tipo='drive';else if(u.includes('avoz'))tipo='avoz';else if(u.includes('youtu'))tipo='youtube';links.push({tipo,label:l||tipo,url:u});}});
+  c.links=links;
+  save();closeDrawer();renderFiltros();renderGrid();renderFluxo();toast('Card salvo ✓');
+}
+function val(id){return document.getElementById(id).value;}
+function delCard(id){if(!confirm('Excluir o card '+id+'?'))return;state.criativos=state.criativos.filter(c=>c.id!==id);delete state.fluxo.nodes[id];state.fluxo.edges=state.fluxo.edges.filter(e=>e.from!==id&&e.to!==id);save();closeDrawer();renderFiltros();renderGrid();renderFluxo();toast('Card excluído');}
+function closeDrawer(){document.getElementById('drawer-bg').classList.remove('on');document.getElementById('drawer').classList.remove('on');}
+function novoCard(){
+  let n=1;while(state.criativos.find(c=>c.id==='c'+n))n++;const id='c'+n;
+  state.criativos.push({id,nome:'Novo criativo',funcao:'AD',jornada:'ATRACAO',etapa:'',publico:'',estilo:'',status:'confirmar',objetivo:'',cta:'',destino:'',naoUsar:'',resumo:'',links:[]});
+  const col=0,count=Object.values(state.fluxo.nodes).filter(p=>p.x<260).length;
+  state.fluxo.nodes[id]={x:40,y:80+count*120};
+  save();renderFiltros();renderGrid();renderFluxo();editCard(id);
+}
+
+/* ---------- FLUXO ---------- */
+function renderFluxo(){
+  const wrap=document.getElementById('fluxo-wrap');
+  wrap.querySelectorAll('.node').forEach(n=>n.remove());
+  state.criativos.forEach(c=>{
+    const p=state.fluxo.nodes[c.id]||{x:40,y:80};state.fluxo.nodes[c.id]=p;
+    const el=document.createElement('div');el.className='node';el.id='n-'+c.id;
+    el.style.left=p.x+'px';el.style.top=p.y+'px';el.style.borderColor=COR_J[c.jornada]||'#ccc';
+    el.innerHTML=`<div class="node-id">${esc(c.id)}</div><div class="node-nome">${esc(c.nome||'')}</div><div class="node-obj">🎯 ${esc((c.objetivo||'').slice(0,70))}${(c.objetivo||'').length>70?'…':''}</div><span class="node-jor" style="background:${COR_J[c.jornada]||'#888'}">${esc(NOME_J[c.jornada]||c.jornada||'')}</span>`;
+    el.onmousedown=e=>startDrag(e,c.id);
+    el.onclick=e=>nodeClick(e,c.id);
+    wrap.appendChild(el);
+  });
+  drawEdges();
+}
+function drawEdges(){
+  const svg=document.getElementById('edges');svg.innerHTML='';
+  state.fluxo.edges.forEach((ed,i)=>{
+    const a=state.fluxo.nodes[ed.from],b=state.fluxo.nodes[ed.to];if(!a||!b)return;
+    const x1=a.x+170,y1=a.y+40,x2=b.x,y2=b.y+40,mx=(x1+x2)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+    path.setAttribute('marker-end','url(#arrow)');
+    path.onclick=()=>{if(confirm('Excluir esta conexão?')){state.fluxo.edges.splice(i,1);save();drawEdges();}};
+    svg.appendChild(path);
+  });
+  svg.insertAdjacentHTML('afterbegin','<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#3A6BB5"/></marker></defs>');
+}
+let drag=null;
+function startDrag(e,id){
+  if(connectMode)return;
+  const p=state.fluxo.nodes[id];drag={id,ox:e.clientX,oy:e.clientY,sx:p.x,sy:p.y,moved:false};
+  document.onmousemove=onDrag;document.onmouseup=endDrag;e.preventDefault();
+}
+function onDrag(e){
+  if(!drag)return;const dx=e.clientX-drag.ox,dy=e.clientY-drag.oy;
+  if(Math.abs(dx)+Math.abs(dy)>3)drag.moved=true;
+  const p=state.fluxo.nodes[drag.id];p.x=Math.max(0,drag.sx+dx);p.y=Math.max(0,drag.sy+dy);
+  const el=document.getElementById('n-'+drag.id);el.style.left=p.x+'px';el.style.top=p.y+'px';drawEdges();
+}
+function endDrag(){if(drag&&drag.moved)save();document.onmousemove=null;document.onmouseup=null;setTimeout(()=>drag=null,0);}
+function toggleConnect(){
+  connectMode=!connectMode;connectFrom=null;
+  document.getElementById('btn-conectar').classList.toggle('on',connectMode);
+  document.querySelectorAll('.node').forEach(n=>n.classList.remove('connecting'));
+  document.getElementById('fluxo-hint').textContent=connectMode?'Modo conectar ON: clique no nó de ORIGEM e depois no de DESTINO.':'Arraste os nós para reorganizar. Clique em "Conectar" e depois em dois nós para ligar. Clique numa linha para excluí-la.';
+}
+function nodeClick(e,id){
+  if(!connectMode){if(drag&&drag.moved)return;editCard(id);return;}
+  if(!connectFrom){connectFrom=id;document.getElementById('n-'+id).classList.add('connecting');return;}
+  if(connectFrom===id){document.getElementById('n-'+id).classList.remove('connecting');connectFrom=null;return;}
+  if(!state.fluxo.edges.find(ed=>ed.from===connectFrom&&ed.to===id)){state.fluxo.edges.push({from:connectFrom,to:id});save();drawEdges();toast('Conexão criada');}
+  document.getElementById('n-'+connectFrom).classList.remove('connecting');connectFrom=null;
+}
+
+/* ---------- IMPORT/EXPORT/RESET ---------- */
+function exportJSON(){
+  const out={projeto:state.projeto,atualizado:new Date().toISOString().slice(0,10),taxonomias:state.taxonomias,totalCriativos:state.criativos.length,criativos:state.criativos,fluxo:state.fluxo};
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dados-criativos.json';a.click();
+  toast('JSON exportado — commite no repo p/ alimentar o app');
+}
+function importJSON(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=()=>{const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);state.criativos=d.criativos||state.criativos;if(d.taxonomias)state.taxonomias=d.taxonomias;if(d.fluxo)state.fluxo=d.fluxo;else autoLayout();save();renderFiltros();renderGrid();renderFluxo();toast('Importado ✓');}catch(e){alert('JSON inválido');}};r.readAsText(f);};
+  inp.click();
+}
+function resetData(){if(!confirm('Resetar para os dados do repositório? Suas edições locais serão perdidas.'))return;localStorage.removeItem(KEY);state=null;boot();toast('Resetado');}
+
+function setView(v){
+  document.getElementById('view-cards').classList.toggle('hidden',v!=='cards');
+  document.getElementById('view-fluxo').classList.toggle('hidden',v!=='fluxo');
+  document.getElementById('tab-cards').classList.toggle('on',v==='cards');
+  document.getElementById('tab-fluxo').classList.toggle('on',v==='fluxo');
+  if(v==='fluxo')renderFluxo();
+}
+boot();
+</script>
+</body>
+</html>
