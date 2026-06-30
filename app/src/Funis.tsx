@@ -68,6 +68,9 @@ class Funis extends React.Component {
         this.el('div', { style:{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' } },
           this.el('span', { style:{ width:13, height:13, borderRadius:999, background:g.color, flex:'none' } }),
           this.el('h2', { style:{ margin:0, fontSize:23, fontWeight:800, letterSpacing:'-0.02em', color:'var(--ink)' } }, g.dirLabel),
+          g.primary ? this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:5, fontSize:10.5, fontWeight:800, letterSpacing:'.02em', color:'var(--white)', background:'var(--grad-cta)', borderRadius:999, padding:'4px 11px', boxShadow:'var(--shadow-brand)' } },
+            this.el('svg', { width:12, height:12, viewBox:'0 0 24 24', fill:'currentColor' }, this.el('path', { d:'M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.88-5-4.87 7.1-1.01L12 2z' })),
+            g.primaryLabel) : null,
           this.el('span', { style:{ fontSize:11, fontWeight:700, color:'var(--gray-500)', background:'var(--gray-100)', borderRadius:999, padding:'3px 10px' } }, g.etapa),
           this.el('span', { style:{ fontSize:12, fontWeight:700, color:'var(--gray-400)' } }, g.countLabel)),
         this.el('p', { style:{ margin:'9px 0 0', fontSize:13.5, color:'var(--gray-600)', lineHeight:1.5, maxWidth:580 } }, g.purpose)),
@@ -159,7 +162,16 @@ class Funis extends React.Component {
   FL = { railX:170, colGat:540, colAnu:990, colVid:1460, colDst:1940, headerY:84, laneTop:150, laneGap:56, funnelGap:160, funnelHeaderH:96, worldW:2240, nodeHalf:103 };
 
   // ---- 8 jornadas / destinos ----
+  // Os DOIS FUNIS PRINCIPAIS (básicos) vêm primeiro: WhatsApp/bot e VSL/high ticket.
   journeys = [
+    { id:'whatsapp',    label:'WhatsApp',    dirLabel:'WhatsApp / bot',       etapa:'Fundo',       color:'#16A34A', ghost:'Chamada para o WhatsApp / diagnóstico',
+      primary:1, primaryLabel:'Funil principal 1 · básico',
+      purpose:'FUNIL PRINCIPAL 1 (básico). Tráfego direto para o WhatsApp: o bot atende e DECIDE o caminho — HIGH (agenda a call com consultor) ou LOW (venda automática). Não é checkout direto.',
+      plat:{ meta:'Engajamento → Cliques no WhatsApp / Mensagens.', google:'Search (secundário).', youtube:'Vídeo de ação c/ link.', kpi:'Conversas iniciadas, qualificação high/low' } },
+    { id:'vsl',         label:'VSL',         dirLabel:'VSL / High ticket',    etapa:'Fundo',       color:'#DC2626', ghost:'VSL de oferta (high ticket)',
+      primary:2, primaryLabel:'Funil principal 2 · básico',
+      purpose:'FUNIL PRINCIPAL 2 (básico). Tráfego para a landing page com VSL → formulário → agendamento da call de high ticket. Público morno/quente.',
+      plat:{ meta:'Vendas (Conversões) otimizando Agendamento. Mornos/quentes.', google:'PMax + Search + Demand Gen.', youtube:'In-stream longo + Vídeo de ação.', kpi:'Agendamentos, show-up, CAC' } },
     { id:'atracao',     label:'Atração',     dirLabel:'Atração',              etapa:'Topo',        color:'#7C3AED', ghost:'Vídeo de dor / gancho (rosto em pé)',
       purpose:'Gerar alcance e parar o scroll com público frio — explicar o problema, sem pedir a venda.',
       plat:{ meta:'Reconhecimento / Engajamento (vídeo). Públicos frios.', google:'Demand Gen.', youtube:'In-stream pulável + Bumper 6s + Shorts.', kpi:'VTR, CPV, retenção' } },
@@ -172,12 +184,6 @@ class Funis extends React.Component {
     { id:'live',        label:'Live / Evento', dirLabel:'Live / Evento',     etapa:'Meio',        color:'#9333EA', ghost:'Convite para a live / evento',
       purpose:'Encher a sala da live / evento e gerar lista para remarketing de lembrete.',
       plat:{ meta:'Tráfego p/ inscrição → remarketing de lembrete.', google:'Demand Gen + YouTube promo.', youtube:'In-stream + comunidade.', kpi:'Inscritos, comparecimento' } },
-    { id:'whatsapp',    label:'WhatsApp',    dirLabel:'WhatsApp / bot',       etapa:'Fundo',       color:'#16A34A', ghost:'Chamada para o WhatsApp / diagnóstico',
-      purpose:'Levar o lead para diagnóstico / conversa 1:1. O bot roteia high (call) ou low (automático). Não é checkout direto.',
-      plat:{ meta:'Engajamento → Cliques no WhatsApp / Mensagens.', google:'Search (secundário).', youtube:'Vídeo de ação c/ link.', kpi:'Conversas iniciadas, qualificação high/low' } },
-    { id:'vsl',         label:'VSL',         dirLabel:'VSL / High ticket',    etapa:'Fundo',       color:'#DC2626', ghost:'VSL de oferta (high ticket)',
-      purpose:'Agendar reunião / call e vender o high ticket com oferta e ancoragem. Público morno/quente.',
-      plat:{ meta:'Vendas (Conversões) otimizando Agendamento. Mornos/quentes.', google:'PMax + Search + Demand Gen.', youtube:'In-stream longo + Vídeo de ação.', kpi:'Agendamentos, show-up, CAC' } },
     { id:'anuncie',     label:'Anuncie',     dirLabel:'Anuncie / Low ticket', etapa:'Fundo',       color:'#EA580C', ghost:'Comunicado de oferta (low ticket)',
       purpose:'Vender a oferta de entrada (low ticket) com preço e benefício direto.',
       plat:{ meta:'Vendas (Conversões) otimizando compra.', google:'Search (alta intenção) + PMax.', youtube:'Vídeo de ação (remarketing).', kpi:'Vendas, ROAS, CPA' } },
@@ -793,7 +799,10 @@ class Funis extends React.Component {
     },
       this.el('div', { style:{ display:'flex', alignItems:'center', gap:8, marginBottom:5 } },
         this.el('span', { style:{ width:11, height:11, borderRadius:11, background:jr.color, flex:'none' } }),
-        this.el('span', { style:{ fontSize:14, fontWeight:800, color:'var(--ink)', letterSpacing:'-0.01em' } }, jr.label)
+        this.el('span', { style:{ fontSize:14, fontWeight:800, color:'var(--ink)', letterSpacing:'-0.01em' } }, jr.label),
+        jr.primary ? this.el('span', { title:jr.primaryLabel, style:{ marginLeft:'auto', display:'inline-flex', alignItems:'center', gap:3, fontSize:9, fontWeight:800, letterSpacing:'.03em', color:'var(--white)', background:'var(--grad-cta)', borderRadius:999, padding:'2px 7px', flex:'none' } },
+          this.el('svg', { width:9, height:9, viewBox:'0 0 24 24', fill:'currentColor' }, this.el('path', { d:'M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.88-5-4.87 7.1-1.01L12 2z' })),
+          'PRINCIPAL ' + jr.primary) : null
       ),
       this.el('div', { style:{ fontSize:11, fontWeight:600, color:'var(--gray-400)', marginBottom:10 } }, jr.etapa),
       this.el('span', { style:{ fontSize:10.5, fontWeight:700, color: real.length?'var(--gray-600)':'var(--gray-400)', background:'var(--gray-100)', borderRadius:999, padding:'3px 9px' } }, real.length + (real.length===1?' item':' itens'))
@@ -1445,6 +1454,7 @@ class Funis extends React.Component {
       const vs = vids.filter(c => c.journeyId === jr.id);
       if (!vs.length) return;
       groups.push({ id:jr.id, color:jr.color, dirLabel:jr.dirLabel, etapa:jr.etapa, purpose:jr.purpose, plat:jr.plat,
+        primary:jr.primary, primaryLabel:jr.primaryLabel,
         countLabel: vs.length + (vs.length === 1 ? ' vídeo' : ' vídeos'), videos: vs.map(c => this.enrichVideo(c)) });
     });
     return groups;
