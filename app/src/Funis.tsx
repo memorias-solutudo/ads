@@ -445,7 +445,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       this.state.freeV = 1;
       this.save();
     }
-    this._drag = null; this._pan = null; this._vp = null;
+    this._drag = null; this._pan = null; this._vp = null; this._link = null; this._clip = null;
+    this._hist = { undo: [], redo: [] }; this._applyingHistory = false; this._lastSnap = this.histSnap();
     this._setVp = (n) => {
       if (this._vp && this._onWheelNative && this._vp !== n) { this._vp.removeEventListener('wheel', this._onWheelNative); this._wheelNode = null; }
       this._vp = n;
@@ -457,7 +458,23 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   // ---- persistence ----
   KEY = 'solu-funis-v3';
   load() { try { return JSON.parse(localStorage.getItem(this.KEY) || 'null'); } catch (e) { return null; } }
-  save() { try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, edges: this.state.edges || [], freeV: this.state.freeV })); } catch (e) {} }
+  save() {
+    // registra histórico (desfazer/refazer) ao detectar mudança real
+    let histChanged = false;
+    if (!this._applyingHistory && this._lastSnap !== undefined) {
+      const snap = this.histSnap();
+      if (snap !== this._lastSnap) {
+        if (!this._hist) this._hist = { undo: [], redo: [] };
+        this._hist.undo.push(this._lastSnap);
+        if (this._hist.undo.length > 60) this._hist.undo.shift();
+        this._hist.redo = [];
+        this._lastSnap = snap;
+        histChanged = true;
+      }
+    }
+    if (histChanged && this._mounted) this.forceUpdate();
+    try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, edges: this.state.edges || [], freeV: this.state.freeV })); } catch (e) {}
+  }
 
   // ---- helpers ----
   el(tag, props, ...kids) { return React.createElement(tag, props, ...kids); }
@@ -523,6 +540,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
 
   componentDidMount() {
+    this._mounted = true;
     this._onMove = (e) => this.onMove(e);
     this._onUp = (e) => this.onUp(e);
     this._onKey = (e) => this.onKey(e);
@@ -535,14 +553,39 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     setTimeout(() => this.fitView(), 90);
   }
   onKey(e) {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); return; }
+    if (mod && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) { e.preventDefault(); this.redo(); return; }
     if (this.state.mode === 'funil' && this.state.selected && this.state.selected.type === 'card') {
-      const tag = (e.target && e.target.tagName) || '';
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-      if ((e.ctrlKey || e.metaKey) && e.key === 'c') { this._clip = this.state.cards.find(c => c.id === this.state.selected.id) || null; }
-      else if ((e.ctrlKey || e.metaKey) && e.key === 'v') { if (this._clip) this.duplicateCard(this._clip.id); }
+      if (mod && e.key === 'c') { this._clip = this.state.cards.find(c => c.id === this.state.selected.id) || null; }
+      else if (mod && e.key === 'v') { if (this._clip) this.duplicateCard(this._clip.id); }
     }
   }
+  // ---- histórico (desfazer / refazer) ----
+  histSnap() { return JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], edges: this.state.edges || [] }); }
+  applyHistory(snapStr) {
+    const s = JSON.parse(snapStr);
+    this._applyingHistory = true;
+    this.setState({ funnels: s.funnels, cards: s.cards, trash: s.trash, edges: s.edges, selected: null, addMenu: null, connectFrom: null }, () => {
+      this._lastSnap = snapStr;
+      this._applyingHistory = false;
+      try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: s.funnels, cards: s.cards, trash: s.trash || [], edges: s.edges || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, freeV: this.state.freeV })); } catch (e) {}
+    });
+  }
+  undo() {
+    if (!this._hist || !this._hist.undo.length) return;
+    this._hist.redo.push(this._lastSnap);
+    this.applyHistory(this._hist.undo.pop());
+  }
+  redo() {
+    if (!this._hist || !this._hist.redo.length) return;
+    this._hist.undo.push(this._lastSnap);
+    this.applyHistory(this._hist.redo.pop());
+  }
   componentWillUnmount() {
+    this._mounted = false;
     window.removeEventListener('mousemove', this._onMove);
     window.removeEventListener('mouseup', this._onUp);
     window.removeEventListener('keydown', this._onKey);
@@ -550,6 +593,11 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
 
   onMove(e) {
+    if (this._link) {
+      const w = this.screenToWorld(e.clientX, e.clientY);
+      this.setState({ linking: Object.assign({}, this.state.linking, { wx: w.wx, wy: w.wy }) });
+      return;
+    }
     if (this._drag) {
       if (Math.abs(e.clientX - this._drag.sx) + Math.abs(e.clientY - this._drag.sy) > 3) this._drag.moved = true;
       const dx = (e.clientX - this._drag.sx) / this.state.zoom;
@@ -562,14 +610,12 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     }
   }
   onUp(e) {
+    if (this._link) { this._link = null; if (this.state.linking) this.setState({ linking: null }); return; }
     if (this._drag) { const moved = this._drag.moved; this._drag = null; this.save(); if (moved) { this._suppressClick = true; setTimeout(() => { this._suppressClick = false; }, 0); } }
     if (this._pan) {
       const p = this._pan; this._pan = null;
-      // clique no fundo (sem arrastar) → abre menu de adicionar bloco (ou cancela conexão)
-      if (!p.moved && e) {
-        if (this.state.connectMode) { this.setState({ connectFrom: null }); }
-        else this.openAddMenu(e.clientX, e.clientY);
-      }
+      // clique esquerdo simples no fundo (sem arrastar) → desseleciona
+      if (!p.moved && e && e.button === 0 && this.state.selected) this.setState({ selected: null });
     }
   }
   startDrag(e, id) {
@@ -577,7 +623,26 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const c = this.state.cards.find(x => x.id === id) || {};
     this._drag = { id, sx: e.clientX, sy: e.clientY, ox: c.fx || 0, oy: c.fy || 0 };
   }
-  startPan(e) { this._pan = { sx: e.clientX, sy: e.clientY, px: this.state.panX, py: this.state.panY, moved: false }; }
+  // ---- ligar blocos arrastando de um ponto (porta) até outro bloco ----
+  startLink(e, fromId) {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (e && e.preventDefault) e.preventDefault();
+    const c = this.state.cards.find(x => x.id === fromId); if (!c) return;
+    const w = this.screenToWorld(e.clientX, e.clientY);
+    this._link = { from: fromId };
+    this.setState({ linking: { from: fromId, fromX: c.fx, fromY: c.fy, wx: w.wx, wy: w.wy }, selected: null });
+  }
+  finishLink(e, toId) {
+    if (!this._link) return;
+    if (e && e.stopPropagation) e.stopPropagation();
+    const from = this._link.from; this._link = null;
+    if (from && toId && from !== toId) {
+      const edges = (this.state.edges || []).slice();
+      if (!edges.some(ed => ed.from === from && ed.to === toId)) edges.push({ from, to: toId });
+      this.setState({ edges, linking: null }, () => this.save());
+    } else { this.setState({ linking: null }); }
+  }
+  startPan(e) { if (e && e.button && e.button !== 0) return; this._pan = { sx: e.clientX, sy: e.clientY, px: this.state.panX, py: this.state.panY, moved: false }; }
   onWheel(e) {
     e.preventDefault();
     const r = this._vp.getBoundingClientRect();
@@ -616,6 +681,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     return this.state.cards.filter(c => {
       if (!this.state.viewAll && c.funnelId !== this.state.funnelId) return false;
       if (this.state.viewAll && !this.state.funnels.some(fn => fn.id === c.funnelId)) return false;
+      if (c.kind === 'titulo') return true; // títulos de fluxo sempre visíveis (não entram nos filtros)
       if (f.status !== 'all' && c.status !== f.status) return false;
       if (f.plataforma !== 'all' && c.plataforma !== f.plataforma) return false;
       if (f.jornada !== 'all' && c.journeyId !== f.jornada) return false;
@@ -694,7 +760,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       if (sel && sel.type === 'card') { const c = this.state.cards.find(x => x.id === sel.id); if (c) { const w = this.getCardWorld(c); this.centerOn(w.x, w.y); } }
     });
   }
-  posWrap(key, x, y, child, z) { return this.el('div', { key, style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } }, child); }
+  posWrap(key, x, y, child, z, portId) {
+    if (!portId) return this.el('div', { key, style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } }, child);
+    const linking = !!this.state.linking;
+    const dot = (k, pos) => this.el('div', { key:'pt'+k, onMouseDown:(e)=>this.startLink(e, portId), onMouseUp:(e)=>this.finishLink(e, portId), title:'Arraste para conectar a outro bloco', style: Object.assign({ position:'absolute', width:13, height:13, borderRadius:999, background:'var(--white)', border:'2px solid var(--brand-purple)', cursor:'crosshair', zIndex:30, boxShadow:'0 1px 5px rgba(167,1,253,.45)', opacity: linking ? 1 : 0.85 }, pos) });
+    return this.el('div', { key, className:'sol-node', onMouseUp:(e)=>this.finishLink(e, portId), style:{ position:'absolute', left:x, top:y, transform:'translate(-50%,-50%)', zIndex:z||1 } },
+      child,
+      dot('tl', { top:-7, left:-7 }), dot('tr', { top:-7, right:-7 }), dot('bl', { bottom:-7, left:-7 }), dot('br', { bottom:-7, right:-7 })
+    );
+  }
   curve(ax, ay, bx, by, bend) {
     const dx=bx-ax, dy=by-ay, len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len, b=bend||0;
     const c1x=ax+dx*0.35+nx*b, c1y=ay+dy*0.35+ny*b, c2x=ax+dx*0.68+nx*b, c2y=ay+dy*0.68+ny*b;
@@ -756,13 +830,14 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     return this.el('span', { key:kind, style:{ display:'inline-flex', alignItems:'center', gap:4, fontSize:9.5, fontWeight:700, color:'var(--gray-600)', background:'var(--white)', border:'1px solid var(--gray-200)', borderRadius:999, padding:'3px 8px', lineHeight:1.2 } }, icon, text);
   }
   cardMediaVideo(c, jr) {
+    const fcol = (this._flowColors && this._flowColors[c.id]) || jr.color;
     const thumb = 'https://drive.google.com/thumbnail?id=' + c.driveId + '&sz=w1000';
     const driveUrl = 'https://drive.google.com/file/d/' + c.driveId + '/view';
     const poster = 'linear-gradient(135deg, ' + this.hexA(jr.color, 0.92) + ', ' + this.hexA(jr.color, 0.55) + ')';
     return this.el('div', { key:'media', style:{ position:'relative', height:104, backgroundColor:'var(--gray-200)', backgroundImage:'url("' + thumb + '"), ' + poster, backgroundSize:'cover', backgroundPosition:'center' } },
       this.el('div', { style:{ position:'absolute', inset:0, background:'linear-gradient(180deg, rgba(21,21,21,.16) 0%, rgba(21,21,21,0) 40%, rgba(21,21,21,.46) 100%)' } }),
       this.el('span', { style:{ position:'absolute', top:8, left:8, display:'inline-flex', alignItems:'center', gap:4, background:'var(--glass-white)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)', borderRadius:999, padding:'3px 8px', fontSize:9, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)', maxWidth:'62%', overflow:'hidden' } },
-        this.el('span', { style:{ width:7, height:7, borderRadius:7, background:jr.color, flex:'none' } }),
+        this.el('span', { style:{ width:7, height:7, borderRadius:7, background:fcol, flex:'none' } }),
         this.el('span', { style:{ whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, jr.label)
       ),
       this.el('a', { href:driveUrl, target:'_blank', rel:'noopener', title:'Abrir o arquivo no Drive', onMouseDown:(e)=>e.stopPropagation(), onClick:(e)=>e.stopPropagation(), style:{ position:'absolute', top:8, right:8, height:23, padding:'0 8px', borderRadius:999, background:'var(--glass-white)', backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)', display:'inline-flex', alignItems:'center', gap:4, color:'var(--ink)', textDecoration:'none', fontSize:9, fontWeight:800, letterSpacing:'.03em' } },
@@ -845,6 +920,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       video:    { label:'Vídeo', short:'Vídeo', accent:'#7C3AED' },
       imagem:   { label:'Imagem / Carrossel', short:'Imagem', accent:'#0EA5E9' },
       texto:    { label:'Texto · a produzir', short:'Texto', accent:'#6B7280' },
+      titulo:   { label:'Título do fluxo', short:'Título', accent:'#A701FD' },
     };
     return m[kind] || m.video;
   }
@@ -855,6 +931,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     if (kind === 'whatsapp') return this.el('svg', st, this.el('path', { key:1, d:'M4 11.5a7.5 7.5 0 1 1 3.7 6.45L4 19l1.1-3.6A7.4 7.4 0 0 1 4 11.5z' }), this.el('path', { key:2, d:'M9.3 8.9c.3 2.9 1.9 4.5 4.8 4.8l.9-1.3 1.8.7c0 1.1-1 1.9-2.1 1.8-3-.3-5.3-2.6-5.6-5.6-.1-1.1.7-2 1.8-2z' }));
     if (kind === 'imagem') return this.el('svg', st, this.el('rect', { key:1, x:3, y:3, width:18, height:18, rx:2.5 }), this.el('circle', { key:2, cx:8.5, cy:8.5, r:1.6 }), this.el('path', { key:3, d:'M21 15l-5-5L5 21' }));
     if (kind === 'texto') return this.el('svg', st, this.el('path', { key:1, d:'M4 6h16' }), this.el('path', { key:2, d:'M4 12h16' }), this.el('path', { key:3, d:'M4 18h10' }));
+    if (kind === 'titulo') return this.el('svg', st, this.el('path', { key:1, d:'M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2' }), this.el('path', { key:2, d:'M9 20h6' }), this.el('path', { key:3, d:'M12 4v16' }));
     return this.el('svg', st, this.el('path', { key:1, d:'M8 5v14l11-7z' }));
   }
   renderFlowCard(c, jr, x, y, kind) {
@@ -862,6 +939,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const st = this.sc(c.status);
     const km = this.kindMeta(kind);
     const compact = this.isCompact();
+    const fcol = this._flowColors && this._flowColors[c.id];
     const keyline = kind === 'meta' ? (c.metaPrimary || c.metaHeadline || c.objetivo)
       : kind === 'pagina' ? (c.pgHeadline || c.pgUrl || c.objetivo)
       : (c.waAbertura || c.objetivo);
@@ -881,19 +959,20 @@ Reaproveitar: empatia do c11 + prova do c2.`,
         this.el('div', { style:{ fontSize:12.5, fontWeight:700, color:'var(--ink)', lineHeight:1.25, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden', marginBottom: compact?0:7 } }, c.name),
         compact ? null : this.el('div', { style:{ fontSize:11, fontWeight:500, color:'var(--gray-500)', lineHeight:1.4, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden', marginBottom:9 } }, keyline || '—'),
         this.el('div', { style:{ display:'flex', alignItems:'center', gap:6 } },
-          this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:4, fontSize:10, fontWeight:700, color:'var(--gray-600)', background:'var(--gray-100)', borderRadius:999, padding:'3px 8px' } }, this.el('span', { style:{ width:6, height:6, borderRadius:6, background:jr.color } }), jr.label),
+          this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:4, fontSize:10, fontWeight:700, color: fcol||'var(--gray-600)', background: fcol?this.hexA(fcol,0.12):'var(--gray-100)', borderRadius:999, padding:'3px 8px' } }, this.el('span', { style:{ width:6, height:6, borderRadius:6, background: fcol||jr.color } }), jr.label),
           this.el('div', { style:{ flex:1 } }),
           this.el('span', { style:{ fontSize:10.5, fontWeight:700, color:km.accent, whiteSpace:'nowrap' } }, 'Detalhes →')
         )
       )
     );
-    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5);
+    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id);
   }
   renderCard(c, jr, x, y) {
     if (c.kind && c.kind !== 'video') return this.renderFlowCard(c, jr, x, y, c.kind);
     const sel = this.state.selected && this.state.selected.type==='card' && this.state.selected.id===c.id;
     const st = this.sc(c.status);
     const compact = this.isCompact();
+    const fcol = this._flowColors && this._flowColors[c.id];
     const media = compact ? null : (c.driveId ? this.cardMediaVideo(c, jr) : this.cardMediaTodo(c, jr));
     const footerKids = [ this.funcaoBadge(c.funcao), this.tempChip(c.pubTemp), this.el('div', { key:'sp', style:{ flex:1 } }) ];
     if (!compact) footerKids.push(this.el('span', { key:'st', title:st.label, style:{ width:9, height:9, borderRadius:9, background:st.dot, flex:'none', boxShadow:'0 0 0 3px '+this.hexA(st.dot,0.18) } }));
@@ -901,8 +980,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const content = this.el('div', { key:'c', style:{ padding: compact ? '11px 12px' : '10px 12px 12px' } },
       compact ? this.el('div', { key:'t', style:{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:7, gap:6 } },
         this.el('div', { style:{ display:'flex', alignItems:'center', gap:5, minWidth:0 } },
-          this.el('span', { style:{ width:8, height:8, borderRadius:3, background:jr.color, flex:'none' } }),
-          this.el('span', { style:{ fontSize:9.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:jr.color, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, jr.label)
+          this.el('span', { style:{ width:8, height:8, borderRadius:3, background: fcol||jr.color, flex:'none' } }),
+          this.el('span', { style:{ fontSize:9.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color: fcol||jr.color, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, jr.label)
         ),
         this.el('span', { title:st.label, style:{ width:9, height:9, borderRadius:9, background:st.dot, flex:'none', boxShadow:'0 0 0 3px '+this.hexA(st.dot,0.18) } })
       ) : null,
@@ -916,7 +995,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
       style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+jr.color:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(jr.color,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
     }, media, content);
-    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5);
+    return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id);
   }
 
   renderGhost(fn, jr, x, y) {
@@ -1058,23 +1137,48 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const edges = (this.state.edges || []).slice(); edges.splice(i, 1);
     this.setState({ edges }, () => this.save());
   }
+  // Propaga a cor do bloco de Título para tudo conectado a jusante (linhas e tags).
+  computeFlowColors(cards) {
+    const byId = {}; cards.forEach(c => { byId[c.id] = c; });
+    const adj = {}; (this.state.edges || []).forEach(e => { (adj[e.from] = adj[e.from] || []).push(e.to); });
+    const color = {};
+    cards.filter(c => c.kind === 'titulo').forEach(t => {
+      const col = t.color || '#A701FD';
+      color[t.id] = col;
+      const stack = [t.id];
+      while (stack.length) {
+        const id = stack.pop();
+        (adj[id] || []).forEach(nx => { if (!color[nx] && byId[nx]) { color[nx] = col; stack.push(nx); } });
+      }
+    });
+    return color;
+  }
   buildCanvas() {
     const S = this.state;
     const cards = this.visibleCards();
     const byId = {}; cards.forEach(c => { byId[c.id] = c; });
+    const fc = this.computeFlowColors(cards);
+    this._flowColors = fc;
     const worldW = 4000, worldH = 2600;
     const connectors = [];
     (S.edges || []).forEach((ed, i) => {
       const a = byId[ed.from], b = byId[ed.to];
       if (!a || !b || a.fx == null || b.fx == null) return;
-      const jr = this.jById(a.journeyId); const col = jr.color;
+      const col = fc[ed.from] || fc[ed.to] || this.jById(a.journeyId).color;
       const p = this.edgePath(a, b);
-      connectors.push(this.el('path', { key:'e'+i+'-l', d:p.d, stroke:col, strokeOpacity:0.55, strokeWidth:2.5, fill:'none', strokeLinecap:'round', style:{ pointerEvents:'stroke', cursor:'pointer' }, onClick:()=>this.removeEdge(i) }));
-      connectors.push(this.el('path', { key:'e'+i+'-t', d:p.tip, fill:col, fillOpacity:0.7 }));
+      connectors.push(this.el('path', { key:'e'+i+'-l', d:p.d, stroke:col, strokeOpacity:0.6, strokeWidth:2.5, fill:'none', strokeLinecap:'round', style:{ pointerEvents:'stroke', cursor:'pointer' }, onClick:()=>this.removeEdge(i) }));
+      connectors.push(this.el('path', { key:'e'+i+'-t', d:p.tip, fill:col, fillOpacity:0.75 }));
     });
+    // linha-fantasma enquanto liga blocos (arrastando de uma porta)
+    if (S.linking && S.linking.fromX != null) {
+      const lk = S.linking; const mx = (lk.fromX + lk.wx) / 2;
+      connectors.push(this.el('path', { key:'linkline', d:`M ${lk.fromX} ${lk.fromY} C ${mx} ${lk.fromY}, ${mx} ${lk.wy}, ${lk.wx} ${lk.wy}`, stroke:'var(--brand-purple)', strokeWidth:2.5, strokeDasharray:'6 5', fill:'none', strokeLinecap:'round' }));
+      connectors.push(this.el('circle', { key:'linkdot', cx:lk.wx, cy:lk.wy, r:5, fill:'var(--brand-purple)' }));
+    }
     const nodes = cards.map(c => {
-      const jr = this.jById(c.journeyId);
       const fx = c.fx == null ? 240 : c.fx, fy = c.fy == null ? 200 : c.fy;
+      if (c.kind === 'titulo') return this.renderTitleCard(c, fx, fy);
+      const jr = this.jById(c.journeyId);
       return (c.kind && c.kind !== 'video') ? this.renderFlowCard(c, jr, fx, fy, c.kind) : this.renderCard(c, jr, fx, fy);
     });
     const world = this.el('div', { style:{ position:'absolute', left:0, top:0, width:worldW, height:worldH, transformOrigin:'0 0', transform:`translate(${S.panX}px, ${S.panY}px) scale(${S.zoom})` } },
@@ -1084,23 +1188,61 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     return this.el('div', {
       ref: this._setVp,
       onMouseDown:(e)=>this.startPan(e),
-      style:{ position:'absolute', inset:0, overflow:'hidden', cursor: this.state.connectMode ? 'crosshair' : (this._pan?'grabbing':'grab'), background:'var(--surface-app)', backgroundImage:'radial-gradient(circle, rgba(21,21,21,.05) 1px, transparent 1px)', backgroundSize:'26px 26px' }
+      onContextMenu:(e)=>{ e.preventDefault(); this.openAddMenu(e.clientX, e.clientY); },
+      style:{ position:'absolute', inset:0, overflow:'hidden', cursor: this._pan?'grabbing':'grab', background:'var(--surface-app)', backgroundImage:'radial-gradient(circle, rgba(21,21,21,.05) 1px, transparent 1px)', backgroundSize:'26px 26px' }
     }, world, this.buildBoardToolbar(), this.buildZoomControls(), this.buildAddMenu());
   }
-  // barra de ferramentas do quadro (conectar + adicionar)
+  // Bloco de TÍTULO do fluxo (texto + ícone + cor que pinta o fluxo conectado)
+  renderTitleCard(c, x, y) {
+    const sel = this.state.selected && this.state.selected.type==='card' && this.state.selected.id===c.id;
+    const col = c.color || '#A701FD';
+    const inner = this.el('div', {
+      onMouseDown:(e)=>this.startDrag(e, c.id),
+      onClick:(e)=>this.nodeClick(e, c),
+      onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
+      onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
+      style:{ minWidth:200, maxWidth:300, display:'inline-flex', alignItems:'center', gap:10, background:this.hexA(col,0.12), borderRadius:14, padding:'12px 16px', border: sel?'2px solid '+col:'1.5px solid '+this.hexA(col,0.5), boxShadow:'var(--shadow-card)', cursor:'grab', userSelect:'none', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)' }
+    },
+      this.el('span', { style:{ width:30, height:30, flex:'none', borderRadius:9, background:col, color:'#fff', display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.kindIcon('titulo', 17, '#fff')),
+      this.el('div', { style:{ minWidth:0 } },
+        this.el('div', { style:{ fontSize:9.5, fontWeight:800, letterSpacing:'.08em', textTransform:'uppercase', color:col, marginBottom:1 } }, 'Fluxo'),
+        this.el('div', { style:{ fontSize:16, fontWeight:800, letterSpacing:'-0.02em', color:'var(--ink)', lineHeight:1.15, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis', maxWidth:230 } }, c.name || 'Novo fluxo'))
+    );
+    return this.posWrap('titulo-'+c.id, x, y, inner, sel?20:5, c.id);
+  }
+  TITULO_CORES = ['#A701FD','#FC0097','#FF6849','#FFC700','#16A34A','#0EA5E9','#0369A1','#7C3AED','#DC2626','#6B7280'];
+  buildTitlePanel(card) {
+    const col = card.color || '#A701FD';
+    const swatch = (hex) => this.el('button', { key:hex, onClick:()=>this.updateCard(card.id,{ color:hex }), onMouseDown:(e)=>e.stopPropagation(), title:hex, style:{ width:30, height:30, borderRadius:9, background:hex, cursor:'pointer', border: (col.toLowerCase()===hex.toLowerCase())?'3px solid var(--ink)':'2px solid #fff', boxShadow:'var(--ring-hairline)' } });
+    const header = this.el('div', { key:'h', style:{ flex:'none', padding:'15px 18px 14px', borderBottom:'1px solid var(--gray-150)' } },
+      this.el('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, marginBottom:12 } },
+        this.el('div', { style:{ display:'flex', alignItems:'center', gap:9, minWidth:0 } },
+          this.el('span', { style:{ width:30, height:30, flex:'none', borderRadius:9, background:col, color:'#fff', display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.kindIcon('titulo', 17, '#fff')),
+          this.el('span', { style:{ fontSize:11.5, fontWeight:800, textTransform:'uppercase', letterSpacing:'.04em', color:col } }, 'Título do fluxo')),
+        this.closeBtn()),
+      this.el('input', { key:card.id+'-tname', defaultValue:card.name, placeholder:'Nome do fluxo…', onChange:(e)=>this.updateCard(card.id,{ name:e.target.value }), onMouseDown:(e)=>e.stopPropagation(), style:{ width:'100%', border:'none', outline:'none', background:'transparent', fontFamily:'var(--font-sans)', fontSize:20, fontWeight:800, color:'var(--ink)', letterSpacing:'-0.02em', padding:0 } }));
+    const body = this.el('div', { key:'b', className:'solu-scroll', style:{ flex:1, minHeight:0, overflowY:'auto', padding:'18px 22px 40px' } },
+      this.sectionTitle('Cor do fluxo', 'manual'),
+      this.el('div', { style:{ fontSize:11.5, color:'var(--gray-500)', lineHeight:1.5, marginBottom:12 } }, 'A cor escolhida pinta as linhas e as tags de tudo que estiver conectado a partir deste título.'),
+      this.el('div', { style:{ display:'flex', gap:9, flexWrap:'wrap' } }, this.TITULO_CORES.map(swatch)),
+      this.el('div', { key:'cor-livre', style:{ marginTop:14, display:'flex', alignItems:'center', gap:10 } },
+        this.el('label', { style:{ fontSize:11.5, fontWeight:700, color:'var(--gray-600)' } }, 'Cor personalizada'),
+        this.el('input', { type:'color', value:col, onChange:(e)=>this.updateCard(card.id,{ color:e.target.value }), onMouseDown:(e)=>e.stopPropagation(), style:{ width:44, height:30, border:'1px solid var(--gray-200)', borderRadius:8, background:'var(--white)', cursor:'pointer', padding:2 } })),
+      this.el('button', { key:'dup', onClick:()=>this.duplicateCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--ink)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:22 } }, 'Duplicar (copiar/colar)'),
+      this.el('button', { key:'del', onClick:()=>this.deleteCard(card.id), style:{ width:'100%', border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'10px', fontSize:12.5, fontWeight:700, cursor:'pointer', marginTop:8 } }, 'Excluir título'));
+    return this.panelWrap([header, body]);
+  }
+  // barra de ferramentas do quadro (desfazer / refazer)
   buildBoardToolbar() {
-    const cm = this.state.connectMode;
+    const canUndo = this._hist && this._hist.undo.length > 0;
+    const canRedo = this._hist && this._hist.redo.length > 0;
+    const btn = (label, title, on, enabled, path) => this.el('button', { key:label, onClick:on, onMouseDown:(e)=>e.stopPropagation(), title, disabled:!enabled, style:{ display:'inline-flex', alignItems:'center', gap:6, border:'none', cursor: enabled?'pointer':'default', borderRadius:10, padding:'9px 13px', fontSize:13, fontWeight:700, background:'var(--white)', color: enabled?'var(--ink)':'var(--gray-300)', boxShadow:'var(--shadow-card), var(--ring-hairline)' } },
+      this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, path), label);
     return this.el('div', { style:{ position:'absolute', left:16, top:16, display:'flex', gap:8, alignItems:'center', zIndex:6 } },
-      this.el('button', { onClick:()=>this.toggleConnect(), onMouseDown:(e)=>e.stopPropagation(), style:{ display:'inline-flex', alignItems:'center', gap:6, border:'none', cursor:'pointer', borderRadius:10, padding:'9px 14px', fontSize:13, fontWeight:700, background: cm?'var(--ink)':'var(--white)', color: cm?'var(--white)':'var(--ink)', boxShadow:'var(--shadow-card), var(--ring-hairline)' } },
-        this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M9 12a3 3 0 0 1 3-3h3a3 3 0 0 1 0 6h-1' }), this.el('path', { key:2, d:'M15 12a3 3 0 0 1-3 3H9a3 3 0 0 1 0-6h1' })),
-        cm ? 'Conectando… (clique origem → destino)' : 'Conectar'),
-      this.el('button', { onClick:()=>this.openAddMenuCenter(), onMouseDown:(e)=>e.stopPropagation(), style:{ display:'inline-flex', alignItems:'center', gap:6, border:'none', cursor:'pointer', borderRadius:10, padding:'9px 14px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)' } },
-        this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2.2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M12 5v14' }), this.el('path', { key:2, d:'M5 12h14' })),
-        'Adicionar bloco'),
-      this.el('span', { style:{ fontSize:11.5, color:'var(--gray-500)', background:'var(--white)', borderRadius:8, padding:'6px 10px', boxShadow:'var(--ring-hairline)' } }, 'Clique no fundo para adicionar · arraste para mover · clique numa linha para apagá-la')
+      btn('Voltar', 'Desfazer (Ctrl+Z)', ()=>this.undo(), canUndo, [this.el('path',{key:1,d:'M9 14L4 9l5-5'}), this.el('path',{key:2,d:'M4 9h11a5 5 0 0 1 0 10h-1'})]),
+      btn('Avançar', 'Refazer (Ctrl+Y)', ()=>this.redo(), canRedo, [this.el('path',{key:1,d:'M15 14l5-5-5-5'}), this.el('path',{key:2,d:'M20 9H9a5 5 0 0 0 0 10h1'})])
     );
   }
-  toggleConnect() { this.setState({ connectMode: !this.state.connectMode, connectFrom: null }); }
   screenToWorld(clientX, clientY) {
     const r = this._vp ? this._vp.getBoundingClientRect() : { left:0, top:0 };
     return { wx: (clientX - r.left - this.state.panX) / this.state.zoom, wy: (clientY - r.top - this.state.panY) / this.state.zoom, sx: clientX - r.left, sy: clientY - r.top };
@@ -1123,6 +1265,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       this.el('div', { onMouseDown:(e)=>{ e.stopPropagation(); this.closeAddMenu(); }, style:{ position:'absolute', inset:0, zIndex:7 } }),
       this.el('div', { style:{ position:'absolute', left:Math.min(m.x, (this._vp?this._vp.getBoundingClientRect().width:900)-250), top:m.y, width:240, background:'var(--white)', borderRadius:14, boxShadow:'var(--shadow-lg)', padding:8, zIndex:8, animation:'solPop .15s var(--ease-out)' } },
         this.el('div', { style:{ fontSize:10.5, fontWeight:800, letterSpacing:'.05em', textTransform:'uppercase', color:'var(--gray-400)', padding:'4px 10px 8px' } }, 'Adicionar bloco'),
+        opt('titulo', 'Título do fluxo'),
         opt('video', 'Vídeo'),
         opt('meta', 'Criativo Meta'),
         opt('pagina', 'Landing Page'),
@@ -1150,7 +1293,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const id = 'n' + Date.now().toString(36);
     const base = { id, funnelId:fid, journeyId:'whatsapp', etapa:'Fundo', plataforma:'Meta', status:'falta', objetivo:'', resumo:'', segmentacao:'', estiloPorque:'', formato:'', kpi:'', cta:'', proximo:'', iaParecer:'', iaRec:'', fx:wx, fy:wy, dx:0, dy:0 };
     let card;
-    if (kind === 'video') card = Object.assign(base, { funcao:'AD', name:'Novo vídeo', pubTemp:'Frio', pubSeg:'', publico:'', estilo:'', transcricao:'' });
+    if (kind === 'titulo') card = { id, funnelId:fid, kind:'titulo', name:'Novo fluxo', color:'#A701FD', status:'', fx:wx, fy:wy, dx:0, dy:0 };
+    else if (kind === 'video') card = Object.assign(base, { funcao:'AD', name:'Novo vídeo', pubTemp:'Frio', pubSeg:'', publico:'', estilo:'', transcricao:'' });
     else { const km = this.kindMeta(kind); card = Object.assign(base, { kind, funcao: kind==='meta'?'AD':'PG', name:'Novo: '+km.label, plataforma: kind==='meta'?'Meta':(kind==='pagina'?'LP':(kind==='whatsapp'?'WhatsApp':'—')) }); }
     this.setState({ cards:[...this.state.cards, card], addMenu:null, selected:{ type:'card', id, funnelId:fid } }, () => this.save());
   }
@@ -1287,6 +1431,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
 
   buildCardPanel(card) {
+    if (card.kind === 'titulo') return this.buildTitlePanel(card);
     if (card.kind && card.kind !== 'video') return this.buildFlowPanel(card);
     const jr = this.jById(card.journeyId);
     const header = this.el('div', { key:'h', style:{ padding:'0 0 16px', marginBottom:20, borderBottom:'1px solid var(--gray-150)' } },
