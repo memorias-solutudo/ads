@@ -3,7 +3,7 @@
   "descricao": "Base consolidada de criativos (vídeos) classificados por objetivo e mecanismo de conversão. Fonte única para alimentar apps externos.",
   "atualizado": "2026-06-30",
   "totalCriativos": 25,
-  "classificados": 11,
+  "classificados": 14,
   "taxonomias": {
     "funcao": {
       "AD": "Criativo de anúncio — leva tráfego para um destino",
@@ -177,6 +177,43 @@
       "resumo": "'Comunicado às empresas de construção civil.' Tom de aviso direto = pertencimento. Cobre pedreiro, jardineiro, pintor, encanador, mecânico, construtor. 4mi acessos/mês. 'Maior guia de empresas do Brasil.'",
       "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view"}, {"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1050101"}],
       "transcricao": "Comunicado às empresas de construção civil. Não importa se você é pedreiro, jardineiro, pintor, encanador, mecânico, construtor. Existe um portal no Brasil com mais de 4 milhões de acessos por mês de pessoas procurando tudo que você imaginar, inclusive o que sua empresa faz. Esse portal permite um cadastro gratuito — exista nele de graça. Se sua empresa ainda não está na Solutudo, o maior guia de empresas do Brasil, você está perdendo tempo: tem gente procurando o que você faz e você provavelmente não está lá. Clica aqui e faça seu cadastro agora."
+    },
+    {
+      "id": "c14", "nome": "Fachadas do velho mundo (conteúdo longo)",
+      "funcao": "AD", "jornada": "CONFIANCA", "etapa": "Meio", "publico": "Morno",
+      "estilo": "demonstracao", "status": "existe",
+      "objetivo": "Educar com dados (ZMOT/Google) sobre a 'fachada digital' → autoridade e consideração",
+      "cta": "Soft: 'fala com a nossa equipe, manda uma mensagem' (diagnóstico)",
+      "destino": "WhatsApp/equipe (diagnóstico). Também serve como conteúdo de live.",
+      "naoUsar": "Como anúncio curto de conversão (é longo, ~10min, educativo)",
+      "resumo": "Analogia fachada física → fachada digital. ZMOT: 90% decidem antes do 'alô'. Dados de descoberta: 76% Google, 54% redes, 38% guias locais (Solutudo), 18% IA. Checklist (Google, Solutudo, redes, site), avaliações/fotos/história, multicanais, resposta em <5min. Candidato a conteúdo de live.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view"}],
+      "transcricao": "Décadas atrás (anos 90, 2000, 2010), imagina uma empresa sem fachada numa rua de comércio — impossível saber o que ela faz. Fachada ninguém errava. E hoje? Segundo o ZMOT (Zero Moment of Truth/Google), 90% das decisões acontecem antes da empresa falar 'alô' — não dependem do seu atendimento, mas de você ter sido descoberto e avaliado. Objeções a 'vivo de indicação': indicação não tem previsibilidade, você não escolhe o serviço, e o serviço bom não decide só pela sua voz no telefone. Dados de descoberta: 76% Google, 54% redes sociais, 38% guias locais (ex.: Solutudo), 32% amigos, 18% IA (crescendo). 80% pesquisam semanalmente; 88% contatam em 24h. Lição: estar em todos os lugares — perfil Google, Solutudo, redes, site. Mais: 93% consultam avaliações, 87% olham fotos, 81% olham a história; 68% avaliam se você responde avaliações; 85% confiam em avaliações; 81% desistem sem informação. Nos 10% finais, responder rápido (<5min) é como o balcão da loja. Conclusão: tenha sua fachada no digital em vários canais somados. Se falta tempo/energia/conhecimento, fala com a nossa equipe — a gente explica onde você está, onde pode chegar e o caminho, como faz pra 3.000+ empresas há 20+ anos."
+    },
+    {
+      "id": "c17", "nome": "Remarketing: visitou a página de anúncio",
+      "funcao": "AD", "jornada": "REMARKETING", "etapa": "Remarketing", "publico": "Quente (visitou página anuncie, não converteu)",
+      "estilo": "rosto-empe", "status": "existe",
+      "objetivo": "Reengajar quem visitou a página 'anuncie' e não converteu → falar com a equipe",
+      "cta": "'Você foi até a nossa página de anúncio, ficou na dúvida… clica aqui'",
+      "destino": "Equipe/WhatsApp (esclarecer dúvida e apresentar)",
+      "naoUsar": "Em público frio (pressupõe ter visitado a página anuncie)",
+      "resumo": "Remarketing direto: reconhece que o lead visitou a página 'anuncie' e ficou na dúvida. Cita pesquisa do Google com 310 mil jornadas de compra. Oferece esclarecer e apresentar, como faz p/ 3.000+ empresas.",
+      "links": [{"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1350101"}],
+      "transcricao": "Eu sei que você sabe que tem concorrente com orçamentos que nem passaram por você — você não teve a chance de concorrer, e talvez tivesse ganho. Isso acontece porque no processo de escolha (descoberta, avaliação) você não estava presente. A pesquisa do Google analisou 310.000 jornadas de compra e mostrou como as pessoas decidem. A Solutudo ajuda você a ter presença melhor na descoberta e avaliação, estando no maior guia de empresas do Brasil. Eu sei que você foi até a nossa página de anúncio, ficou na dúvida — deixa a gente te esclarecer, conhecer melhor a sua empresa e apresentar como podemos ajudar, como já fazemos pra 3.000+ empresas, algumas há 20+ anos. Clica aqui e deixa a nossa equipe te mostrar como ser escolhido nesse ano."
+    },
+    {
+      "id": "c22", "nome": "Cota: ganhar ou perder (motivos p/ estar no digital)",
+      "funcao": "AD", "jornada": "CONFIANCA", "etapa": "Meio", "publico": "Morno",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Reframe — o motivo nº1 do digital é NÃO PERDER clientes → consideração",
+      "cta": "Soft: 'se precisar de ajuda, Solutudo faz isso'",
+      "destino": "Soft → equipe/WhatsApp",
+      "naoUsar": "—",
+      "obs": "Inclui/refere o esquete do 'escanteio' (relacionado ao c24)",
+      "resumo": "Reframe ganhar × perder. Orgânico mostra só 3-5% dos seguidores. O 1º motivo do digital não é conseguir cliente — é NÃO PERDER (orçamentos e indicações que te procuram online e não te acham). Pessoas consultam até 3 fontes antes de decidir. Inclui o esquete do empresário que bate escanteio e corre na área.",
+      "links": [{"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1590101"}],
+      "transcricao": "Num mundo onde 90% procuram no digital antes de comprar, não é dúvida sobre estar ou não — a pergunta é: você vai pro digital pra ganhar ou pra perder clientes? Você já está perdendo se não for. Conseguir cliente novo não é simples: organicamente as redes mostram seu conteúdo pra 3-5% dos seguidores. O fundamental que ninguém fala: o 1º motivo de estar no digital não é conseguir mais cliente, é NÃO PERDER. Você manda um orçamento, repassam pra outra pessoa que te procura no digital pra ver quem você é — se sua rede está abandonada, perdeu. Indicação também morre quando o cliente procura o indicado e não o acha. O Google diz que se consulta até 3 fontes antes de decidir. E o pior: você nunca sabe quantos perdeu. Então é pra parar de perder o que já era seu. Se precisar, a Solutudo faz isso — porque ter empresa é bater escanteio e correr na área (esquete do 'empresário brasileiro' que bate o escanteio, cabeceia e faz o gol)."
     }
   ]
 }
