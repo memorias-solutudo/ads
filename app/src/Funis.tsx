@@ -1161,14 +1161,37 @@ class Funis extends React.Component {
       );
     }
     if (kind === 'pagina') {
-      return this.el('div', { style:{ border:'1px solid var(--gray-200)', borderRadius:14, overflow:'hidden', marginBottom:18 } },
-        this.el('div', { style:{ display:'flex', alignItems:'center', gap:7, padding:'8px 12px', background:'var(--gray-100)', borderBottom:'1px solid var(--gray-200)' } },
-          this.el('span', { style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }), this.el('span', { style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }), this.el('span', { style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }),
-          this.el('span', { style:{ flex:1, minWidth:0, fontSize:11, color:'var(--gray-500)', background:'var(--white)', borderRadius:999, padding:'4px 10px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, card.pgUrl || 'solutudo.com.br')),
-        this.el('div', { style:{ padding:'18px 16px' } },
-          this.el('div', { style:{ fontSize:16, fontWeight:800, color:'var(--ink)', lineHeight:1.25, letterSpacing:'-0.01em', marginBottom:7 } }, card.pgHeadline || 'Headline da página'),
-          card.pgSubhead ? this.el('div', { style:{ fontSize:12, color:'var(--gray-500)', lineHeight:1.5, marginBottom:13 } }, card.pgSubhead) : null,
-          this.el('span', { style:{ display:'inline-flex', fontSize:12.5, fontWeight:800, color:'var(--white)', background:'var(--grad-cta)', borderRadius:999, padding:'9px 16px', boxShadow:'var(--shadow-brand)' } }, card.pgCTA || 'Cadastrar grátis'))
+      const raw = (card.pgUrl || '').trim();
+      const href = raw ? (/^https?:\/\//i.test(raw) ? raw : 'https://' + raw) : null;
+      const dots = this.el('span', { style:{ display:'inline-flex', gap:5 } },
+        this.el('span', { key:1, style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }),
+        this.el('span', { key:2, style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }),
+        this.el('span', { key:3, style:{ width:8, height:8, borderRadius:8, background:'var(--gray-300)' } }));
+      // COM link → preview clicável da landing page (a própria página abre em nova aba)
+      if (href) {
+        return this.el('a', { href, target:'_blank', rel:'noopener', onMouseDown:(e)=>e.stopPropagation(), style:{ display:'block', textDecoration:'none', border:'1px solid var(--gray-200)', borderRadius:14, overflow:'hidden', marginBottom:18 } },
+          this.el('div', { style:{ display:'flex', alignItems:'center', gap:7, padding:'8px 12px', background:'var(--gray-100)', borderBottom:'1px solid var(--gray-200)' } },
+            dots,
+            this.el('span', { style:{ flex:1, minWidth:0, fontSize:11, fontWeight:600, color:'var(--brand-purple)', background:'var(--white)', borderRadius:999, padding:'4px 10px', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, raw)),
+          this.el('div', { style:{ position:'relative', height:168, background:'var(--white)' } },
+            this.el('iframe', { src:href, loading:'lazy', referrerPolicy:'no-referrer', sandbox:'allow-scripts allow-same-origin', title:'Preview da Landing Page', style:{ position:'absolute', inset:0, width:'100%', height:'100%', border:'none', pointerEvents:'none', background:'var(--white)' } }),
+            this.el('div', { style:{ position:'absolute', left:0, right:0, bottom:0, display:'flex', alignItems:'center', justifyContent:'space-between', gap:8, padding:'8px 12px', background:'linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.96) 55%)' } },
+              this.el('span', { style:{ fontSize:10.5, fontWeight:700, color:'var(--gray-500)' } }, 'Pré-visualização da Landing Page'),
+              this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11.5, fontWeight:800, color:'var(--white)', background:'var(--grad-cta)', borderRadius:999, padding:'6px 12px', boxShadow:'var(--shadow-brand)' } },
+                'Abrir página',
+                this.el('svg', { width:12, height:12, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M14 4h6v6' }), this.el('path', { key:2, d:'M20 4l-9 9' }), this.el('path', { key:3, d:'M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6' })))))
+        );
+      }
+      // SEM link → placeholder pedindo o link da Landing Page
+      return this.el('div', { style:{ border:'1.5px dashed var(--gray-300)', borderRadius:14, overflow:'hidden', marginBottom:18, background:'var(--gray-100)' } },
+        this.el('div', { style:{ display:'flex', alignItems:'center', gap:7, padding:'8px 12px', background:'var(--white)', borderBottom:'1px solid var(--gray-200)' } },
+          dots,
+          this.el('span', { style:{ flex:1, minWidth:0, fontSize:11, color:'var(--gray-400)', background:'var(--gray-100)', borderRadius:999, padding:'4px 10px' } }, 'sem URL')),
+        this.el('div', { style:{ display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8, padding:'26px 16px', textAlign:'center' } },
+          this.el('span', { style:{ width:38, height:38, borderRadius:11, background:'var(--white)', boxShadow:'var(--ring-hairline)', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'var(--gray-400)' } },
+            this.el('svg', { width:19, height:19, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07L11.5 4.5' }), this.el('path', { key:2, d:'M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07L12.5 19.5' }))),
+          this.el('span', { style:{ fontSize:13, fontWeight:700, color:'var(--gray-600)' } }, 'Inserir link da Landing Page'),
+          this.el('span', { style:{ fontSize:11, color:'var(--gray-400)', lineHeight:1.4 } }, 'Preencha o campo URL abaixo para ver o preview da página.'))
       );
     }
     return this.el('div', { style:{ border:'1px solid var(--gray-200)', borderRadius:14, overflow:'hidden', marginBottom:18, background:'#E8F7EE' } },
