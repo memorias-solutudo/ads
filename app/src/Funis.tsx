@@ -4,6 +4,24 @@
 import React from 'react'
 
 class Funis extends React.Component {
+  // ===== marca Solutudo (coração rainbow do design system) =====
+  // Vetor do heart (Ic.Heart do _ds_bundle) preenchido com --grad-rainbow.
+  brandMark(size) {
+    const s = size || 30;
+    const gid = 'solRainbow';
+    return this.el('svg', { width:s, height:s, viewBox:'0 0 24 24', fill:'none', 'aria-label':'Solutudo', role:'img', style:{ flex:'none', filter:'drop-shadow(0 6px 14px rgba(167,1,253,0.30))' } },
+      this.el('defs', { key:'d' },
+        this.el('linearGradient', { id:gid, x1:'2', y1:'4', x2:'22', y2:'20', gradientUnits:'userSpaceOnUse' },
+          this.el('stop', { key:1, offset:'0.06', stopColor:'#A701FD' }),
+          this.el('stop', { key:2, offset:'0.17', stopColor:'#674EF0' }),
+          this.el('stop', { key:3, offset:'0.26', stopColor:'#20CCEF' }),
+          this.el('stop', { key:4, offset:'0.47', stopColor:'#00FFAD' }),
+          this.el('stop', { key:5, offset:'0.64', stopColor:'#FFC024' }),
+          this.el('stop', { key:6, offset:'0.79', stopColor:'#FF6849' }),
+          this.el('stop', { key:7, offset:'0.92', stopColor:'#FF34A3' }))),
+      this.el('path', { key:'p', d:'M12 21s-7-4.6-9.3-9A5 5 0 0 1 12 6a5 5 0 0 1 9.3 6c-2.3 4.4-9.3 9-9.3 9z', fill:'url(#' + gid + ')' })
+    );
+  }
   // ===== render (porta o template <x-dc> para React) =====
   platItem(label, color, text) {
     return this.el('div', { key: label, style:{ display:'flex', gap:8, alignItems:'baseline', minWidth:0, maxWidth:330 } },
@@ -117,7 +135,7 @@ class Funis extends React.Component {
     return this.el('div', { style:{ position:'fixed', inset:0, display:'flex', flexDirection:'column', fontFamily:'var(--font-sans)', color:'var(--ink)', background:'var(--surface-app)', letterSpacing:'var(--tracking-tight)' } },
       this.el('div', { style:{ height:62, flex:'none', display:'flex', alignItems:'center', gap:16, padding:'0 22px', background:'var(--white)', borderBottom:'1px solid var(--gray-200)', zIndex:40 } },
         this.el('div', { style:{ display:'flex', alignItems:'center', gap:11, flex:'none' } },
-          this.el('span', { style:{ width:30, height:30, borderRadius:9, background:'var(--grad-brand)', flex:'none', boxShadow:'var(--shadow-brand)' } }),
+          this.brandMark(30),
           this.el('div', { style:{ display:'flex', alignItems:'center', gap:11 } },
             this.el('div', { style:{ fontWeight:800, fontSize:17, letterSpacing:'-0.02em', whiteSpace:'nowrap', color:'var(--ink)' } }, 'ADS Solutudo'),
             this.el('div', { style:{ fontSize:11, color:'var(--gray-500)', fontWeight:600, borderLeft:'1px solid var(--gray-200)', paddingLeft:11, whiteSpace:'nowrap' } }, 'tráfego pago · análise de criativos'))),
