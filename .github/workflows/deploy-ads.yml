@@ -1,3 +1,4 @@
+# trigger: deploy inicial após habilitar Pages (Source: GitHub Actions)
 name: Deploy ADS to GitHub Pages
 
 on:
