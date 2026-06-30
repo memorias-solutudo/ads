@@ -14,9 +14,9 @@ Os mesmos links aparecem como **botões "▶ abrir"** no painel de cada card do 
 | c7 | Cadastro grátis — variação | [Drive](https://drive.google.com/file/d/1YCoByAHY6SAry_xDy3YHghCd2vEKFtek/view) | — | — | [c7.md](transcricoes/c7.md) ✅ |
 | c8 | Mundo mudando — chamada live | [Drive](https://drive.google.com/file/d/1P0efa70Zb-5tppou_lwaF7dkxLRZ8n_B/view) | [A Voz](https://avoz.solutudo.com.br/videos/300101) | — | pendente |
 | c9 | Convite p/ conteúdo (live) | [Drive](https://drive.google.com/file/d/12btuFCg6h9c1v4sKpdJ0Euy3epRNvZDp/view) | [A Voz](https://avoz.solutudo.com.br/videos/300101) | — | pendente |
-| c10 | Quando as pessoas procuram | — | [A Voz](https://avoz.solutudo.com.br/videos/720102) | — | pendente |
+| c10 | Quando as pessoas procuram | [Drive](https://drive.google.com/file/d/1cTDJ2LHIneO4sAtlT6_boQVFtdwOT2ph/view) | [A Voz](https://avoz.solutudo.com.br/videos/720102) | — | [c10.md](transcricoes/c10.md) ✅ |
 | c11 | Olha no meu olho (longo) | [Drive](https://drive.google.com/file/d/1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ/view) | — | — | [c11.md](transcricoes/c11.md) ✅ |
-| c12 | Tá vendo aquela cena ali | — | [A Voz](https://avoz.solutudo.com.br/videos/990101) | — | pendente |
+| c12 | Tá vendo aquela cena ali | — | [A Voz](https://avoz.solutudo.com.br/videos/990101) | — | [c12.md](transcricoes/c12.md) ✅ |
 | c13 | Cadastro — construção civil | [Drive](https://drive.google.com/file/d/1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view) | [A Voz](https://avoz.solutudo.com.br/videos/1050101) | — | [c13.md](transcricoes/c13.md) ✅ |
 | c14 | Fachadas do velho mundo (live) | [Drive](https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view) | — | — | pendente |
 | c15 | Cadastro — constr. civil (2) | — | [A Voz](https://avoz.solutudo.com.br/videos/1230101) | — | pendente |
