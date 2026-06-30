@@ -111,6 +111,48 @@ svg.edges path:hover{stroke:var(--vermelho);stroke-width:4}
 <div class="drawer" id="drawer"></div>
 <div class="toast" id="toast"></div>
 
+<!-- Cópia embutida dos dados (fallback p/ abrir o arquivo solto). No site publicado,
+     o app busca dados-criativos.json e usa a versão fresca. -->
+<script id="seed" type="application/json">
+{
+  "projeto": "Funil de Tráfego Pago — Solutudo",
+  "atualizado": "2026-06-30",
+  "totalCriativos": 25,
+  "classificados": 14,
+  "taxonomias": {
+    "funcao": {"AD": "Criativo de anúncio — leva tráfego para um destino", "PG": "Vídeo de página — vive dentro do destino (VSL, cadastro)"},
+    "jornada": {"ATRACAO": "Atração / conteúdo (topo, frio)", "CONFIANCA": "Confiança / consideração", "REMARKETING": "Remarketing (públicos que já interagiram)", "CADASTRO": "Cadastro gratuito (lead)", "WHATSAPP": "WhatsApp → bot roteia high/low ticket", "VSL": "VSL / agendamento → high ticket (call com consultor)", "ANUNCIE": "Página anuncie / plano pago → low ticket", "LIVE": "Live / evento"},
+    "estilo": {"storytelling": "Narrativa antes do CTA — prende público frio", "rosto-empe": "Apresentador em pé — energia, urgência, ação", "rosto-sentado": "Apresentador sentado — confiança, conversa, olho no olho", "vsl": "Vídeo de vendas longo — problema→solução→prova→oferta→CTA", "demonstracao": "Mostra plataforma/resultados — prova visual", "comunicado": "Aviso direto a um segmento — pertencimento", "ugc": "Bastidor/espontâneo sem olhar p/ câmera — autenticidade"},
+    "status": {"existe": "Vídeo pronto e disponível", "confirmar": "A confirmar / avaliar produção", "falta": "Decidido que precisa, mas não existe ainda"},
+    "plataformaPorJornada": {
+      "ATRACAO": {"meta": "Reconhecimento / Engajamento (vídeo), públicos frios", "google": "Demand Gen", "youtube": "In-stream pulável + Bumper 6s + Shorts", "kpi": "VTR, CPV, retenção"},
+      "CONFIANCA": {"meta": "Tráfego/Engajamento p/ mornos", "google": "Demand Gen remarketing", "youtube": "In-stream (rosto sentado) + In-feed", "kpi": "Tempo de visualização, cliques"},
+      "REMARKETING": {"meta": "Público personalizado (viu vídeo, engajou, visitou)", "google": "Display/Demand Gen remarketing + RLSA", "youtube": "In-feed/In-stream p/ listas", "kpi": "ROAS, frequência, CPA"},
+      "CADASTRO": {"meta": "Cadastros (Leads) — form instantâneo ou site", "google": "Search (intenção) + PMax", "youtube": "Vídeo de ação com CTA cadastro", "kpi": "CPL, taxa de cadastro"},
+      "WHATSAPP": {"meta": "Engajamento → Cliques no WhatsApp / Mensagens", "google": "Search (secundário)", "youtube": "Vídeo de ação c/ link", "kpi": "Conversas iniciadas, qualificação high/low"},
+      "VSL": {"meta": "Vendas (Conversões) otimizando Agendamento", "google": "PMax + Search + Demand Gen", "youtube": "In-stream longo + Vídeo de ação", "kpi": "Agendamentos, show-up, CAC"},
+      "ANUNCIE": {"meta": "Vendas (Conversões) otimizando compra", "google": "Search (alta intenção) + PMax", "youtube": "Vídeo de ação (remarketing)", "kpi": "Vendas, ROAS, CPA"},
+      "LIVE": {"meta": "Tráfego p/ inscrição → remarketing de lembrete", "google": "Demand Gen + YouTube promo", "youtube": "In-stream + comunidade", "kpi": "Inscritos, comparecimento"}
+    }
+  },
+  "criativos": [
+    {"id":"c1","nome":"Problema do tráfego pago / IA","funcao":"AD","jornada":"WHATSAPP","etapa":"Topo","publico":"Frio (já faz/considera tráfego pago)","estilo":"storytelling","status":"existe","objetivo":"Conscientizar sobre o erro do tráfego pago → diagnóstico (WhatsApp/bot)","cta":"Diagnóstico: 'clica aqui, a gente vai te explicar como sua empresa está'","destino":"WhatsApp/bot (roteia high/low ticket) ou página de agendamento","naoUsar":"Como criativo de checkout/venda automática direta","resumo":"Metáfora 'cobertura × fundação': investir em tráfego sem cuidar do básico (site, Google, Instagram, guias) é erro. CTA de diagnóstico, não venda direta. IAs 'não compram propaganda, compram confiança'.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1yySUEMhADXym9TIv0wWEBi_n-wkHjv7x/view"}]},
+    {"id":"c2","nome":"Dá pra confiar na Solutudo?","funcao":"AD","jornada":"REMARKETING","etapa":"Meio","publico":"Morno (já viu c1/c3, não converteu)","estilo":"rosto-sentado","status":"existe","objetivo":"Quebrar objeção de confiança (remarketing de aquecimento)","cta":"Sem CTA de produto — fecha com 'espero que ajude sua empresa'","destino":"Aquecer → próximo passo na sequência: c1 ou c11 (WhatsApp/VSL)","naoUsar":"Em público frio (4min de prova social sem contexto não funciona)","resumo":"100% quebra de objeção. Provas: desde 2005, topo Reclame Aqui, 4mi/mês, 3.000+ clientes, Exame/Estadão, Sebrae 10 anos, sem multa de cancelamento, telefone do dono, parceiros há 20 anos.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1uGZakTe0Jnu7FmQRBa8CEeA40W2fV5KN/view"}]},
+    {"id":"c3","nome":"Afinal, o que é Solutudo?","funcao":"AD","jornada":"ATRACAO","etapa":"Topo","publico":"Frio","estilo":"storytelling","status":"existe","objetivo":"Explicar o que é a Solutudo (awareness institucional)","cta":"'Vem com a gente, Solutudo de bom' — SEM destino explícito","destino":"Precisa de botão/overlay definido na plataforma. Natural = CADASTRO grátis","naoUsar":"Rodar sem antes definir o botão de destino na plataforma","resumo":"Dupla missão: ajuda pessoas a escolherem + empresas a serem escolhidas. 'Não é marketing digital, é verdade digital.' Mesmo quem vive de indicação perde cliente sem digital (90% checam online).","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1SGfzOApCckIztNkH8yU5_wRCyaK-0Go3/view"}]},
+    {"id":"c4","nome":"Menos de R$1 por dia","funcao":"AD","jornada":"WHATSAPP","etapa":"Meio/Fundo","publico":"Frio/Morno","estilo":"rosto-empe","status":"existe","objetivo":"Agitar dor de invisibilidade digital → consulta pelo bot (WhatsApp)","cta":"'vai te EXPLICAR como fazer, a partir de R$1/dia' (consultivo, não checkout)","destino":"WhatsApp bot (low ticket automático OU sobe p/ consultor) ou página ANUNCIE","naoUsar":"Checkout automático sem intermediação (CTA não é 'compre agora')","resumo":"Agita a dor ('você tem que aparecer no Google, Instagram, Solutudo, criar conteúdo sempre…'). '2ª página do Google é onde se esconde corpo.' Oferta: a Solutudo faz por você.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1TzMwo5bKT-uk8t-lxqrhjd6dgolGKRa1/view"}]},
+    {"id":"c5","nome":"Cadastro gratuito (bastidor/UGC)","funcao":"AD","jornada":"CADASTRO","etapa":"Meio","publico":"Frio","estilo":"ugc","status":"existe","objetivo":"Cadastro gratuito — espontâneo e autêntico (sem cara de anúncio)","cta":"'Clica ali, tem cadastro grátis' (botão de cadastro)","destino":"Página de cadastro gratuito","naoUsar":"—","resumo":"Formato bastidor 'tá gravando já?', sem olhar p/ câmera. 4mi acessam/mês procurando prestadores. Cadastro grátis e rápido. Estilo UGC tira a cara de anúncio.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/18VBeH5XtFGJnbHF1J3ozAmGKf6qP96Bd/view"}]},
+    {"id":"c6","nome":"Cadastro grátis — último mês","funcao":"AD","jornada":"CADASTRO","etapa":"Meio","publico":"Frio","estilo":"rosto-empe","status":"existe","objetivo":"Cadastro gratuito — urgência + prova de volume (4mi/mês)","cta":"'Clica aqui, cadastre, é rápido'","destino":"Página de cadastro gratuito","naoUsar":"—","resumo":"'Só no último mês, +4mi entraram p/ procurar empresas/prestadores locais.' Pergunta-gatilho: você estava lá? Cadastro grátis e rápido.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1vVzNi_QWlVYNeZhvdtCDjyzRZi6I_EDX/view"}]},
+    {"id":"c7","nome":"Cadastro grátis — variação","funcao":"AD","jornada":"CADASTRO","etapa":"Meio","publico":"Frio","estilo":"rosto-empe","status":"existe","objetivo":"Cadastro gratuito + semente de upsell para plano pago","cta":"'Cadastre de graça; se quiser melhorar, é outra história'","destino":"Cadastro grátis → remarketing ANUNCIE/WhatsApp low ticket","naoUsar":"—","resumo":"Variação do c6. Termina com semente de upsell — 'se quiser MELHORAR seu cadastro, aí é outra história' — planta o plano pago sem forçar.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1YCoByAHY6SAry_xDy3YHghCd2vEKFtek/view"}]},
+    {"id":"c10","nome":"Quando as pessoas procuram (genérico)","funcao":"AD","jornada":"WHATSAPP","etapa":"Topo/Meio","publico":"Frio (empresas estabelecidas)","estilo":"storytelling","status":"existe","objetivo":"Conscientizar (90% decidem no digital) → diagnóstico (WhatsApp/bot)","cta":"'Deixa a gente te apresentar a situação, o que precisa fazer, e você decide'","destino":"WhatsApp/bot (roteia high/low) ou página de diagnóstico","naoUsar":"Como venda direta","resumo":"Metáfora raiz × copa da árvore; consumidor = passarinho rápido e preguiçoso. 90% decidem antes de falar com a empresa. CTA de diagnóstico consultivo. Arquivo nomeado 'construção' mas conteúdo genérico.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1cTDJ2LHIneO4sAtlT6_boQVFtdwOT2ph/view"},{"tipo":"avoz","label":"A Voz","url":"https://avoz.solutudo.com.br/videos/720102"}]},
+    {"id":"c11","nome":"Olha no meu olho (longo)","funcao":"AD","jornada":"VSL","etapa":"Meio/Fundo","publico":"Morno (já teve contato com c1/c2)","estilo":"rosto-sentado","status":"existe","objetivo":"Agendar reunião gratuita → high ticket (call com consultor)","cta":"'Um plano pra você gratuitamente, com uma reunião'","destino":"Página de agendamento (VSL) ou WhatsApp p/ marcar a call","naoUsar":"Topo/frio (longo demais sem contexto prévio)","resumo":"Empatia profunda (~3min). Dor (correria, sem tempo) → conscientização (90% decidem online, 'curtida não paga boleto') → CTA de reunião gratuita com análise. Sequência: c1/c2 → c11 → agendamento.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ/view"}]},
+    {"id":"c12","nome":"Tá vendo aquela cena ali","funcao":"AD","jornada":"VSL","etapa":"Meio/Fundo","publico":"Morno (vive de indicação, 5+ anos)","estilo":"storytelling","status":"existe","objetivo":"Agendar reunião rápida → high ticket (gancho visual de cena)","cta":"'Em uma reunião rápida a gente mostra como'","destino":"Página de agendamento / WhatsApp p/ marcar a reunião","naoUsar":"—","resumo":"Hook visual 'tá vendo essa cena?' — alguém contratando no digital, 'aquele ali podia ser você'. 90% das escolhas online e você não está lá. Dor da indicação imprevisível. CTA de reunião rápida.","links":[{"tipo":"avoz","label":"A Voz","url":"https://avoz.solutudo.com.br/videos/990101"}]},
+    {"id":"c13","nome":"Cadastro — construção civil","funcao":"AD","jornada":"CADASTRO","etapa":"Meio","publico":"Construção civil","estilo":"comunicado","status":"existe","objetivo":"Cadastro gratuito — segmento construção civil","cta":"'Clica aqui e faça seu cadastro agora'","destino":"Página de cadastro gratuito","naoUsar":"—","resumo":"'Comunicado às empresas de construção civil.' Tom de aviso direto = pertencimento. Cobre pedreiro, jardineiro, pintor, encanador, mecânico, construtor. 4mi acessos/mês. 'Maior guia de empresas do Brasil.'","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view"},{"tipo":"avoz","label":"A Voz","url":"https://avoz.solutudo.com.br/videos/1050101"}]},
+    {"id":"c14","nome":"Fachadas do velho mundo (conteúdo longo)","funcao":"AD","jornada":"CONFIANCA","etapa":"Meio","publico":"Morno","estilo":"demonstracao","status":"existe","objetivo":"Educar com dados (ZMOT/Google) sobre a 'fachada digital' → autoridade e consideração","cta":"Soft: 'fala com a nossa equipe, manda uma mensagem' (diagnóstico)","destino":"WhatsApp/equipe (diagnóstico). Também serve como conteúdo de live.","naoUsar":"Como anúncio curto de conversão (é longo, ~10min, educativo)","resumo":"Analogia fachada física → fachada digital. ZMOT: 90% decidem antes do 'alô'. Dados: 76% Google, 54% redes, 38% guias locais (Solutudo), 18% IA. Checklist (Google, Solutudo, redes, site), avaliações/fotos/história, multicanais, resposta <5min. Candidato a conteúdo de live.","links":[{"tipo":"drive","label":"Drive","url":"https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view"}]},
+    {"id":"c17","nome":"Remarketing: visitou a página de anúncio","funcao":"AD","jornada":"REMARKETING","etapa":"Remarketing","publico":"Quente (visitou página anuncie, não converteu)","estilo":"rosto-empe","status":"existe","objetivo":"Reengajar quem visitou a página 'anuncie' e não converteu → falar com a equipe","cta":"'Você foi até a nossa página de anúncio, ficou na dúvida… clica aqui'","destino":"Equipe/WhatsApp (esclarecer dúvida e apresentar)","naoUsar":"Em público frio (pressupõe ter visitado a página anuncie)","resumo":"Remarketing direto: reconhece que o lead visitou a página 'anuncie' e ficou na dúvida. Cita pesquisa do Google com 310 mil jornadas de compra. Oferece esclarecer e apresentar.","links":[{"tipo":"avoz","label":"A Voz","url":"https://avoz.solutudo.com.br/videos/1350101"}]},
+    {"id":"c22","nome":"Cota: ganhar ou perder (motivos p/ estar no digital)","funcao":"AD","jornada":"CONFIANCA","etapa":"Meio","publico":"Morno","estilo":"storytelling","status":"existe","objetivo":"Reframe — o motivo nº1 do digital é NÃO PERDER clientes → consideração","cta":"Soft: 'se precisar de ajuda, Solutudo faz isso'","destino":"Soft → equipe/WhatsApp","naoUsar":"—","obs":"Inclui/refere o esquete do 'escanteio' (relacionado ao c24)","resumo":"Reframe ganhar × perder. Orgânico mostra só 3-5% dos seguidores. O 1º motivo do digital não é conseguir cliente — é NÃO PERDER (orçamentos e indicações que te procuram online e não te acham). Consultam até 3 fontes antes de decidir. Inclui o esquete do empresário que bate escanteio e corre na área.","links":[{"tipo":"avoz","label":"A Voz","url":"https://avoz.solutudo.com.br/videos/1590101"}]}
+  ]
+}
+</script>
 <script>
 const KEY='solutudo_funil_v1';
 const COR_J={ATRACAO:'#7C3AED',CONFIANCA:'#D97706',REMARKETING:'#0369A1',CADASTRO:'#059669',WHATSAPP:'#16A34A',VSL:'#DC2626',ANUNCIE:'#EA580C',LIVE:'#9333EA'};
@@ -123,23 +165,23 @@ let state=null, filtroJ='', connectMode=false, connectFrom=null;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
 function esc(s){return(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function save(){localStorage.setItem(KEY,JSON.stringify(state));}
+async function loadSeed(){
+  try{const r=await fetch('./dados-criativos.json',{cache:'no-store'});if(r.ok)return await r.json();}catch(e){}
+  try{const el=document.getElementById('seed');if(el&&el.textContent.trim())return JSON.parse(el.textContent);}catch(e){}
+  return null;
+}
 
 async function boot(){
   const saved=localStorage.getItem(KEY);
   if(saved){ try{ state=JSON.parse(saved); }catch(e){ state=null; } }
   if(!state){
-    try{
-      const seed=await (await fetch('./dados-criativos.json',{cache:'no-store'})).json();
-      state={
-        projeto:seed.projeto, atualizado:seed.atualizado,
-        taxonomias:seed.taxonomias||{},
-        criativos:seed.criativos||[],
-        fluxo:{nodes:{},edges:[]}
-      };
+    const seed=await loadSeed();
+    if(seed){
+      state={projeto:seed.projeto,atualizado:seed.atualizado,taxonomias:seed.taxonomias||{},criativos:seed.criativos||[],fluxo:{nodes:{},edges:[]}};
       autoLayout();
-    }catch(e){
+    }else{
       state={projeto:'Funil Solutudo',criativos:[],taxonomias:{},fluxo:{nodes:{},edges:[]}};
-      toast('Não carregou dados-criativos.json — comece com Importar JSON.');
+      toast('Comece com Importar JSON.');
     }
   }
   if(!state.fluxo) state.fluxo={nodes:{},edges:[]};
