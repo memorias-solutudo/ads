@@ -284,26 +284,25 @@ class Funis extends React.Component {
       id:'vslpg', funnelId:'solutudo', journeyId:'vsl', etapa:'Fundo', funcao:'PG',
       name:'Vídeo da página VSL (provisório)', plataforma:'LP', status:'confirmar',
       pubTemp:'Morno', pubSeg:'Morno/Quente', publico:'Morno/Quente', estilo:'VSL',
-      formato:'16:9 ou 1:1 · 3–20 min', dx:0, dy:0,
+      formato:'Rosto sentado · 16:9 ou 1:1 · ~15 min', dx:0, dy:0,
       driveId:'1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ',
       objetivo:'Vídeo dentro da página da VSL — conduzir do problema até o agendamento da call (high ticket)',
-      flag:'PROVISÓRIO — usando o c11 no lugar até gravar a VSL definitiva. Não é o vídeo ideal da página.',
-      estiloPorque:'Rosto sentado, olho no olho, ritmo controlado — sustenta um vídeo longo de decisão (high ticket).',
+      flag:'PROVISÓRIO — usando o c11 no lugar até gravar a VSL definitiva. Roteiro de gravação abaixo.',
+      estiloPorque:'Rosto sentado, olho no olho, ritmo controlado. O Storytelling é ~40% do vídeo — o maior bloco e o motor da VSL; os demais elementos são mais enxutos e diretos.',
       cta:'Agendar reunião gratuita (formulário da página)',
-      proximo:'Gravar a VSL completa e substituir o c11',
+      proximo:'Gravar a VSL completa seguindo o roteiro e substituir o c11',
       iaParecer:'nao',
-      iaRec:'Provisório: o c11 cobre empatia + CTA de agendamento, mas não tem oferta/ancoragem nem prova estruturada. Gravar uma VSL dedicada (roteiro abaixo).',
-      resumo:`PROVISÓRIO: usando o c11 como vídeo da página para não travar o funil. O certo é gravar a VSL completa.
+      iaRec:'Provisório: o c11 cobre empatia + CTA de agendamento, mas não tem a estrutura completa de VSL. Gravar seguindo o roteiro abaixo.',
+      resumo:`ROTEIRO DA VSL (rosto sentado, ~15 min). O Storytelling é ~40% do vídeo — o maior bloco e o motor da VSL; os demais elementos são mais enxutos e diretos.
 
-Como gravar (rosto sentado, 3–20 min, olho no olho) — nesta ordem:
-1) PROBLEMA — a dor de não aparecer onde 90% decidem a compra.
-2) AGITAÇÃO — o custo de ficar invisível no digital (reaproveitar a empatia do c11).
-3) SOLUÇÃO — o que a Solutudo faz: "verdade digital", 20 anos, 3.000+ empresas.
-4) PROVA — autoridade e provas (reaproveitar o c2: topo Reclame Aqui, sem multa, Sebrae, parceiros há 20 anos).
-5) OFERTA — a reunião gratuita + ancoragem do high ticket (o que a pessoa recebe na call).
-6) CTA — agendar a call, apontando direto para o formulário da página.
+1) LEAD (0:00–1:00 · 1min) — Introdução da copy; reter a atenção para o restante do vídeo/texto.
+2) STORYTELLING (1:00–7:00 · 6min) — Uma história ligada ao produto (antes e depois); criar conexão emocional com o prospecto.
+3) MECANISMO ÚNICO (7:00–9:00 · 2min) — Falar do problema e, em seguida, apresentar uma solução única.
+4) OBJETIVO (9:00–11:00 · 2min) — Argumentos do porquê sua solução é melhor e do porquê ele tem tal problema.
+5) CONSTRUÇÃO DO PRODUTO (11:00–13:00 · 2min) — Como e por que o produto nasceu (a razão lógica de sua criação).
+6) OFERTA (13:00–15:00 · 2min) — Proposta irrecusável; fazer o prospecto se sentir "pouco inteligente" ao não aceitar.
 
-Reaproveitar: empatia do c11 + prova do c2.`,
+CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a promessa — a VSL retoma essa MESMA dor no Lead e a resolve na Oferta, mantendo a mensagem contínua do anúncio até o agendamento.`,
       iaParecerNote:'', segmentacao:'', kpi:'Agendamentos, show-up, CAC', transcricao:'',
     };
   }
@@ -430,6 +429,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       const have = new Set(this.state.cards.map(c => c.id));
       this.newCreatives().forEach(nc => { if (!have.has(nc.id)) this.state.cards.push(nc); });
       this.state.contentV = 2;
+      this.save();
+    }
+    // roteiro da VSL (v3): atualiza a orientação de gravação do vídeo da VSL
+    if (this.state.contentV < 3) {
+      const v = this.vslPgCard();
+      this.state.cards = this.state.cards.map(c => c.id === 'vslpg'
+        ? Object.assign({}, c, { resumo: v.resumo, formato: v.formato, estiloPorque: v.estiloPorque, flag: v.flag, proximo: v.proximo, iaRec: v.iaRec })
+        : c);
+      this.state.contentV = 3;
       this.save();
     }
     // quadro livre (v1): semeia posições fx/fy e linhas a partir do layout estruturado atual
