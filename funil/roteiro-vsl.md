@@ -1,58 +1,53 @@
-# Roteiro VSL Solutudo (~15 min) — storytelling, continuação do c11
+# Roteiro VSL Solutudo (~15 min) — estrutura de copy (6 elementos)
 
+**Framework:** Lead → Storytelling → Mecanismo único → Objetivo → Construção do produto → Oferta
+(estrutura de copy para VSL, adaptada ao contexto da Solutudo).
 **Origem do tráfego:** anúncio Meta **c11 "Olha no meu olho"** → clica → página → esta VSL.
-**Formato:** ponte curta (chama pelo assunto que trouxe) e, **logo após, vira STORYTELLING** —
-uma história com personagem que carrega os dados e a mensagem até o **formulário de agendamento**.
+**Fecho:** preenchimento do **formulário de agendamento** (reunião gratuita = high ticket).
 
-## Ponte com o c11 (o que já foi dito — só retomar)
-"olha no meu olho" · "eu sei como é ter pequena empresa" · bater escanteio · CEO na padaria ·
-"tem que estar no Instagram/YouTube/Google" · 90% no digital · medo de errar · "curtida não paga
-boleto" · "um plano gratuito com uma reunião" · "deixa a gente te ajudar".
+## Ponte com o c11 (retomar, não repetir)
+"olha no meu olho" · "eu sei como é" · bater escanteio · CEO na padaria · "tem que estar no
+Instagram/YouTube/Google" · 90% no digital · medo de errar · "curtida não paga boleto" ·
+"um plano gratuito com uma reunião" · "deixa a gente te ajudar".
 
 ---
 
-## Bloco 1 — Ponte (0:00 – 1:00)  *[curto]*
-- Callback ao olho no olho: "Se você clicou e chegou até aqui, é porque aquilo fez sentido."
-- Transição para a história: "Então deixa eu te contar uma história — e vê se você se reconhece nela."
+## 1. LEAD — reter a atenção (0:00 – 1:30)
+- Ponte curta com o c11 (olho no olho): "Se você clicou e chegou aqui, é porque aquilo fez sentido."
+- Gancho de curiosidade (a promessa da headline): "Você pode estar perdendo clientes todo dia — e nunca ficar sabendo."
+- Loop aberto: prometer que vai mostrar o ponto cego e o caminho, sem entregar ainda.
 
-## Bloco 2 — O personagem / mundo comum (1:00 – 3:30)  *[storytelling]*
-- Apresentar um protagonista com quem ele se identifica (ex.: um dono de oficina/marmoraria, 15 anos de estrada).
-- Ele é **excelente** no que faz, tem clientes fiéis, vive de indicação — o herói é ele.
-- Rotina de quem "bate escanteio e corre na área" (retoma o tom do anúncio dentro da cena).
+## 2. STORYTELLING — história ligada ao produto, antes → depois (1:30 – 5:00)
+- Personagem com quem ele se identifica (dono de empresa, 15 anos, excelente, vive de indicação).
+- **Antes:** um bom cliente procurou o serviço dele, não o encontrou no digital e fechou com um pior — e ele **nunca soube**.
+- Conexão emocional: a dor de ser bom e invisível; "curtida não paga boleto".
+- **Depois** (semente): dá pra existir com verdade e voltar a ser escolhido (a virada é aprofundada nos blocos seguintes).
 
-## Bloco 3 — O conflito / a perda invisível (3:30 – 6:00)  *[storytelling]*
-- Um bom cliente procurou exatamente o serviço dele — mas no digital **não o encontrou** (site parado, sem avaliação, fora dos guias).
-- Fechou com um concorrente pior. E o pior: **o personagem nunca soube que perdeu**.
-- Aqui os dados entram como narração da história (90% decidem no digital antes do "alô"), não como slide.
+## 3. MECANISMO ÚNICO — o problema + a solução única (5:00 – 7:30)
+- Nomear o problema: você está fora do "momento da verdade" digital (a fachada digital apagada).
+- Apresentar a solução única da Solutudo: **verdade digital** — transmitir quem a empresa realmente é em **todos os canais** onde as pessoas procuram (Google, Solutudo, redes, site, IA, WhatsApp), somados.
+- Diferenciador: "não é marketing digital, é verdade digital" — não inventa história, mostra a sua.
 
-## Bloco 4 — A virada / a ficha cai (6:00 – 8:00)  *[storytelling]*
-- O momento em que o personagem percebe: não é falta de competência, é que o mundo mudou.
-- Conecta com "curtida não paga boleto": não é sobre viralizar, é sobre **não perder** o que já era dele.
-- Vira emocional: ele decide que precisa existir no digital com verdade (fachada digital).
+## 4. OBJETIVO — por que ele tem o problema e por que a solução é melhor (7:30 – 10:00)
+- Por que ele tem o problema: o mundo mudou — 90% decidem no digital antes do "alô" (ZMOT); na correria não dá tempo de cuidar disso.
+- Por que a Solutudo é melhor que as alternativas: fazer sozinho (falta tempo/energia/conhecimento), só tráfego pago (cobertura sem fundação), só Instagram (alcance orgânico de 3–5%).
+- Argumento central: o foco não é aparecer, é **ser escolhido** — e não perder o que já era seu.
 
-## Bloco 5 — O guia e o plano (8:00 – 11:00)  *[storytelling + prova tecida]*
-- Aparece a Solutudo como **guia** (não herói): mostra o caminho ao personagem.
-- O que fizeram: colocar a empresa dele em todos os canais, de forma simples ("você diz quem é, a gente cuida").
-- Prova tecida na narrativa como credibilidade do guia: 20 anos, 3.000+ empresas, Reclame Aqui, mídia, Sebrae.
+## 5. CONSTRUÇÃO DO PRODUTO — como e por que a Solutudo nasceu (10:00 – 12:30)
+- Razão lógica: desde 2005, com a missão de ajudar as pessoas a escolherem e as boas empresas a serem escolhidas.
+- Por que existe: num mundo com opções demais, ficou difícil escolher — e empresas boas ficam invisíveis.
+- Credibilidade (prova tecida): +20 anos, +3.000 empresas, 4 mi/mês, Reclame Aqui no topo, mídia, Sebrae, sem multa de cancelamento.
 
-## Bloco 6 — A transformação (11:00 – 13:00)  *[storytelling]*
-- O personagem passa a ser **encontrado e escolhido**; recupera orçamentos que perdia sem saber.
-- Fecho emocional: tranquilidade — continua fazendo o que ama, sem ser invisível.
-
-## Bloco 7 — O espelho + a oferta (13:00 – 14:00)
-- Virar a câmera para o espectador: "essa história pode ser a sua."
-- Retomar literalmente a promessa do anúncio: "um plano pra você, gratuitamente, com uma reunião — e você avalia."
-- Baixar risco: sem compromisso; investimento acessível, menor do que se perde por não existir.
-
-## Bloco 8 — CTA: formulário (14:00 – 15:00)
-- **CTA único:** "preencha o formulário aqui na página pra marcar sua reunião gratuita."
-- Reduzir fricção: rápido, poucos campos, sem custo.
-- Fechar com a assinatura do anúncio: **"deixa a gente te ajudar."**
+## 6. OFERTA — proposta irrecusável + CTA formulário (12:30 – 15:00)
+- Retomar a promessa do c11: "um plano pra você, gratuitamente, com uma reunião — e você avalia."
+- Tornar irrecusável: é grátis, sem compromisso, e mostra **exatamente onde você está perdendo** e o caminho.
+- Custo de não aceitar (fazer o "não" parecer ilógico): continuar invisível é seguir perdendo orçamentos/indicações que você nem contabiliza.
+- **CTA único e explícito:** "preencha o formulário aqui na página pra marcar sua reunião gratuita."
+- Reduzir fricção (rápido, poucos campos, sem custo) + assinatura: **"deixa a gente te ajudar."**
 
 ---
 
 ### Notas de produção
-- **Ponte curta, história longa:** o Bloco 1 não pode se alongar — a força está na história (Blocos 2–6).
-- **Dados a serviço da narrativa:** nada de checklist; os números aparecem como parte do que acontece com o personagem.
 - **Continuidade com o c11:** mesmo apresentador/enquadramento sentado, clima "olho no olho" — sensação de mesma conversa.
-- **Formato:** 16:9 na página · 12–15 min · CTA único (formulário de agendamento).
+- **Storytelling é o motor:** dados sempre a serviço da história/argumento, nunca como checklist.
+- **Formato:** 16:9 na página · 12–15 min · CTA único (formulário de agendamento), com destaque após o vídeo.
