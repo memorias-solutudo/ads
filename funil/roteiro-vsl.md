@@ -1,54 +1,61 @@
-# Roteiro VSL Solutudo (~15 min) — estrutura em tópicos
+# Roteiro VSL Solutudo (~15 min) — continuação do anúncio c11
 
-**Objetivo:** prender o empresário nos primeiros segundos com uma história, conduzir
-pela dor → virada → solução → prova, e terminar em **agendamento** (reunião/diagnóstico
-gratuito = high ticket). Estilo VSL/storytelling. Só os tópicos — o conteúdo/copy é gravado depois.
+**Origem do tráfego:** anúncio Meta **c11 "Olha no meu olho"** → clica → cai na página → assiste esta VSL.
+**Objetivo:** continuar a história do c11 sem repetir, aprofundar, provar e converter no
+**preenchimento do formulário de agendamento** (reunião gratuita = high ticket).
+
+## Ponte com o c11 (o que já foi dito no anúncio — não repetir, retomar)
+O anúncio já entregou: "olha no meu olho" · "eu sei como é ter pequena empresa" ·
+"bater escanteio e correr na área" · CEO tocando padaria · "tem que estar no Instagram,
+YouTube, Google" · 90% escolhem no digital · medo de errar (já tentou e não deu em nada) ·
+"curtida não paga boleto" · oferta de "um plano gratuito com uma reunião" · "deixa a gente te ajudar".
+→ A VSL **retoma** esses fios como quem continua uma conversa que já começou.
 
 ---
 
-## Bloco 1 — Gancho / abertura (0:00 – 1:00)
-- Abrir com uma **cena** ou pergunta que gera curiosidade (padrão do "tá vendo essa cena?").
-- Prometer o que a pessoa vai descobrir ("nos próximos minutos vou te mostrar por que você pode estar perdendo cliente sem saber").
-- Loop aberto: uma pergunta que só será respondida no fim.
+## Bloco 1 — Ponte / continuação (0:00 – 1:30)
+- Retomar o olho no olho: "Se você clicou e chegou até aqui, é porque aquilo fez sentido pra você."
+- Reafirmar a identificação em 1 frase (não repetir tudo): você faz tudo, é o dono que resolve.
+- Tocar no medo que o anúncio citou: "e eu sei que bate aquele receio de tentar de novo e não dar em nada."
+- Promessa desta VSL: "nos próximos minutos te mostro exatamente onde você está perdendo — e, no fim, como marcar sua reunião gratuita aqui mesmo."
 
-## Bloco 2 — Identificação / história (1:00 – 3:00)
-- Espelhar a rotina do empresário: "bate escanteio e corre na área", faz tudo.
-- Criar conexão emocional ("eu sei como é" / história pessoal ou de um cliente).
-- Validar que ele é **bom no que faz** — o problema não é competência.
+## Bloco 2 — O problema real, nomeado (1:30 – 4:00)
+- Não é falta de esforço nem de competência — **o mundo mudou**.
+- ZMOT: 90% decidem no digital antes de falar "alô" (retoma o dado do anúncio, agora explicado).
+- Analogia da **fachada**: ninguém abria loja sem fachada; hoje a fachada é digital — e a sua pode estar apagada.
 
-## Bloco 3 — O mundo mudou / o problema (3:00 – 6:00)
-- ZMOT: 90% decidem no digital **antes** de falar "alô" (pesquisa Google).
-- A analogia da **fachada**: antes ninguém abria loja sem fachada; hoje a fachada é digital.
-- O problema real: ele é bom, mas **invisível** na hora da decisão.
-- Objeção "vivo de indicação": imprevisível, você não escolhe o serviço, e a indicação te procura no digital e não te acha.
-
-## Bloco 4 — A grande virada (6:00 – 8:00)
-- Reframe: o 1º motivo de estar no digital **não é ganhar** cliente, é **não perder**.
-- "Curtida não paga boleto" — não é sobre viralizar, é sobre existir com verdade.
+## Bloco 3 — A virada / não perder (4:00 – 6:30)
+- Reframe: o 1º motivo de estar no digital não é ganhar, é **não perder**.
+- Conectar com "curtida não paga boleto" (frase do anúncio): não é sobre viralizar, é sobre existir com verdade.
+- Orçamentos e indicações que te procuram no digital e **não te acham** = venda perdida sem você saber.
 - Nome do conceito: **verdade digital / fachada digital** (não é marketing digital).
-- "Não adianta ter raiz (história, clientes) sem copa (aparecer onde procuram)."
 
-## Bloco 5 — A solução / mecanismo (8:00 – 11:00)
-- O que a Solutudo faz: colocar a empresa em **todos os canais** onde há busca (Google, Solutudo, redes, site, IA, WhatsApp).
-- Como funciona, de forma simples: "você diz quem é, o que faz, como faz — a gente cuida".
-- Dados de apoio: onde as pessoas procuram (76% Google, 54% redes, 38% guias, 18% IA); avaliações, fotos, história, resposta rápida.
+## Bloco 4 — A solução / mecanismo (6:30 – 9:30)
+- O que a Solutudo faz: colocar você em **todos os canais** onde há busca (Google, Solutudo, redes, site, IA, WhatsApp).
+- Como funciona, simples: "você diz quem é, o que faz, como faz — a gente cuida" (tira o peso do "tem que estar em tudo").
+- Dados de apoio: onde procuram (76% Google, 54% redes, 38% guias, 18% IA); avaliações, fotos, história, resposta rápida.
 
-## Bloco 6 — Prova e quebra de objeção (11:00 – 13:00)
+## Bloco 5 — Prova e confiança (9:30 – 12:00)
 - Autoridade: desde 2005, +3.000 empresas, +20 anos, 4 mi/mês, 400+ cidades.
 - Confiança: topo do Reclame Aqui, mídia (Exame/Estadão), Sebrae 10 anos, sem multa de cancelamento, telefone do dono, parceiros há 20 anos.
-- Anti-hype: "não vou te encher de clientes num clique" — expectativa honesta.
+- Anti-hype (responde ao "medo de errar" do anúncio): "não vou te encher de clientes num clique — a gente arruma sua fachada digital, com verdade."
 
-## Bloco 7 — Oferta e CTA (13:00 – 15:00)
-- Oferta: **reunião/diagnóstico gratuito** — a gente mostra onde você está, onde pode chegar e o caminho.
-- Baixar risco: sem compromisso, você decide na reunião; investimento acessível (menor do que se perde por não existir).
-- **CTA único e claro: agendar agora** (na própria página).
-- Fechar o loop aberto do Bloco 1 + reforço final de urgência suave.
+## Bloco 6 — A oferta: a reunião (12:00 – 13:30)
+- Retomar **exatamente** a promessa do anúncio: "um plano pra você, gratuitamente, com uma reunião."
+- O que acontece na reunião: a gente mostra **onde você está, onde pode chegar e qual o caminho** — e você avalia se faz sentido.
+- Baixar risco: sem compromisso; investimentos acessíveis, menores do que se perde por não existir.
+
+## Bloco 7 — CTA: preencher o formulário (13:30 – 15:00)
+- **CTA único e explícito:** "preencha o formulário aqui na página pra marcar sua reunião gratuita."
+- Reduzir fricção: é rápido, poucos campos, sem custo, sem compromisso.
+- Urgência suave: quanto mais tempo invisível, mais orçamento/indicação perdida.
+- Fechar o loop do Bloco 1 + assinatura do anúncio: **"deixa a gente te ajudar."**
 
 ---
 
 ### Notas de produção
-- **Formato:** 16:9 na página + corte 9:16 para anúncios que levam à VSL.
+- **Continuidade visual/tom:** mesmo apresentador, mesmo enquadramento sentado e clima "olho no olho" do c11 — a pessoa deve sentir que é a **mesma conversa**, agora mais fundo.
+- **Formato:** 16:9 na página; a VSL não é anúncio (o anúncio é o c11).
 - **Duração:** 12–15 min.
-- **Estilo:** rosto sentado (proximidade/confiança) com inserts de dados/tela nos blocos 3 e 5.
-- **CTA:** um só — agendamento. Não dividir a atenção.
-- **Anúncios de apoio (AD):** c11 e c12 levam o público morno até esta VSL.
+- **CTA único:** o formulário de agendamento na própria página. Não competir com outros botões.
+- **Inserts:** dados/tela nos blocos 2 e 4; selos de prova no bloco 5.
