@@ -102,33 +102,35 @@ class Funis extends React.Component {
             this.el('span', { style:{ fontSize:11, fontWeight:800, letterSpacing:'.06em', textTransform:'uppercase', color:mv.color } }, 'Objetivo do vídeo')),
           this.el('h2', { style:{ margin:0, fontSize:21, fontWeight:800, letterSpacing:'-0.02em', color:'var(--ink)', lineHeight:1.3 } }, mv.objetivo)),
         this.el('div', { style:{ flex:1, minHeight:0, display:'flex' } },
-          this.el('div', { className:'solu-scroll', style:{ flex:'none', width:440, maxWidth:'42%', overflowY:'auto', padding:'20px 22px' } },
-            mv.embedUrl ? this.el('div', { style:{ position:'relative', width:'100%', aspectRatio:'16/9', background:'#000', borderRadius:14, overflow:'hidden', boxShadow:'var(--shadow-md)' } },
+          // ESQUERDA — player grande + links/tags/onde anunciar
+          this.el('div', { className:'solu-scroll', style:{ flex:1, minWidth:0, overflowY:'auto', padding:'22px 26px' } },
+            mv.embedUrl ? this.el('div', { style:{ position:'relative', width:'100%', height:'min(66vh, 640px)', background:'#000', borderRadius:16, overflow:'hidden', boxShadow:'var(--shadow-md)' } },
               this.el('iframe', { src:mv.embedUrl, allow:'autoplay; encrypted-media; fullscreen', allowFullScreen:true, style:{ position:'absolute', inset:0, width:'100%', height:'100%', border:'none' } })) :
-              this.el('div', { style:{ position:'relative', width:'100%', aspectRatio:'16/9', borderRadius:14, overflow:'hidden', boxShadow:'var(--shadow-md)', background:mv.posterBg, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', textAlign:'center', padding:16 } },
-                this.el('div', {}, this.el('div', { style:{ fontSize:30, marginBottom:6 } }, '▶'), this.el('div', { style:{ fontSize:13, fontWeight:700, opacity:.92 } }, 'Sem vídeo vinculado'))),
-            (mv.links && mv.links.length) ? this.el('div', { style:{ display:'flex', gap:9, flexWrap:'wrap', marginTop:14 } }, mv.links.map((link, i) =>
-              this.el('a', { key:i, href:link.url, target:'_blank', rel:'noopener', style:{ display:'inline-flex', alignItems:'center', gap:7, background:'var(--ink)', color:'var(--white)', textDecoration:'none', borderRadius:999, padding:'9px 15px', fontSize:12.5, fontWeight:700 } },
-                this.el('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M14 4h6v6' }), this.el('path', { key:2, d:'M20 4l-9 9' }), this.el('path', { key:3, d:'M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6' })), link.label))) : null,
-            this.el('div', { style:{ display:'flex', gap:7, flexWrap:'wrap', marginTop:16 } },
+              this.el('div', { style:{ position:'relative', width:'100%', height:'min(66vh, 640px)', borderRadius:16, overflow:'hidden', boxShadow:'var(--shadow-md)', background:mv.posterBg, display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', textAlign:'center', padding:16 } },
+                this.el('div', {}, this.el('div', { style:{ fontSize:34, marginBottom:6 } }, '▶'), this.el('div', { style:{ fontSize:13, fontWeight:700, opacity:.92 } }, 'Sem vídeo vinculado'))),
+            this.el('div', { style:{ display:'flex', gap:9, flexWrap:'wrap', alignItems:'center', marginTop:16 } },
+              (mv.links || []).map((link, i) =>
+                this.el('a', { key:i, href:link.url, target:'_blank', rel:'noopener', style:{ display:'inline-flex', alignItems:'center', gap:7, background:'var(--ink)', color:'var(--white)', textDecoration:'none', borderRadius:999, padding:'9px 15px', fontSize:12.5, fontWeight:700 } },
+                  this.el('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M14 4h6v6' }), this.el('path', { key:2, d:'M20 4l-9 9' }), this.el('path', { key:3, d:'M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6' })), link.label)),
               this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontWeight:700, color:'var(--gray-600)', background:'var(--gray-100)', borderRadius:999, padding:'5px 11px' } },
                 this.el('svg', { width:13, height:13, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('rect', { key:1, x:2, y:6, width:14, height:12, rx:2.5 }), this.el('path', { key:2, d:'M16 10l6-3.5v11L16 14' })), mv.estilo),
               this.el('span', { style:{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontWeight:700, color:'var(--gray-600)', background:'var(--gray-100)', borderRadius:999, padding:'5px 11px' } },
                 this.el('svg', { width:13, height:13, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.8, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('circle', { key:1, cx:9, cy:8, r:3.2 }), this.el('path', { key:2, d:'M3.5 20a5.5 5.5 0 0 1 11 0' }), this.el('path', { key:3, d:'M16 5.5a3 3 0 0 1 0 5.8' }), this.el('path', { key:4, d:'M19.5 20a5 5 0 0 0-3-4.4' })), mv.publico)),
-            this.el('div', { style:{ marginTop:20 } },
-              this.el('div', { style:{ fontSize:11.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)', marginBottom:9 } }, 'Análise do vídeo'),
-              this.el('p', { style:{ margin:0, fontSize:13.5, color:'var(--gray-600)', lineHeight:1.65 } }, mv.resumo)),
             mv.flagText ? this.el('div', { style:{ display:'flex', gap:8, alignItems:'flex-start', background:'var(--tint-yellow)', borderRadius:12, padding:'11px 13px', marginTop:14 } },
               this.el('svg', { width:16, height:16, viewBox:'0 0 24 24', fill:'none', stroke:'#9a6b00', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round', style:{ flex:'none', marginTop:1 } }, this.el('path', { key:1, d:'M12 9v4' }), this.el('path', { key:2, d:'M12 17h.01' }), this.el('path', { key:3, d:'M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z' })),
               this.el('span', { style:{ fontSize:12, fontWeight:600, color:'#7a5200', lineHeight:1.45 } }, mv.flagText)) : null,
-            this.el('div', { style:{ marginTop:22 } },
+            this.el('div', { style:{ marginTop:20 } },
               this.el('div', { style:{ fontSize:11.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)', marginBottom:11 } }, 'Onde anunciar'),
               this.platRows(mv.plat))),
-          this.el('div', { className:'solu-scroll', style:{ flex:1, minWidth:0, overflowY:'auto', padding:'20px 24px 32px', background:'var(--surface-app)', borderLeft:'1px solid var(--gray-150)' } },
-            this.el('div', { style:{ display:'flex', alignItems:'center', gap:8, marginBottom:13 } },
-              this.el('span', { style:{ fontSize:11.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)' } }, 'Transcrição completa'),
-              this.el('span', { style:{ flex:1, height:1, background:'var(--gray-200)' } })),
-            this.el('div', { style:{ background:'var(--white)', border:'1px solid var(--gray-150)', borderRadius:16, padding:'24px 26px', fontSize:14.5, color:'#3d3d3d', lineHeight:1.85, whiteSpace:'pre-wrap' } }, mv.transcricao || 'Transcrição ainda não adicionada.'))
+          // DIREITA — coluna pequena: análise (resumo) + transcrição em toggle
+          this.el('div', { className:'solu-scroll', style:{ flex:'none', width:320, maxWidth:'34%', overflowY:'auto', padding:'22px 20px 32px', background:'var(--surface-app)', borderLeft:'1px solid var(--gray-150)' } },
+            this.el('div', { style:{ fontSize:11.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)', marginBottom:9 } }, 'Análise do vídeo'),
+            this.el('p', { style:{ margin:0, fontSize:13.5, color:'var(--gray-600)', lineHeight:1.65 } }, mv.resumo || '—'),
+            this.el('details', { className:'sol-trans', style:{ marginTop:18, background:'var(--white)', border:'1px solid var(--gray-150)', borderRadius:12, overflow:'hidden' } },
+              this.el('summary', { style:{ cursor:'pointer', padding:'12px 14px', fontSize:11.5, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)', display:'flex', alignItems:'center', gap:8 } },
+                this.el('span', { className:'caret', style:{ fontSize:10, color:'var(--gray-400)' } }, '▶'),
+                'Transcrição completa'),
+              this.el('div', { style:{ padding:'2px 16px 16px', fontSize:13.5, color:'#3d3d3d', lineHeight:1.8, whiteSpace:'pre-wrap' } }, mv.transcricao || 'Transcrição ainda não adicionada.')))
         )
       )
     );
@@ -402,6 +404,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       edges: (saved && saved.edges) || [],
       freeV: (saved && saved.freeV) || 0,
       connectMode: false, connectFrom: null, addMenu: null,
+      guides: null, multiSel: [],
     };
     if (!this.state.flowSeeded) {
       this.state.cards = this.state.cards.concat(this.seedFlowNodes());
@@ -553,14 +556,27 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     setTimeout(() => this.fitView(), 90);
   }
   onKey(e) {
+    // Esc fecha modais / menus / seleção (funciona mesmo com foco em campo)
+    if (e.key === 'Escape') {
+      if (this.state.addMenu) { this.setState({ addMenu: null }); return; }
+      if (this.state.openVideo) { this.closeVideo(); return; }
+      if (this.state.trashOpen) { this.setState({ trashOpen: false }); return; }
+      if (this.state.addFunnelOpen) { this.setState({ addFunnelOpen: false }); return; }
+      if (this.state.addNodeOpen) { this.setState({ addNodeOpen: false }); return; }
+      if (this.state.selected || (this.state.multiSel && this.state.multiSel.length)) { this.setState({ selected: null, multiSel: [] }); return; }
+      return;
+    }
     const tag = (e.target && e.target.tagName) || '';
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
     const mod = e.ctrlKey || e.metaKey;
-    if (mod && e.key.toLowerCase() === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); return; }
-    if (mod && (e.key.toLowerCase() === 'y' || (e.key.toLowerCase() === 'z' && e.shiftKey))) { e.preventDefault(); this.redo(); return; }
-    if (this.state.mode === 'funil' && this.state.selected && this.state.selected.type === 'card') {
-      if (mod && e.key === 'c') { this._clip = this.state.cards.find(c => c.id === this.state.selected.id) || null; }
-      else if (mod && e.key === 'v') { if (this._clip) this.duplicateCard(this._clip.id); }
+    const k = e.key.toLowerCase();
+    if (mod && k === 'z' && !e.shiftKey) { e.preventDefault(); this.undo(); return; }
+    if (mod && (k === 'y' || (k === 'z' && e.shiftKey))) { e.preventDefault(); this.redo(); return; }
+    if (mod && k === 'g') { e.preventDefault(); if (e.altKey || e.shiftKey) this.ungroupSelected(); else this.groupSelected(); return; }
+    if (this.state.mode === 'funil') {
+      const selId = this.state.selected && this.state.selected.type === 'card' ? this.state.selected.id : ((this.state.multiSel || [])[0] || null);
+      if (mod && k === 'c' && selId) { this._clip = this.state.cards.find(c => c.id === selId) || null; }
+      else if (mod && k === 'v') { if (this._clip) this.duplicateCard(this._clip.id); }
     }
   }
   // ---- histórico (desfazer / refazer) ----
@@ -602,8 +618,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       if (Math.abs(e.clientX - this._drag.sx) + Math.abs(e.clientY - this._drag.sy) > 3) this._drag.moved = true;
       const dx = (e.clientX - this._drag.sx) / this.state.zoom;
       const dy = (e.clientY - this._drag.sy) / this.state.zoom;
-      const cards = this.state.cards.map(c => c.id === this._drag.id ? { ...c, fx: this._drag.ox + dx, fy: this._drag.oy + dy } : c);
-      this.setState({ cards });
+      const snap = this.computeSnap(this._drag.id, this._drag.ox + dx, this._drag.oy + dy);
+      const gdx = snap.fx - this._drag.ox, gdy = snap.fy - this._drag.oy;
+      const grp = this._dragGroup || [this._drag.id]; const orig = this._dragOrig || {};
+      const cards = this.state.cards.map(c => {
+        if (grp.indexOf(c.id) < 0) return c;
+        const o = orig[c.id] || { fx: c.fx, fy: c.fy };
+        return { ...c, fx: o.fx + gdx, fy: o.fy + gdy };
+      });
+      this.setState({ cards, guides: snap.guides });
     } else if (this._pan) {
       if (Math.abs(e.clientX - this._pan.sx) + Math.abs(e.clientY - this._pan.sy) > 3) this._pan.moved = true;
       this.setState({ panX: this._pan.px + (e.clientX - this._pan.sx), panY: this._pan.py + (e.clientY - this._pan.sy) });
@@ -611,17 +634,70 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
   onUp(e) {
     if (this._link) { this._link = null; if (this.state.linking) this.setState({ linking: null }); return; }
-    if (this._drag) { const moved = this._drag.moved; this._drag = null; this.save(); if (moved) { this._suppressClick = true; setTimeout(() => { this._suppressClick = false; }, 0); } }
+    if (this._drag) { const moved = this._drag.moved; this._drag = null; this._dragGroup = null; this._dragOrig = null; if (this.state.guides) this.setState({ guides: null }); this.save(); if (moved) { this._suppressClick = true; setTimeout(() => { this._suppressClick = false; }, 0); } }
     if (this._pan) {
       const p = this._pan; this._pan = null;
       // clique esquerdo simples no fundo (sem arrastar) → desseleciona
-      if (!p.moved && e && e.button === 0 && this.state.selected) this.setState({ selected: null });
+      if (!p.moved && e && e.button === 0 && (this.state.selected || (this.state.multiSel && this.state.multiSel.length))) this.setState({ selected: null, multiSel: [] });
     }
   }
   startDrag(e, id) {
     e.stopPropagation();
     const c = this.state.cards.find(x => x.id === id) || {};
     this._drag = { id, sx: e.clientX, sy: e.clientY, ox: c.fx || 0, oy: c.fy || 0 };
+    // se faz parte de um grupo (ou de uma multisseleção), arrasta todos juntos
+    const gid = c.groupId;
+    const ms = this.state.multiSel || [];
+    let grp = gid ? this.state.cards.filter(x => x.groupId === gid).map(x => x.id) : (ms.indexOf(id) >= 0 && ms.length > 1 ? ms.slice() : [id]);
+    this._dragGroup = grp;
+    this._dragOrig = {};
+    this.state.cards.forEach(x => { if (grp.indexOf(x.id) >= 0) this._dragOrig[x.id] = { fx: x.fx, fy: x.fy }; });
+  }
+  // ---- snapping: alinhar centros e igualar espaçamentos ao arrastar ----
+  computeSnap(id, fx, fy) {
+    const TOL = 8 / this.state.zoom;
+    const grp = this._dragGroup || [id];
+    const cards = this.visibleCards().filter(c => grp.indexOf(c.id) < 0 && c.fx != null);
+    let sx = fx, sy = fy;
+    const guides = [];
+    // 1) alinhamento de centro (vertical: mesmo x · horizontal: mesmo y)
+    let bV = null, bVd = TOL;
+    cards.forEach(c => { const d = Math.abs(fx - c.fx); if (d < bVd) { bVd = d; bV = c.fx; } });
+    if (bV != null) sx = bV;
+    let bH = null, bHd = TOL;
+    cards.forEach(c => { const d = Math.abs(fy - c.fy); if (d < bHd) { bHd = d; bH = c.fy; } });
+    if (bH != null) sy = bH;
+    // 2) espaçamento igual: centralizar entre o vizinho de cada lado no mesmo eixo
+    if (bH != null) { // linha horizontal → equalizar gaps em x
+      const row = cards.filter(c => Math.abs(c.fy - sy) < 1).sort((a, b) => a.fx - b.fx);
+      const left = row.filter(c => c.fx < sx).pop();
+      const right = row.filter(c => c.fx > sx).find(Boolean);
+      if (left && right) { const mid = (left.fx + right.fx) / 2; if (Math.abs(sx - mid) < TOL) sx = mid; }
+    }
+    if (bV != null) { // coluna vertical → equalizar gaps em y
+      const col = cards.filter(c => Math.abs(c.fx - sx) < 1).sort((a, b) => a.fy - b.fy);
+      const up = col.filter(c => c.fy < sy).pop();
+      const down = col.filter(c => c.fy > sy).find(Boolean);
+      if (up && down) { const mid = (up.fy + down.fy) / 2; if (Math.abs(sy - mid) < TOL) sy = mid; }
+    }
+    // 3) guias + distâncias (números) para os vizinhos alinhados
+    if (bV != null) {
+      const col = cards.filter(c => Math.abs(c.fx - sx) < 1).sort((a, b) => a.fy - b.fy);
+      guides.push({ type: 'v', at: sx });
+      const up = col.filter(c => c.fy < sy).pop();
+      const down = col.filter(c => c.fy > sy).find(Boolean);
+      if (up) guides.push({ type: 'dist', axis: 'y', x: sx, y1: up.fy, y2: sy });
+      if (down) guides.push({ type: 'dist', axis: 'y', x: sx, y1: sy, y2: down.fy });
+    }
+    if (bH != null) {
+      const row = cards.filter(c => Math.abs(c.fy - sy) < 1).sort((a, b) => a.fx - b.fx);
+      guides.push({ type: 'h', at: sy });
+      const left = row.filter(c => c.fx < sx).pop();
+      const right = row.filter(c => c.fx > sx).find(Boolean);
+      if (left) guides.push({ type: 'dist', axis: 'x', y: sy, x1: left.fx, x2: sx });
+      if (right) guides.push({ type: 'dist', axis: 'x', y: sy, x1: sx, x2: right.fx });
+    }
+    return { fx: sx, fy: sy, guides };
   }
   // ---- ligar blocos arrastando de um ponto (porta) até outro bloco ----
   startLink(e, fromId) {
@@ -942,6 +1018,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const km = this.kindMeta(kind);
     const compact = this.isCompact();
     const fcol = this._flowColors && this._flowColors[c.id];
+    const msel = this.state.multiSel && this.state.multiSel.indexOf(c.id) >= 0;
     const keyline = kind === 'meta' ? (c.metaPrimary || c.metaHeadline || c.objetivo)
       : kind === 'pagina' ? (c.pgHeadline || c.pgUrl || c.objetivo)
       : (c.waAbertura || c.objetivo);
@@ -950,7 +1027,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       onClick:(e)=>this.nodeClick(e, c),
       onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
-      style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+km.accent:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(km.accent,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
+      style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+km.accent:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(km.accent,0.16):'var(--shadow-card)', outline: msel?'2px solid var(--brand-purple)':'none', outlineOffset:'2px', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
     },
       this.el('div', { style:{ display:'flex', alignItems:'center', gap:7, padding:'9px 11px', background:this.hexA(km.accent,0.10), borderBottom:'1px solid '+this.hexA(km.accent,0.18) } },
         this.el('span', { style:{ width:24, height:24, flex:'none', borderRadius:8, background:this.hexA(km.accent,0.16), color:km.accent, display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.kindIcon(kind, 14, km.accent)),
@@ -975,6 +1052,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const st = this.sc(c.status);
     const compact = this.isCompact();
     const fcol = this._flowColors && this._flowColors[c.id];
+    const msel = this.state.multiSel && this.state.multiSel.indexOf(c.id) >= 0;
     const media = compact ? null : (c.driveId ? this.cardMediaVideo(c, jr) : this.cardMediaTodo(c, jr));
     const footerKids = [ this.funcaoBadge(c.funcao), this.tempChip(c.pubTemp), this.el('div', { key:'sp', style:{ flex:1 } }) ];
     if (!compact) footerKids.push(this.el('span', { key:'st', title:st.label, style:{ width:9, height:9, borderRadius:9, background:st.dot, flex:'none', boxShadow:'0 0 0 3px '+this.hexA(st.dot,0.18) } }));
@@ -995,7 +1073,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       onClick:(e)=>this.nodeClick(e, c),
       onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
-      style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+jr.color:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(jr.color,0.16):'var(--shadow-card)', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
+      style:{ width:206, background:'var(--white)', borderRadius:16, overflow:'hidden', border: sel?'1.5px solid '+jr.color:'1px solid var(--gray-150)', boxShadow: sel?'var(--shadow-md), 0 0 0 3px '+this.hexA(jr.color,0.16):'var(--shadow-card)', outline: msel?'2px solid var(--brand-purple)':'none', outlineOffset:'2px', cursor:'grab', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)', userSelect:'none' }
     }, media, content);
     return this.posWrap('card-'+c.id, x, y, inner, sel?20:5, c.id, sel);
   }
@@ -1177,6 +1255,30 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       connectors.push(this.el('path', { key:'linkline', d:`M ${lk.fromX} ${lk.fromY} C ${mx} ${lk.fromY}, ${mx} ${lk.wy}, ${lk.wx} ${lk.wy}`, stroke:'var(--brand-purple)', strokeWidth:2.5, strokeDasharray:'6 5', fill:'none', strokeLinecap:'round' }));
       connectors.push(this.el('circle', { key:'linkdot', cx:lk.wx, cy:lk.wy, r:5, fill:'var(--brand-purple)' }));
     }
+    // molduras de grupos (atrás dos nós)
+    const groupBoxes = [];
+    const groups = {};
+    cards.forEach(c => { if (c.groupId && c.fx != null) (groups[c.groupId] = groups[c.groupId] || []).push(c); });
+    Object.keys(groups).forEach(gid => {
+      const g = groups[gid]; if (g.length < 2) return;
+      const xs = g.map(c => c.fx), ys = g.map(c => c.fy);
+      const minX = Math.min(...xs) - 118, maxX = Math.max(...xs) + 118, minY = Math.min(...ys) - 96, maxY = Math.max(...ys) + 96;
+      groupBoxes.push(this.el('div', { key:'grp'+gid, style:{ position:'absolute', left:minX, top:minY, width:maxX-minX, height:maxY-minY, border:'1.5px dashed var(--brand-purple)', background:this.hexA('#A701FD',0.04), borderRadius:18, zIndex:0, pointerEvents:'none' } },
+        this.el('span', { style:{ position:'absolute', top:-11, left:12, background:'var(--brand-purple)', color:'#fff', fontSize:10, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', padding:'2px 8px', borderRadius:999 } }, 'Grupo')));
+    });
+    // guias de alinhamento + distâncias (números)
+    const guides = this.state.guides || [];
+    const distEls = [];
+    guides.forEach((g, i) => {
+      if (g.type === 'v') connectors.push(this.el('line', { key:'gv'+i, x1:g.at, y1:0, x2:g.at, y2:worldH, stroke:'#FC0097', strokeWidth:1, strokeDasharray:'6 4' }));
+      else if (g.type === 'h') connectors.push(this.el('line', { key:'gh'+i, x1:0, y1:g.at, x2:worldW, y2:g.at, stroke:'#FC0097', strokeWidth:1, strokeDasharray:'6 4' }));
+      else if (g.type === 'dist') {
+        let mx, my, val;
+        if (g.axis === 'x') { mx = (g.x1 + g.x2) / 2; my = g.y; val = Math.round(Math.abs(g.x2 - g.x1)); connectors.push(this.el('line', { key:'gdl'+i, x1:g.x1, y1:g.y, x2:g.x2, y2:g.y, stroke:'#FC0097', strokeWidth:1.5 })); }
+        else { mx = g.x; my = (g.y1 + g.y2) / 2; val = Math.round(Math.abs(g.y2 - g.y1)); connectors.push(this.el('line', { key:'gdl'+i, x1:g.x, y1:g.y1, x2:g.x, y2:g.y2, stroke:'#FC0097', strokeWidth:1.5 })); }
+        distEls.push(this.el('div', { key:'gd'+i, style:{ position:'absolute', left:mx, top:my, transform:'translate(-50%,-50%)', background:'#FC0097', color:'#fff', fontSize:11, fontWeight:800, padding:'2px 6px', borderRadius:6, pointerEvents:'none', zIndex:26, whiteSpace:'nowrap' } }, val + ' px'));
+      }
+    });
     const nodes = cards.map(c => {
       const fx = c.fx == null ? 240 : c.fx, fy = c.fy == null ? 200 : c.fy;
       if (c.kind === 'titulo') return this.renderTitleCard(c, fx, fy);
@@ -1184,8 +1286,10 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       return (c.kind && c.kind !== 'video') ? this.renderFlowCard(c, jr, fx, fy, c.kind) : this.renderCard(c, jr, fx, fy);
     });
     const world = this.el('div', { style:{ position:'absolute', left:0, top:0, width:worldW, height:worldH, transformOrigin:'0 0', transform:`translate(${S.panX}px, ${S.panY}px) scale(${S.zoom})` } },
+      groupBoxes,
       this.el('svg', { key:'svg', width:worldW, height:worldH, style:{ position:'absolute', left:0, top:0, overflow:'visible', pointerEvents:'none' } }, connectors),
-      nodes
+      nodes,
+      distEls
     );
     return this.el('div', {
       ref: this._setVp,
@@ -1197,13 +1301,14 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   // Bloco de TÍTULO do fluxo (texto + ícone + cor que pinta o fluxo conectado)
   renderTitleCard(c, x, y) {
     const sel = this.state.selected && this.state.selected.type==='card' && this.state.selected.id===c.id;
+    const msel = this.state.multiSel && this.state.multiSel.indexOf(c.id) >= 0;
     const col = c.color || '#A701FD';
     const inner = this.el('div', {
       onMouseDown:(e)=>this.startDrag(e, c.id),
       onClick:(e)=>this.nodeClick(e, c),
       onMouseEnter:(e)=>{ if(!sel){ e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='var(--shadow-md)'; } },
       onMouseLeave:(e)=>{ if(!sel){ e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='var(--shadow-card)'; } },
-      style:{ minWidth:200, maxWidth:300, display:'inline-flex', alignItems:'center', gap:10, background:this.hexA(col,0.12), borderRadius:14, padding:'12px 16px', border: sel?'2px solid '+col:'1.5px solid '+this.hexA(col,0.5), boxShadow:'var(--shadow-card)', cursor:'grab', userSelect:'none', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)' }
+      style:{ minWidth:200, maxWidth:300, display:'inline-flex', alignItems:'center', gap:10, background:this.hexA(col,0.12), borderRadius:14, padding:'12px 16px', border: sel?'2px solid '+col:'1.5px solid '+this.hexA(col,0.5), boxShadow:'var(--shadow-card)', outline: msel?'2px solid var(--brand-purple)':'none', outlineOffset:'2px', cursor:'grab', userSelect:'none', transition:'transform .14s var(--ease-out), box-shadow .22s var(--ease-out)' }
     },
       this.el('span', { style:{ width:30, height:30, flex:'none', borderRadius:9, background:col, color:'#fff', display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.kindIcon('titulo', 17, '#fff')),
       this.el('div', { style:{ minWidth:0 } },
@@ -1279,16 +1384,37 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   }
   nodeClick(e, c) {
     if (this._suppressClick) return;
-    if (this.state.connectMode) {
-      if (e && e.stopPropagation) e.stopPropagation();
-      if (!this.state.connectFrom) { this.setState({ connectFrom: c.id }); return; }
-      if (this.state.connectFrom === c.id) { this.setState({ connectFrom: null }); return; }
-      const edges = (this.state.edges || []).slice();
-      if (!edges.some(ed => ed.from === this.state.connectFrom && ed.to === c.id)) edges.push({ from: this.state.connectFrom, to: c.id });
-      this.setState({ edges, connectFrom: null }, () => this.save());
+    // Shift/Cmd+clique → multisseleção (para agrupar)
+    if (e && (e.shiftKey || ((e.metaKey || e.ctrlKey) && !this.state.connectMode))) {
+      if (e.stopPropagation) e.stopPropagation();
+      const ms = (this.state.multiSel || []).slice();
+      const i = ms.indexOf(c.id);
+      if (i >= 0) ms.splice(i, 1); else ms.push(c.id);
+      this.setState({ multiSel: ms, selected: null });
       return;
     }
+    this.setState({ multiSel: [] });
     this.select({ type:'card', id:c.id, funnelId:c.funnelId });
+  }
+  // ---- agrupar / desagrupar ----
+  groupSelected() {
+    const ms = this.state.multiSel || [];
+    const ids = ms.length >= 2 ? ms : (this.state.selected && this.state.selected.type === 'card' ? [this.state.selected.id] : []);
+    if (ids.length < 2) return;
+    const gid = 'g' + Date.now().toString(36);
+    const cards = this.state.cards.map(c => ids.indexOf(c.id) >= 0 ? { ...c, groupId: gid } : c);
+    this.setState({ cards, multiSel: ids }, () => this.save());
+  }
+  ungroupSelected() {
+    const ms = this.state.multiSel || [];
+    let ids = ms.slice();
+    if (this.state.selected && this.state.selected.type === 'card') ids.push(this.state.selected.id);
+    // desagrupa todos os grupos tocados pela seleção
+    const gids = {};
+    this.state.cards.forEach(c => { if (ids.indexOf(c.id) >= 0 && c.groupId) gids[c.groupId] = 1; });
+    if (!Object.keys(gids).length) return;
+    const cards = this.state.cards.map(c => (c.groupId && gids[c.groupId]) ? Object.assign({}, c, { groupId: undefined }) : c);
+    this.setState({ cards }, () => this.save());
   }
   addNodeAt(kind, wx, wy) {
     const fid = this.state.viewAll ? (this.state.funnels[0]||{}).id : this.state.funnelId;
