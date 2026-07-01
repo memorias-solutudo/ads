@@ -137,20 +137,25 @@ class Funis extends React.Component {
   }
   render() {
     const V = this.renderVals();
-    return this.el('div', { style:{ position:'fixed', inset:0, display:'flex', flexDirection:'column', fontFamily:'var(--font-sans)', color:'var(--ink)', background:'var(--surface-app)', letterSpacing:'var(--tracking-tight)' } },
-      this.el('div', { style:{ height:62, flex:'none', display:'flex', alignItems:'center', gap:16, padding:'0 22px', background:'var(--white)', borderBottom:'1px solid var(--gray-200)', zIndex:40 } },
-        this.el('div', { style:{ display:'flex', alignItems:'center', gap:11, flex:'none' } },
-          this.brandMark(30),
-          this.el('div', { style:{ display:'flex', alignItems:'center', gap:11 } },
-            this.el('div', { style:{ fontWeight:800, fontSize:17, letterSpacing:'-0.02em', whiteSpace:'nowrap', color:'var(--ink)' } }, 'ADS Solutudo'),
-            this.el('div', { style:{ fontSize:11, color:'var(--gray-500)', fontWeight:600, borderLeft:'1px solid var(--gray-200)', paddingLeft:11, whiteSpace:'nowrap' } }, 'tráfego pago · análise de criativos'))),
-        this.el('div', { style:{ flex:'none' } }, V.modeToggle),
-        this.el('div', { style:{ flex:1, minWidth:0, display:'flex', justifyContent:'flex-end' } }, V.headerRight)),
-      this.el('div', { style:{ flex:'none', zIndex:30 } }, V.subbar),
-      this.el('div', { style:{ flex:1, position:'relative', overflow:'hidden' } },
-        V.isDirec ? this.el('div', { className:'solu-scroll', style:{ position:'absolute', inset:0, overflowY:'auto', padding:'26px 34px 128px' } },
+    const pill = (extra, ...kids) => this.el('div', { style: Object.assign({ position:'absolute', zIndex:41, background:'var(--glass-white)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:14, boxShadow:'var(--shadow-card), var(--ring-hairline)' }, extra) }, ...kids);
+    return this.el('div', { style:{ position:'fixed', inset:0, fontFamily:'var(--font-sans)', color:'var(--ink)', background:'var(--surface-app)', letterSpacing:'var(--tracking-tight)', overflow:'hidden' } },
+      // CAMADA DE CONTEÚDO (ocupa tudo; as pílulas flutuam por cima)
+      this.el('div', { style:{ position:'absolute', inset:0, overflow:'hidden' } },
+        V.isDirec ? this.el('div', { className:'solu-scroll', style:{ position:'absolute', inset:0, overflowY:'auto', padding:'92px 30px 128px' } },
           this.el('div', { style:{ width:'100%', display:'flex', flexDirection:'column', gap:38 } }, V.groups.map((g) => this.renderDirecGroup(g)))) : null,
         V.isFunil ? this.el(React.Fragment, {}, V.canvas, V.panel) : null),
+      // LOGO (pílula, topo esquerdo)
+      pill({ top:14, left:16, display:'flex', alignItems:'center', gap:9, padding:'7px 14px 7px 11px' },
+        this.brandMark(24),
+        this.el('div', { style:{ fontWeight:800, fontSize:15, letterSpacing:'-0.02em', whiteSpace:'nowrap', color:'var(--ink)' } }, 'ADS Solutudo')),
+      // TOGGLE DE MODO (pílula central)
+      this.el('div', { style:{ position:'absolute', top:14, left:'50%', transform:'translateX(-50%)', zIndex:42, borderRadius:999, boxShadow:'var(--shadow-card), var(--ring-hairline)' } }, V.modeToggle),
+      // AÇÕES (pílula, topo direito)
+      pill({ top:14, right:16, padding:'4px 6px', display:'flex', alignItems:'center' }, V.headerRight),
+      // ABAS DE FUNIL (páginas) — pílula, topo esquerdo, 2ª linha
+      V.isFunil ? this.buildPageTabs() : null,
+      // FILTROS (pílula flutuante, topo direito 2ª linha) — só no mapa
+      V.isFunil ? this.el('div', { style:{ position:'absolute', top:62, right:16, zIndex:40, maxWidth:'62vw' } }, V.subbar) : null,
       V.footerDock,
       V.modalOpen ? this.renderModal(V.mv) : null,
       V.overlays
@@ -780,23 +785,30 @@ Reaproveitar: empatia do c11 + prova do c2.`,
   buildControls() {
     const S = this.state;
     const tcount = (S.trash || []).length;
-    const tab = (label, active, on, key) => this.el('button', { key, onClick:on, style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'7px 14px', fontSize:13, fontWeight:700, background: active?'var(--ink)':'transparent', color: active?'var(--white)':'var(--gray-600)', whiteSpace:'nowrap', transition:'background .15s var(--ease-out)' } }, label);
-    return this.el('div', { style:{ display:'flex', alignItems:'center', gap:12, justifyContent:'space-between' } },
-      this.el('div', { className:'solu-scroll', style:{ display:'flex', alignItems:'center', gap:3, background:'var(--gray-100)', borderRadius:999, padding:4, overflowX:'auto', maxWidth:'64%' } },
-        [].concat(
-          S.funnels.map(f => tab(f.name, !S.viewAll && S.funnelId===f.id, () => this.switchFunnel(f.id), 'f-'+f.id)),
-          [ this.el('div', { key:'sep', style:{ width:1, height:18, background:'var(--gray-200)', margin:'0 3px', flex:'none' } }),
-            tab('Ver todos', S.viewAll, () => this.toggleViewAll(), 'all') ]
-        )
-      ),
-      this.el('div', { style:{ display:'flex', alignItems:'center', gap:8, flex:'none' } },
-        this.el('button', { onClick:()=>this.openTrash(), title:'Lixeira', style:{ position:'relative', border:'none', cursor:'pointer', borderRadius:999, width:38, height:38, display:'inline-flex', alignItems:'center', justifyContent:'center', background:'var(--white)', color:'var(--gray-600)', boxShadow:'var(--ring-hairline)', flex:'none' } },
-          this.el('svg', { width:16, height:16, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M3 6h18' }), this.el('path', { key:2, d:'M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2' }), this.el('path', { key:3, d:'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6' }), this.el('path', { key:4, d:'M10 11v6' }), this.el('path', { key:5, d:'M14 11v6' })),
-          tcount ? this.el('span', { style:{ position:'absolute', top:-4, right:-4, minWidth:18, height:18, padding:'0 4px', borderRadius:999, background:'var(--brand-purple)', color:'#fff', fontSize:10, fontWeight:800, display:'inline-flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 0 2px var(--white)' } }, String(tcount)) : null
-        ),
-        this.el('button', { onClick:()=>this.openAddFunnel(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'9px 15px', fontSize:13, fontWeight:700, background:'var(--white)', color:'var(--ink)', boxShadow:'var(--ring-hairline)' } }, '+ Funil'),
-        this.el('button', { onClick:()=>this.openAddMenuCenter(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'9px 17px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)' } }, '+ Adicionar')
-      )
+    const canUndo = this._hist && this._hist.undo.length > 0;
+    const canRedo = this._hist && this._hist.redo.length > 0;
+    const iconBtn = (title, on, enabled, path) => this.el('button', { onClick:on, onMouseDown:(e)=>e.stopPropagation(), title, disabled: enabled === false, style:{ border:'none', cursor: enabled === false ? 'default' : 'pointer', borderRadius:999, width:34, height:34, display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', color: enabled === false ? 'var(--gray-300)' : 'var(--gray-600)', flex:'none' } },
+      this.el('svg', { width:16, height:16, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, path));
+    const sep = this.el('div', { key:'sep', style:{ width:1, height:18, background:'var(--gray-200)', margin:'0 2px', flex:'none' } });
+    return this.el('div', { style:{ display:'flex', alignItems:'center', gap:4 } },
+      iconBtn('Desfazer (Ctrl+Z)', ()=>this.undo(), canUndo, [this.el('path',{key:1,d:'M9 14L4 9l5-5'}), this.el('path',{key:2,d:'M4 9h11a5 5 0 0 1 0 10h-1'})]),
+      iconBtn('Refazer (Ctrl+Y)', ()=>this.redo(), canRedo, [this.el('path',{key:1,d:'M15 14l5-5-5-5'}), this.el('path',{key:2,d:'M20 9H9a5 5 0 0 0 0 10h1'})]),
+      sep,
+      this.el('button', { onClick:()=>this.openTrash(), onMouseDown:(e)=>e.stopPropagation(), title:'Lixeira', style:{ position:'relative', border:'none', cursor:'pointer', borderRadius:999, width:34, height:34, display:'inline-flex', alignItems:'center', justifyContent:'center', background:'transparent', color:'var(--gray-600)', flex:'none' } },
+        this.el('svg', { width:16, height:16, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:1.9, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:1, d:'M3 6h18' }), this.el('path', { key:2, d:'M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2' }), this.el('path', { key:3, d:'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6' }), this.el('path', { key:4, d:'M10 11v6' }), this.el('path', { key:5, d:'M14 11v6' })),
+        tcount ? this.el('span', { style:{ position:'absolute', top:-2, right:-2, minWidth:16, height:16, padding:'0 4px', borderRadius:999, background:'var(--brand-purple)', color:'#fff', fontSize:9, fontWeight:800, display:'inline-flex', alignItems:'center', justifyContent:'center', boxShadow:'0 0 0 2px var(--white)' } }, String(tcount)) : null),
+      this.el('button', { onClick:()=>this.openAddMenuCenter(), onMouseDown:(e)=>e.stopPropagation(), style:{ border:'none', cursor:'pointer', borderRadius:999, padding:'8px 15px', fontSize:13, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)', flex:'none' } }, '+ Adicionar')
+    );
+  }
+  // abas de funil (comportamento de páginas) — pílula flutuante no topo esquerdo
+  buildPageTabs() {
+    const S = this.state;
+    const tab = (label, active, on, key) => this.el('button', { key, onClick:on, onMouseDown:(e)=>e.stopPropagation(), style:{ border:'none', cursor:'pointer', borderRadius:9, padding:'8px 14px', fontSize:13, fontWeight:700, whiteSpace:'nowrap', background: active?'var(--white)':'transparent', color: active?'var(--ink)':'var(--gray-500)', boxShadow: active?'var(--shadow-xs)':'none', transition:'all .15s var(--ease-out)' } }, label);
+    return this.el('div', { className:'solu-scroll', style:{ position:'absolute', top:62, left:16, zIndex:41, display:'flex', alignItems:'center', gap:3, background:'var(--glass-white)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:12, padding:4, boxShadow:'var(--shadow-card), var(--ring-hairline)', maxWidth:'52vw', overflowX:'auto' } },
+      S.funnels.map(f => tab(f.name, !S.viewAll && S.funnelId===f.id, ()=>this.switchFunnel(f.id), 'f-'+f.id)),
+      this.el('div', { key:'sep', style:{ width:1, height:18, background:'var(--gray-200)', margin:'0 3px', flex:'none' } }),
+      tab('Ver todos', S.viewAll, ()=>this.toggleViewAll(), 'all'),
+      this.el('button', { key:'addf', onClick:()=>this.openAddFunnel(), onMouseDown:(e)=>e.stopPropagation(), title:'Novo funil (página)', style:{ border:'none', cursor:'pointer', borderRadius:8, width:30, height:30, background:'transparent', color:'var(--gray-500)', fontSize:18, fontWeight:700, flex:'none' } }, '+')
     );
   }
   setFilter(key, val) { this.setState({ filters: { ...this.state.filters, [key]: val } }); }
@@ -810,8 +822,8 @@ Reaproveitar: empatia do c11 + prova do c2.`,
     const vis = this.visibleCards();
     const cnt = (s) => vis.filter(c => c.status === s).length;
     const legendItem = (col, lab, dashed) => this.el('span', { key:lab, style:{ display:'inline-flex', alignItems:'center', gap:5, fontSize:11, fontWeight:600, color:'var(--gray-500)' } }, this.el('span', { style:{ width:9, height:9, borderRadius:9, background: dashed?'transparent':col, border: dashed?'1.5px dashed '+col:'none', flex:'none' } }), lab);
-    return this.el('div', { style:{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap', padding:'9px 22px', background:'var(--white)', borderBottom:'1px solid var(--gray-200)' } },
-      this.el('span', { style:{ fontSize:11, fontWeight:800, letterSpacing:'.06em', textTransform:'uppercase', color:'var(--gray-400)' } }, 'Filtros'),
+    return this.el('div', { className:'solu-scroll', style:{ display:'flex', alignItems:'center', gap:10, padding:'6px 12px', background:'var(--glass-white)', backdropFilter:'blur(20px)', WebkitBackdropFilter:'blur(20px)', borderRadius:12, boxShadow:'var(--shadow-card), var(--ring-hairline)', overflowX:'auto', maxWidth:'88vw' } },
+      this.el('span', { style:{ fontSize:11, fontWeight:800, letterSpacing:'.06em', textTransform:'uppercase', color:'var(--gray-400)', flex:'none' } }, 'Filtros'),
       fsel('status', 'Status', [['all','Todos'],['existe','Existe'],['confirmar','A confirmar'],['falta','Falta produzir']]),
       fsel('jornada', 'Jornada', [['all','Todas']].concat(this.journeys.map(j => [j.id, j.label]))),
       fsel('funcao', 'Função', [['all','Todas'],['AD','AD'],['PG','PG']]),
@@ -1296,7 +1308,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       onMouseDown:(e)=>this.startPan(e),
       onContextMenu:(e)=>{ e.preventDefault(); this.openAddMenu(e.clientX, e.clientY); },
       style:{ position:'absolute', inset:0, overflow:'hidden', cursor: this._pan?'grabbing':'grab', background:'var(--surface-app)', backgroundImage:'radial-gradient(circle, rgba(21,21,21,.05) 1px, transparent 1px)', backgroundSize:'26px 26px' }
-    }, world, this.buildBoardToolbar(), this.buildZoomControls(), this.buildAddMenu());
+    }, world, this.buildZoomControls(), this.buildAddMenu());
   }
   // Bloco de TÍTULO do fluxo (texto + ícone + cor que pinta o fluxo conectado)
   renderTitleCard(c, x, y) {
