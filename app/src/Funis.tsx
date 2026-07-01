@@ -1675,9 +1675,108 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
     return null;
   }
 
+  // ---- editor de texto rico (contentEditable) ----
+  richArea(card, key, opts) {
+    opts = opts || {};
+    const ph = opts.placeholder || 'Escreva aqui…';
+    const minH = opts.minHeight || 240;
+    const seed = (typeof opts.seed === 'function') ? opts.seed(card) : null;
+    let node = null;
+    const sync = () => { if (node) this.updateCard(card.id, { [key]: node.innerHTML }); };
+    const run = (cmd, val) => (e) => { e.preventDefault(); e.stopPropagation(); if (node) node.focus(); try { document.execCommand(cmd, false, val || null); } catch (_e) {} sync(); };
+    const tbtn = (label, handler, title, extra) => this.el('button', { key:title, type:'button', title, onMouseDown:handler, onClick:(e)=>e.preventDefault(), style:Object.assign({ minWidth:30, height:30, padding:'0 8px', border:'1px solid var(--gray-200)', background:'var(--white)', borderRadius:8, cursor:'pointer', fontSize:13, fontWeight:800, color:'var(--gray-700)', display:'inline-flex', alignItems:'center', justifyContent:'center', lineHeight:1 }, extra || {}) }, label);
+    const sep = () => this.el('span', { style:{ width:1, height:18, background:'var(--gray-200)', margin:'0 2px', flex:'none' } });
+    const toolbar = this.el('div', { onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', flexWrap:'wrap', alignItems:'center', gap:5, marginBottom:8 } },
+      tbtn('B', run('bold'), 'Negrito (Ctrl+B)', { fontWeight:900 }),
+      tbtn(this.el('span', { style:{ fontStyle:'italic', fontFamily:'var(--font-display)' } }, 'I'), run('italic'), 'Itálico (Ctrl+I)'),
+      tbtn(this.el('span', { style:{ textDecoration:'underline' } }, 'U'), run('underline'), 'Sublinhado (Ctrl+U)'),
+      sep(),
+      tbtn('H', run('formatBlock', 'H3'), 'Título de seção', { fontWeight:900 }),
+      tbtn('“”', run('formatBlock', 'BLOCKQUOTE'), 'Citação'),
+      sep(),
+      tbtn(this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('circle', { key:'a', cx:4, cy:6, r:1.4, fill:'currentColor', stroke:'none' }), this.el('circle', { key:'b', cx:4, cy:12, r:1.4, fill:'currentColor', stroke:'none' }), this.el('circle', { key:'c', cx:4, cy:18, r:1.4, fill:'currentColor', stroke:'none' }), this.el('path', { key:'d', d:'M9 6h11' }), this.el('path', { key:'e', d:'M9 12h11' }), this.el('path', { key:'f', d:'M9 18h11' })), run('insertUnorderedList'), 'Lista com marcadores'),
+      tbtn(this.el('span', { style:{ fontSize:12, fontWeight:800 } }, '1.'), run('insertOrderedList'), 'Lista numerada'),
+      sep(),
+      tbtn(this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:'a', d:'M9 14L4 9l5-5' }), this.el('path', { key:'b', d:'M4 9h11a5 5 0 0 1 5 5v0a5 5 0 0 1-5 5H9' })), run('undo'), 'Desfazer (Ctrl+Z)'),
+      tbtn(this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round', strokeLinejoin:'round' }, this.el('path', { key:'a', d:'M15 14l5-5-5-5' }), this.el('path', { key:'b', d:'M20 9H9a5 5 0 0 0-5 5v0a5 5 0 0 0 5 5h6' })), run('redo'), 'Refazer (Ctrl+Y)'),
+      sep(),
+      tbtn(this.el('span', { style:{ fontSize:11, fontWeight:700 } }, 'Limpar'), run('removeFormat'), 'Remover formatação')
+    );
+    const editor = this.el('div', {
+      key: card.id + '-' + key,
+      className: 'sol-rich solu-scroll',
+      contentEditable: true,
+      suppressContentEditableWarning: true,
+      'data-ph': ph,
+      ref: (n) => { node = n; if (n && n.__rk !== card.id + key) { n.__rk = card.id + key; n.innerHTML = card[key] || (seed || ''); } },
+      onInput: sync,
+      onBlur: sync,
+      onMouseDown: (e) => e.stopPropagation(),
+      onKeyDown: (e) => { e.stopPropagation(); },
+      style: { minHeight:minH, maxHeight:'56vh', overflowY:'auto', border:'1px solid var(--gray-200)', borderRadius:12, padding:'13px 15px', fontFamily:'var(--font-sans)', fontSize:14, lineHeight:1.6, color:'var(--ink)', outline:'none', letterSpacing:'-0.01em', background:'var(--white)' }
+    });
+    return this.el('div', { style:{ marginBottom:16 } }, toolbar, editor);
+  }
+
+  faltaSeed(card) {
+    const parts = [];
+    if (card.objetivo) parts.push(card.objetivo);
+    if (card.resumo && card.resumo !== card.objetivo) parts.push(card.resumo);
+    if (card.estiloPorque) parts.push(card.estiloPorque);
+    if (!parts.length) return '';
+    const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return parts.map(p => '<p>' + esc(p).replace(/\n/g, '<br>') + '</p>').join('');
+  }
+
+  buildFaltaCardPanel(card) {
+    const jr = this.jById(card.journeyId);
+    const rec = this.journeyRec(card.journeyId);
+    const floatClose = this.el('button', { key:'x', onClick:()=>this.select(null), onMouseDown:(e)=>e.stopPropagation(), title:'Fechar', style:{ position:'absolute', top:14, right:16, zIndex:5, width:34, height:34, border:'none', borderRadius:10, background:'var(--gray-100)', cursor:'pointer', color:'var(--gray-600)', display:'inline-flex', alignItems:'center', justifyContent:'center' } }, this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round' }, this.el('path', { d:'M6 6l12 12M18 6L6 18' })));
+
+    const header = this.el('div', { key:'h', style:{ flex:'none', padding:'20px 26px 16px', borderBottom:'1px solid var(--gray-150)' } },
+      this.el('div', { style:{ display:'flex', alignItems:'center', gap:8, marginBottom:12, paddingRight:44 } },
+        this.el('span', { style:{ width:9, height:9, borderRadius:9, background:jr.color, flex:'none' } }),
+        this.el('span', { style:{ fontSize:11.5, fontWeight:800, textTransform:'uppercase', letterSpacing:'.04em', color:jr.color, whiteSpace:'nowrap' } }, jr.label),
+        this.el('span', { style:{ fontSize:11, fontWeight:800, textTransform:'uppercase', letterSpacing:'.04em', color:'var(--gray-500)', background:'var(--gray-100)', borderRadius:999, padding:'3px 9px', whiteSpace:'nowrap' } }, 'A produzir')),
+      this.el('input', { key:card.id+'-name', defaultValue:card.name, placeholder:'Título do criativo…', onChange:(e)=>this.updateCard(card.id,{ name:e.target.value }), onMouseDown:(e)=>e.stopPropagation(), style:{ width:'100%', border:'none', outline:'none', background:'transparent', fontFamily:'var(--font-sans)', fontSize:22, fontWeight:800, color:'var(--ink)', letterSpacing:'-0.02em', padding:0, marginBottom:14 } }),
+      this.statusSeg(card));
+
+    const orient = this.el('div', { key:'orient', style:{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap', marginBottom:16 } },
+      this.recChip(card.formato || rec.fmt, 'fmt'),
+      this.recChip(card.estilo || rec.est, 'cam'),
+      this.el('span', { style:{ fontSize:11.5, color:'var(--gray-500)', fontWeight:600 } }, rec.obj));
+
+    const descLabel = this.el('div', { key:'dl', style:{ display:'flex', alignItems:'center', gap:8, marginBottom:9 } },
+      this.el('div', { style:{ fontSize:12, fontWeight:800, letterSpacing:'.04em', textTransform:'uppercase', color:'var(--ink)' } }, 'Descrição / roteiro'),
+      this.el('div', { style:{ flex:1, height:1, background:'var(--gray-150)' } }),
+      this.el('span', { style:{ fontSize:10.5, color:'var(--gray-400)', fontWeight:600 } }, 'Ctrl+B negrito · • listas'));
+
+    const desc = this.richArea(card, 'descHtml', { placeholder:'O que este vídeo precisa dizer, para quem, e como gravar. Use Ctrl+B para negrito, • para listas…', minHeight:280, seed:(c)=>this.faltaSeed(c) });
+
+    const advanced = this.el('details', { key:'adv', className:'sol-adv', style:{ marginTop:8, borderTop:'1px solid var(--gray-150)', paddingTop:14 } },
+      this.el('summary', { style:{ cursor:'pointer', fontSize:12, fontWeight:700, color:'var(--gray-500)', listStyle:'none', display:'flex', alignItems:'center', gap:7, userSelect:'none' } },
+        this.el('span', { className:'caret', style:{ display:'inline-block', transition:'transform .15s' } }, '▸'), 'Mais opções (funil, jornada, mídia)'),
+      this.el('div', { style:{ marginTop:14 } },
+        this.funnelSelect(card),
+        this.journeySelect(card),
+        this.sel(card, 'plataforma', 'Plataforma / campanha', 'manual', ['Meta', 'Google Ads', 'YouTube']),
+        this.txt(card, 'formato', 'Formato (proporção · duração)', 'manual', 'ex.: 9:16 · 30s'),
+        this.sel(card, 'estilo', 'Estilo de criativo', 'manual', ['storytelling', 'rosto sentado', 'rosto em pé', 'VSL', 'demonstração', 'comunicado'])));
+
+    const actions = this.el('div', { key:'act', style:{ display:'flex', gap:10, marginTop:22 } },
+      this.el('button', { onClick:()=>this.duplicateCard(card.id), style:{ flex:1, border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--ink)', borderRadius:12, padding:'11px', fontSize:12.5, fontWeight:700, cursor:'pointer' } }, 'Duplicar'),
+      this.el('button', { onClick:()=>this.deleteCard(card.id), style:{ flex:1, border:'1px solid var(--gray-200)', background:'var(--white)', color:'var(--danger)', borderRadius:12, padding:'11px', fontSize:12.5, fontWeight:700, cursor:'pointer' } }, 'Excluir'));
+
+    const body = this.el('div', { key:'b', className:'solu-scroll', style:{ flex:1, minHeight:0, overflowY:'auto', padding:'20px 26px 42px' } },
+      orient, descLabel, desc, advanced, actions);
+
+    return this.panelWrap([floatClose, header, body]);
+  }
+
   buildCardPanel(card) {
     if (card.kind === 'titulo') return this.buildTitlePanel(card);
     if (card.kind && card.kind !== 'video') return this.buildFlowPanel(card);
+    if (card.status === 'falta') return this.buildFaltaCardPanel(card);
     const jr = this.jById(card.journeyId);
     const header = this.el('div', { key:'h', style:{ padding:'0 0 16px', marginBottom:20, borderBottom:'1px solid var(--gray-150)' } },
       this.el('div', { style:{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, marginBottom:12, paddingRight:46 } },

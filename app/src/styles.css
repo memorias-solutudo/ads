@@ -140,3 +140,18 @@ details.sol-trans > summary { list-style: none; }
 details.sol-trans > summary::-webkit-details-marker { display: none; }
 details.sol-trans > summary .caret { transition: transform .15s var(--ease-out); display: inline-block; }
 details.sol-trans[open] > summary .caret { transform: rotate(90deg); }
+
+/* editor de texto rico (cards "a produzir") */
+.sol-rich { transition: border-color .15s var(--ease-out); }
+.sol-rich:focus { border-color: var(--brand-purple) !important; }
+.sol-rich:empty:before { content: attr(data-ph); color: var(--gray-300); pointer-events: none; }
+.sol-rich p { margin: 0 0 8px; }
+.sol-rich ul, .sol-rich ol { margin: 6px 0 10px; padding-left: 22px; }
+.sol-rich li { margin: 2px 0; }
+.sol-rich h3 { font-size: 15px; font-weight: 800; color: var(--ink); margin: 12px 0 6px; letter-spacing: -0.02em; }
+.sol-rich blockquote { margin: 8px 0; padding: 4px 0 4px 12px; border-left: 3px solid var(--tint-lavender-200); color: var(--gray-600); }
+
+/* toggle "mais opções" nos cards simplificados */
+details.sol-adv > summary { list-style: none; }
+details.sol-adv > summary::-webkit-details-marker { display: none; }
+details.sol-adv[open] > summary .caret { transform: rotate(90deg); }
