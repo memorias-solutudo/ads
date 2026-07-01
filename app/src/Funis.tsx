@@ -820,14 +820,34 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       S.libOpen ? this.buildCriativosLibrary() : null
     );
   }
+  removeFunnel(id) {
+    if (this.state.funnels.length <= 1) return;
+    const f = this.state.funnels.find(x => x.id === id);
+    if (typeof confirm === 'function' && !confirm('Excluir o funil "' + (f ? f.name : '') + '" e todos os seus criativos? Esta ação não pode ser desfeita.')) return;
+    const funnels = this.state.funnels.filter(x => x.id !== id);
+    const cards = this.state.cards.filter(c => c.funnelId !== id);
+    const ids = new Set(cards.map(c => c.id));
+    const edges = (this.state.edges || []).filter(e => ids.has(e.from) && ids.has(e.to));
+    this.setState({ funnels, cards, edges, funnelId: (funnels[0] || {}).id, viewAll: false, selected: null, funnelMenu: false }, () => { this.save(); if (this.state.mode === 'funil') this.fitView(); });
+  }
   buildFunnelMenu() {
     const S = this.state;
-    const item = (label, active, on, key) => this.el('button', { key, onClick:()=>{ on(); this.setState({ funnelMenu:false }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'center', gap:8, width:'100%', textAlign:'left', border:'none', background: active?this.hexA('#A701FD',0.08):'transparent', cursor:'pointer', borderRadius:8, padding:'8px 10px', fontSize:13, fontWeight:700, color: active?'var(--brand-purple)':'var(--ink)' } },
-      this.el('span', { style:{ width:8, height:8, borderRadius:8, background: active?'var(--brand-purple)':'var(--gray-300)', flex:'none' } }), label);
-    return this.el('div', { onMouseDown:(e)=>e.stopPropagation(), style:{ position:'absolute', top:52, left:0, width:230, background:'var(--white)', borderRadius:12, boxShadow:'var(--shadow-lg)', padding:8, zIndex:46, animation:'solPop .15s var(--ease-out)' } },
+    const canDelete = S.funnels.length > 1;
+    const funnelRow = (f) => {
+      const active = !S.viewAll && S.funnelId === f.id;
+      return this.el('div', { key:'row'+f.id, style:{ display:'flex', alignItems:'center', gap:2, borderRadius:8, background: active?this.hexA('#A701FD',0.08):'transparent' }, onMouseEnter:(e)=>{ if(!active) e.currentTarget.style.background='var(--gray-100)'; }, onMouseLeave:(e)=>{ if(!active) e.currentTarget.style.background='transparent'; } },
+        this.el('button', { onClick:()=>{ this.switchFunnel(f.id); this.setState({ funnelMenu:false }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'center', gap:8, flex:1, minWidth:0, textAlign:'left', border:'none', background:'transparent', cursor:'pointer', borderRadius:8, padding:'8px 10px', fontSize:13, fontWeight:700, color: active?'var(--brand-purple)':'var(--ink)' } },
+          this.el('span', { style:{ width:8, height:8, borderRadius:8, background: active?'var(--brand-purple)':'var(--gray-300)', flex:'none' } }),
+          this.el('span', { style:{ whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' } }, f.name)),
+        canDelete ? this.el('button', { onClick:()=>this.removeFunnel(f.id), onMouseDown:(e)=>e.stopPropagation(), title:'Remover funil', style:{ border:'none', background:'transparent', cursor:'pointer', borderRadius:7, width:26, height:26, color:'var(--gray-400)', display:'inline-flex', alignItems:'center', justifyContent:'center', flex:'none', marginRight:4 }, onMouseEnter:(e)=>{ e.stopPropagation(); e.currentTarget.style.background=this.hexA('#FF3B30',0.14); e.currentTarget.style.color='var(--danger)'; }, onMouseLeave:(e)=>{ e.currentTarget.style.background='transparent'; e.currentTarget.style.color='var(--gray-400)'; } },
+          this.el('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'none', stroke:'currentColor', strokeWidth:2, strokeLinecap:'round' }, this.el('path', { d:'M6 6l12 12M18 6L6 18' }))) : null);
+    };
+    const verTodos = this.el('button', { key:'all', onClick:()=>{ this.toggleViewAll(); this.setState({ funnelMenu:false }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'center', gap:8, width:'100%', textAlign:'left', border:'none', background: S.viewAll?this.hexA('#A701FD',0.08):'transparent', cursor:'pointer', borderRadius:8, padding:'8px 10px', fontSize:13, fontWeight:700, color: S.viewAll?'var(--brand-purple)':'var(--ink)' } },
+      this.el('span', { style:{ width:8, height:8, borderRadius:8, background: S.viewAll?'var(--brand-purple)':'var(--gray-300)', flex:'none' } }), 'Ver todos');
+    return this.el('div', { onMouseDown:(e)=>e.stopPropagation(), style:{ position:'absolute', top:52, left:0, width:240, background:'var(--white)', borderRadius:12, boxShadow:'var(--shadow-lg)', padding:8, zIndex:46, animation:'solPop .15s var(--ease-out)' } },
       this.el('div', { style:{ fontSize:10, fontWeight:800, letterSpacing:'.05em', textTransform:'uppercase', color:'var(--gray-400)', padding:'4px 10px 8px' } }, 'Funis · páginas'),
-      S.funnels.map(f => item(f.name, !S.viewAll && S.funnelId===f.id, ()=>this.switchFunnel(f.id), 'f'+f.id)),
-      item('Ver todos', S.viewAll, ()=>this.toggleViewAll(), 'all'),
+      S.funnels.map(funnelRow),
+      verTodos,
       this.el('div', { style:{ height:1, background:'var(--gray-150)', margin:'6px 4px' } }),
       this.el('button', { onClick:()=>{ this.openAddFunnel(); this.setState({ funnelMenu:false }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'center', gap:6, width:'100%', border:'none', background:'transparent', cursor:'pointer', borderRadius:8, padding:'8px 10px', fontSize:13, fontWeight:700, color:'var(--brand-purple)' } }, '+ Novo funil'));
   }
@@ -840,13 +860,15 @@ Reaproveitar: empatia do c11 + prova do c2.`,
       const poster = 'linear-gradient(135deg, ' + this.hexA(jr.color, 0.9) + ', ' + this.hexA(jr.color, 0.5) + ')';
       const st = this.sc(c.status);
       const orient = c.objetivo || ('Recomendado: ' + jr.label + (c.estilo ? ' · ' + c.estilo : ''));
-      return this.el('button', { key:c.id, onClick:()=>{ this.setState({ libOpen:false }); if (!isImg && (c.driveId || c.avoz || (c.links && c.links.length))) this.openVideoModal(c.id); else this.select({ type:'card', id:c.id, funnelId:c.funnelId }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', flexDirection:'column', textAlign:'left', border:'1px solid var(--gray-150)', background:'var(--white)', borderRadius:12, overflow:'hidden', cursor:'pointer', padding:0 } },
-        this.el('div', { style:{ position:'relative', height:98, backgroundColor:'var(--gray-200)', backgroundImage:(thumb?"url('"+thumb+"'), ":'')+poster, backgroundSize:'cover', backgroundPosition:'center', display:'flex', alignItems:'center', justifyContent:'center' } },
-          this.el('span', { style:{ position:'absolute', top:7, left:7, display:'inline-flex', alignItems:'center', gap:4, background:'var(--glass-white)', borderRadius:999, padding:'2px 7px', fontSize:9, fontWeight:800, textTransform:'uppercase', color:'var(--ink)' } }, this.el('span', { style:{ width:6, height:6, borderRadius:6, background:st.dot } }), isImg?'Imagem':'Vídeo'),
-          this.el('span', { style:{ width:34, height:34, borderRadius:999, background:'rgba(255,255,255,.92)', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'var(--ink)', boxShadow:'0 3px 10px rgba(21,21,21,.28)' } }, isImg ? this.kindIcon('imagem', 16, 'var(--ink)') : this.el('svg', { width:15, height:15, viewBox:'0 0 24 24', fill:'currentColor' }, this.el('path', { d:'M8 5v14l11-7z' })))),
-        this.el('div', { style:{ padding:'9px 11px 11px' } },
+      return this.el('button', { key:c.id, onClick:()=>{ this.setState({ libOpen:false }); if (!isImg && (c.driveId || c.avoz || (c.links && c.links.length))) this.openVideoModal(c.id); else this.select({ type:'card', id:c.id, funnelId:c.funnelId }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'stretch', textAlign:'left', border:'1px solid var(--gray-150)', background:'var(--white)', borderRadius:12, overflow:'hidden', cursor:'pointer', padding:0 } },
+        // capa 9:16 (1080×1920) — proporção vertical, sem cortar
+        this.el('div', { style:{ position:'relative', width:80, flex:'none', aspectRatio:'9 / 16', backgroundColor:'var(--gray-200)', backgroundImage:(thumb?"url('"+thumb+"'), ":'')+poster, backgroundSize:'cover', backgroundPosition:'center', display:'flex', alignItems:'center', justifyContent:'center' } },
+          this.el('span', { title:st.label, style:{ position:'absolute', top:6, left:6, width:9, height:9, borderRadius:9, background:st.dot, boxShadow:'0 0 0 2px rgba(255,255,255,.85)' } }),
+          this.el('span', { style:{ width:30, height:30, borderRadius:999, background:'rgba(255,255,255,.92)', display:'inline-flex', alignItems:'center', justifyContent:'center', color:'var(--ink)', boxShadow:'0 3px 10px rgba(21,21,21,.28)' } }, isImg ? this.kindIcon('imagem', 15, 'var(--ink)') : this.el('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'currentColor' }, this.el('path', { d:'M8 5v14l11-7z' })))),
+        this.el('div', { style:{ padding:'10px 12px', flex:1, minWidth:0, display:'flex', flexDirection:'column', justifyContent:'center', gap:4 } },
+          this.el('span', { style:{ fontSize:9, fontWeight:800, letterSpacing:'.05em', textTransform:'uppercase', color:'var(--gray-400)' } }, isImg ? 'Imagem / carrossel' : 'Vídeo'),
           this.el('div', { style:{ fontSize:12.5, fontWeight:700, color:'var(--ink)', lineHeight:1.25, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' } }, c.name),
-          this.el('div', { style:{ fontSize:10.5, color:'var(--gray-500)', fontWeight:600, lineHeight:1.35, marginTop:4, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' } }, orient)));
+          this.el('div', { style:{ fontSize:10.5, color:'var(--gray-500)', fontWeight:600, lineHeight:1.35, display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' } }, orient)));
     };
     return this.el('div', { onMouseDown:(e)=>e.stopPropagation(), style:{ position:'absolute', top:52, left:0, width:'min(700px, 82vw)', maxHeight:'74vh', background:'var(--white)', borderRadius:16, boxShadow:'var(--shadow-lg)', zIndex:46, display:'flex', flexDirection:'column', animation:'solPop .15s var(--ease-out)' } },
       this.el('div', { style:{ flex:'none', display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, padding:'15px 18px', borderBottom:'1px solid var(--gray-150)' } },
@@ -855,7 +877,7 @@ Reaproveitar: empatia do c11 + prova do c2.`,
           this.el('div', { style:{ fontSize:11.5, color:'var(--gray-500)', marginTop:2 } }, creatives.length + ' peças · vídeos e imagens/carrosséis')),
         this.el('button', { onClick:()=>this.setState({ importOpen:true, libOpen:false }), onMouseDown:(e)=>e.stopPropagation(), style:{ display:'inline-flex', alignItems:'center', gap:7, border:'none', cursor:'pointer', borderRadius:999, padding:'9px 15px', fontSize:12.5, fontWeight:700, background:'var(--grad-cta)', color:'var(--white)', boxShadow:'var(--shadow-brand)', flex:'none' } },
           this.el('svg', { width:14, height:14, viewBox:'0 0 24 24', fill:'currentColor' }, this.el('path', { d:'M12 2l1.6 4.6L18 8l-4.4 1.4L12 14l-1.6-4.6L6 8l4.4-1.4z' }), this.el('path', { d:'M18 13l.9 2.6L21 16l-2.1.4L18 19l-.9-2.6L15 16l2.1-.4z' })), 'Importar com IA')),
-      this.el('div', { className:'solu-scroll', style:{ flex:1, minHeight:0, overflowY:'auto', padding:16, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:12 } },
+      this.el('div', { className:'solu-scroll', style:{ flex:1, minHeight:0, overflowY:'auto', padding:16, display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(240px, 1fr))', gap:12 } },
         creatives.length ? creatives.map(item) : this.el('div', { style:{ color:'var(--gray-500)', fontSize:13, padding:12 } }, 'Nenhum criativo ainda. Use "Importar com IA".')));
   }
   importCreatives() {
