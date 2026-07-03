@@ -33,6 +33,23 @@ roxa `#A701FD`, gradientes da marca).
 Estado persistido em `localStorage` (`solu-funis-v3`). Semeado com 9 vídeos reais
 (c1–c13) + 5 nós de fluxo.
 
+### Funil "Meta 2025/2026" (o novo jogo)
+
+Funil extra semeado no mapa que traduz a estratégia **Sinal → Volume → Criativo →
+Escala → Paciência**. Usa os pequenos **cards de título** para organizar:
+
+- **Trilha da regra** (topo): 5 títulos encadeados com os pontos na ordem de impacto.
+- **Campanhas específicas** (uma linha por evento de conversão do mapa Solutudo),
+  com os vídeos recomendados conectados no fluxo:
+  - **Cadastro grátis · Lead** → c5, c6, c7, c13
+  - **WhatsApp · Contato** → c1, c4, c10
+  - **VSL · Agendamento** → c11, c12, vídeo da página VSL
+  - **Anuncie · Compra** → c4
+  - **Remarketing · Custom** → c2, c17
+
+Os vídeos são clones dos criativos reais (mesmo Drive/transcrição), então player e
+análise funcionam igual. Injetado uma única vez via migração (`meta2026V`).
+
 ## Rodar localmente
 
 ```bash

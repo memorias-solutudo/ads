@@ -384,6 +384,59 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
     ];
   }
 
+  // ---- Funil "Meta 2025/2026" (o novo jogo) ----
+  // Traduz a estratégia (Sinal → Volume → Criativo → Escala → Paciência) num quadro:
+  //  · uma TRILHA DA REGRA no topo (5 títulos encadeados) = a ordem de impacto;
+  //  · uma LINHA por CAMPANHA ESPECÍFICA (por evento de conversão) com os vídeos
+  //    recomendados conectados no fluxo. Os vídeos são clones dos criativos reais
+  //    (mesmo Drive/transcrição), então o player e a análise funcionam igual.
+  seedMeta2026(sourceCards) {
+    const src = {}; (sourceCards || []).forEach(c => { src[c.id] = c; });
+    const FID = 'meta2026';
+    const funnel = { id:FID, name:'Meta 2025/2026', desc:'Sinal → Volume → Criativo → Escala → Paciência · campanhas por evento de conversão' };
+    const cards = [];
+    const edges = [];
+    const titulo = (id, name, color, x, y) => cards.push({ id, funnelId:FID, kind:'titulo', name, color, status:'', fx:x, fy:y, dx:0, dy:0 });
+
+    // TRILHA DA REGRA — os 5 pontos, na ordem de impacto, encadeados no topo.
+    const rule = [
+      { id:'m2_r1', name:'1 · Sinal (dados/CAPI)',    color:'#A701FD' },
+      { id:'m2_r2', name:'2 · Volume (~50/sem)',      color:'#7C3AED' },
+      { id:'m2_r3', name:'3 · Criativo = público',    color:'#FC0097' },
+      { id:'m2_r4', name:'4 · Escala (broad)',        color:'#0EA5E9' },
+      { id:'m2_r5', name:'5 · Paciência (no-touch)',  color:'#16A34A' },
+    ];
+    rule.forEach((r, i) => titulo(r.id, r.name, r.color, 360 + i*470, 260));
+    for (let i = 0; i < rule.length - 1; i++) edges.push({ from:rule[i].id, to:rule[i+1].id });
+
+    // CAMPANHAS ESPECÍFICAS — cada uma otimiza um evento de conversão do mapa Solutudo.
+    // Título (evento) à esquerda → vídeos recomendados encadeados à direita.
+    const camps = [
+      { id:'m2_cad', title:'Cadastro grátis · Lead', color:'#059669', y:610,  vids:[{ s:'c5' },{ s:'c6' },{ s:'c7' },{ s:'c13' }] },
+      { id:'m2_wa',  title:'WhatsApp · Contato',     color:'#16A34A', y:910,  vids:[{ s:'c1' },{ s:'c4' },{ s:'c10' }] },
+      { id:'m2_vsl', title:'VSL · Agendamento',      color:'#DC2626', y:1210, vids:[{ s:'c11' },{ s:'c12' },{ s:'vslpg' }] },
+      { id:'m2_anu', title:'Anuncie · Compra',       color:'#EA580C', y:1510, vids:[{ s:'c4', suffix:'anu' }] },
+      { id:'m2_rmk', title:'Remarketing · Custom',   color:'#0369A1', y:1810, vids:[{ s:'c2' },{ s:'c17' }] },
+    ];
+    const titleX = 300, firstVidX = 770, hGap = 360;
+    camps.forEach(cp => {
+      titulo(cp.id, cp.title, cp.color, titleX, cp.y);
+      let prev = cp.id;
+      cp.vids.forEach((v, i) => {
+        const s = src[v.s];
+        if (!s) return;
+        const cloneId = 'm2_' + v.s + (v.suffix ? '_' + v.suffix : '');
+        const clone = Object.assign({}, s, { id:cloneId, funnelId:FID, fx:firstVidX + i*hGap, fy:cp.y, dx:0, dy:0 });
+        delete clone.groupId;
+        cards.push(clone);
+        edges.push({ from:prev, to:cloneId });
+        prev = cloneId;
+      });
+    });
+
+    return { funnel, cards, edges };
+  }
+
   constructor(props) {
     super(props);
     const saved = this.load();
@@ -404,6 +457,7 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
       flowSeeded: !!(saved && saved.flowSeeded), addNodeOpen: false,
       vslPgSeeded: !!(saved && saved.vslPgSeeded),
       contentV: (saved && saved.contentV) || 0,
+      meta2026V: (saved && saved.meta2026V) || 0,
       // quadro livre
       edges: (saved && saved.edges) || [],
       freeV: (saved && saved.freeV) || 0,
@@ -462,6 +516,21 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
       this.state.freeV = 1;
       this.save();
     }
+    // funil "Meta 2025/2026" (v1): campanhas por evento + trilha da regra,
+    // com títulos e vídeos conectados. Injetado uma única vez (novos e salvos).
+    if (!this.state.meta2026V) {
+      try {
+        const seed = this.seedMeta2026(this.state.cards);
+        if (!this.state.funnels.some(f => f.id === seed.funnel.id)) this.state.funnels = this.state.funnels.concat([seed.funnel]);
+        const have = new Set(this.state.cards.map(c => c.id));
+        seed.cards.forEach(c => { if (!have.has(c.id)) this.state.cards.push(c); });
+        const ekey = (e) => e.from + '>' + e.to;
+        const haveE = new Set((this.state.edges || []).map(ekey));
+        this.state.edges = (this.state.edges || []).concat(seed.edges.filter(e => !haveE.has(ekey(e))));
+      } catch (e) {}
+      this.state.meta2026V = 1;
+      this.save();
+    }
     this._drag = null; this._pan = null; this._vp = null; this._link = null; this._clip = null;
     this._hist = { undo: [], redo: [] }; this._applyingHistory = false; this._lastSnap = this.histSnap();
     this._setVp = (n) => {
@@ -490,7 +559,7 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
       }
     }
     if (histChanged && this._mounted) this.forceUpdate();
-    try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, edges: this.state.edges || [], freeV: this.state.freeV })); } catch (e) {}
+    try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: this.state.funnels, cards: this.state.cards, trash: this.state.trash || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, meta2026V: this.state.meta2026V, edges: this.state.edges || [], freeV: this.state.freeV })); } catch (e) {}
   }
 
   // ---- helpers ----
@@ -603,7 +672,7 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
     this.setState({ funnels: s.funnels, cards: s.cards, trash: s.trash, edges: s.edges, selected: null, addMenu: null, connectFrom: null }, () => {
       this._lastSnap = snapStr;
       this._applyingHistory = false;
-      try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: s.funnels, cards: s.cards, trash: s.trash || [], edges: s.edges || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, freeV: this.state.freeV })); } catch (e) {}
+      try { localStorage.setItem(this.KEY, JSON.stringify({ funnels: s.funnels, cards: s.cards, trash: s.trash || [], edges: s.edges || [], flowSeeded: this.state.flowSeeded, vslPgSeeded: this.state.vslPgSeeded, contentV: this.state.contentV, meta2026V: this.state.meta2026V, freeV: this.state.freeV })); } catch (e) {}
     });
   }
   undo() {
