@@ -929,7 +929,7 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
       this.el('button', { onClick:()=>{ this.openAddFunnel(); this.setState({ funnelMenu:false }); }, onMouseDown:(e)=>e.stopPropagation(), style:{ display:'flex', alignItems:'center', gap:6, width:'100%', border:'none', background:'transparent', cursor:'pointer', borderRadius:8, padding:'8px 10px', fontSize:13, fontWeight:700, color:'var(--brand-purple)' } }, '+ Novo funil'));
   }
   buildCriativosLibrary() {
-    const creatives = this.state.cards.filter(c => (!c.kind || c.kind === 'video' || c.kind === 'imagem'));
+    const creatives = this.state.cards.filter(c => (!c.kind || c.kind === 'video' || c.kind === 'imagem') && c.funnelId !== 'meta2026');
     const item = (c) => {
       const jr = this.jById(c.journeyId);
       const isImg = c.kind === 'imagem';
@@ -2277,7 +2277,7 @@ CONEXÃO DIRETA COM O CRIATIVO: o anúncio (c11 / Meta) já entrega a dor e a pr
   // ---- direcionamento: data ----
   filteredVideos() {
     const jf = this.state.journeyFilter, sf = this.state.statusFilter;
-    return this.state.cards.filter(c => (!c.kind || c.kind === 'video') && (jf === 'all' || c.journeyId === jf) && (sf === 'all' || c.status === sf));
+    return this.state.cards.filter(c => (!c.kind || c.kind === 'video') && c.funnelId !== 'meta2026' && (jf === 'all' || c.journeyId === jf) && (sf === 'all' || c.status === sf));
   }
   enrichVideo(c) {
     const jr = this.jById(c.journeyId);
