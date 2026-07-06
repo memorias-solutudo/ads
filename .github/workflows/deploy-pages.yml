@@ -1,0 +1,42 @@
+name: Deploy GitHub Pages
+
+# Publica a pasta funil/ como site estático em
+# https://memorias-solutudo.github.io/ads/
+#
+# Pré-requisito (uma vez, na UI do GitHub):
+#   Settings → Pages → Source: "GitHub Actions"
+#
+# Por padrão o ambiente github-pages só permite deploy do branch default (main).
+# Para publicar a partir do branch de trabalho sem fundir no main, adicione o
+# branch em: Settings → Environments → github-pages → Deployment branches.
+
+on:
+  push:
+    branches:
+      - main
+      - claude/solutudo-paid-traffic-x1h7ke
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./funil
+      - id: deployment
+        uses: actions/deploy-pages@v4

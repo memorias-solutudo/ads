@@ -18,14 +18,14 @@ Os mesmos links aparecem como **botões "▶ abrir"** no painel de cada card do 
 | c11 | Olha no meu olho (longo) | [Drive](https://drive.google.com/file/d/1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ/view) | — | — | [c11.md](transcricoes/c11.md) ✅ |
 | c12 | Tá vendo aquela cena ali | — | [A Voz](https://avoz.solutudo.com.br/videos/990101) | — | [c12.md](transcricoes/c12.md) ✅ |
 | c13 | Cadastro — construção civil | [Drive](https://drive.google.com/file/d/1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view) | [A Voz](https://avoz.solutudo.com.br/videos/1050101) | — | [c13.md](transcricoes/c13.md) ✅ |
-| c14 | Fachadas do velho mundo (live) | [Drive](https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view) | — | — | pendente |
+| c14 | Fachadas do velho mundo (live) | [Drive](https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view) | — | — | [c14.md](transcricoes/c14.md) ✅ |
 | c15 | Cadastro — constr. civil (2) | — | [A Voz](https://avoz.solutudo.com.br/videos/1230101) | — | pendente |
 | c16 | Remarketing constr. civil | [Drive](https://drive.google.com/file/d/1EttIcDVtcTTy3tqRjzfBX76AvBlKrSyN/view) | — | — | pendente |
-| c17 | Remarketing — página anuncie | — | [A Voz](https://avoz.solutudo.com.br/videos/1350101) | — | pendente |
+| c17 | Remarketing — página anuncie | — | [A Voz](https://avoz.solutudo.com.br/videos/1350101) | — | [c17.md](transcricoes/c17.md) ✅ |
 | c18 | Remarketing — não cadastrou | — | [A Voz](https://avoz.solutudo.com.br/videos/1290101) | — | pendente |
 | c19 | Constr. civil — via WhatsApp | [Drive](https://drive.google.com/file/d/1XSFMM-1WDSmtWpKjK8TjHOMUXMUwJoVl/view) | [A Voz](https://avoz.solutudo.com.br/videos/1380101) | — | pendente |
 | c20 | Remarketing — anuncie (2) | [Drive](https://drive.google.com/file/d/1nDNE1-4oKKNEqylIdfAJycPSm-N3VajI/view) | — | — | pendente |
 | c21 | Guia "como ser escolhido 2026" | [Drive](https://drive.google.com/file/d/1QVa4qZ4jDYXxLceweUVWGr0IXnCM0lrY/view) | [A Voz](https://avoz.solutudo.com.br/videos/660107) | — | pendente |
-| c22 | Cota: ganhar ou perder | — | [A Voz](https://avoz.solutudo.com.br/videos/1590101) | — | pendente |
+| c22 | Cota: ganhar ou perder | — | [A Voz](https://avoz.solutudo.com.br/videos/1590101) | — | [c22.md](transcricoes/c22.md) ✅ |
 | c23 | Cataclisma de confiança | — | [A Voz](https://avoz.solutudo.com.br/videos/1620101) | — | pendente |
 | c24 | Escanteio e cabecear | — | — | [YouTube](https://www.youtube.com/watch?v=TNvpFwNXzDw) | pendente |

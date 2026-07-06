@@ -1,0 +1,237 @@
+{
+  "projeto": "Funil de Tráfego Pago — Solutudo",
+  "descricao": "Base consolidada de criativos (vídeos) classificados por objetivo e mecanismo de conversão. Fonte única para alimentar apps externos.",
+  "atualizado": "2026-06-30",
+  "totalCriativos": 25,
+  "classificados": 14,
+  "taxonomias": {
+    "funcao": {
+      "AD": "Criativo de anúncio — leva tráfego para um destino",
+      "PG": "Vídeo de página — vive dentro do destino (VSL, cadastro)"
+    },
+    "jornada": {
+      "ATRACAO": "Atração / conteúdo (topo, frio)",
+      "CONFIANCA": "Confiança / consideração",
+      "REMARKETING": "Remarketing (públicos que já interagiram)",
+      "CADASTRO": "Cadastro gratuito (lead)",
+      "WHATSAPP": "WhatsApp → bot roteia high/low ticket",
+      "VSL": "VSL / agendamento → high ticket (call com consultor)",
+      "ANUNCIE": "Página anuncie / plano pago → low ticket",
+      "LIVE": "Live / evento"
+    },
+    "estilo": {
+      "storytelling": "Narrativa antes do CTA — prende público frio",
+      "rosto-empe": "Apresentador em pé — energia, urgência, ação",
+      "rosto-sentado": "Apresentador sentado — confiança, conversa, olho no olho",
+      "vsl": "Vídeo de vendas longo — problema→solução→prova→oferta→CTA",
+      "demonstracao": "Mostra plataforma/resultados — prova visual",
+      "comunicado": "Aviso direto a um segmento — pertencimento",
+      "ugc": "Bastidor/espontâneo sem olhar p/ câmera — autenticidade"
+    },
+    "status": {
+      "existe": "Vídeo pronto e disponível",
+      "confirmar": "A confirmar / avaliar produção",
+      "falta": "Decidido que precisa, mas não existe ainda"
+    },
+    "plataformaPorJornada": {
+      "ATRACAO":    {"meta": "Reconhecimento / Engajamento (vídeo), públicos frios", "google": "Demand Gen", "youtube": "In-stream pulável + Bumper 6s + Shorts", "kpi": "VTR, CPV, retenção"},
+      "CONFIANCA":  {"meta": "Tráfego/Engajamento p/ mornos", "google": "Demand Gen remarketing", "youtube": "In-stream (rosto sentado) + In-feed", "kpi": "Tempo de visualização, cliques"},
+      "REMARKETING":{"meta": "Público personalizado (viu vídeo, engajou, visitou)", "google": "Display/Demand Gen remarketing + RLSA", "youtube": "In-feed/In-stream p/ listas", "kpi": "ROAS, frequência, CPA"},
+      "CADASTRO":   {"meta": "Cadastros (Leads) — form instantâneo ou site", "google": "Search (intenção) + PMax", "youtube": "Vídeo de ação com CTA cadastro", "kpi": "CPL, taxa de cadastro"},
+      "WHATSAPP":   {"meta": "Engajamento → Cliques no WhatsApp / Mensagens", "google": "Search (secundário)", "youtube": "Vídeo de ação c/ link", "kpi": "Conversas iniciadas, qualificação high/low"},
+      "VSL":        {"meta": "Vendas (Conversões) otimizando Agendamento", "google": "PMax + Search + Demand Gen", "youtube": "In-stream longo + Vídeo de ação", "kpi": "Agendamentos, show-up, CAC"},
+      "ANUNCIE":    {"meta": "Vendas (Conversões) otimizando compra", "google": "Search (alta intenção) + PMax", "youtube": "Vídeo de ação (remarketing)", "kpi": "Vendas, ROAS, CPA"},
+      "LIVE":       {"meta": "Tráfego p/ inscrição → remarketing de lembrete", "google": "Demand Gen + YouTube promo", "youtube": "In-stream + comunidade", "kpi": "Inscritos, comparecimento"}
+    }
+  },
+  "regraClassificacao": "A pergunta não é 'qual etapa do funil?' — é 'o CTA deste vídeo convida pra qual ação, e essa ação leva pra qual mecanismo de conversão?'. O campo 'objetivo' é o destaque principal de cada card.",
+  "criativos": [
+    {
+      "id": "c1", "nome": "Problema do tráfego pago / IA",
+      "funcao": "AD", "jornada": "WHATSAPP", "etapa": "Topo", "publico": "Frio (já faz/considera tráfego pago)",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Conscientizar sobre o erro do tráfego pago → diagnóstico (WhatsApp/bot)",
+      "cta": "Diagnóstico: 'clica aqui, a gente vai te explicar como sua empresa está'",
+      "destino": "WhatsApp/bot (roteia high/low ticket) ou página de agendamento",
+      "naoUsar": "Como criativo de checkout/venda automática direta",
+      "resumo": "Metáfora 'cobertura × fundação': investir em tráfego sem cuidar do básico (site, Google, Instagram, guias) é erro. CTA de diagnóstico, não venda direta. IAs 'não compram propaganda, compram confiança'.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1yySUEMhADXym9TIv0wWEBi_n-wkHjv7x/view"}],
+      "transcricao": "Sabe qual o maior erro das empresas que clicam em impulsionar ou fazem tráfego pago? Tráfego pago tem a ver com a cobertura do prédio, um dos lugares mais caros. O problema é que a fundação às vezes está errada. A pessoa vê seu anúncio, olha seu site que não existe ou está desatualizado, vê seu Google com avaliações não respondidas, seu Instagram parado há 15 anos, procura num guia como a Solutudo e não encontra nada. A Solutudo ajuda você a ser escolhido garantindo que o que as pessoas consultam quando o anúncio aparece esteja em dia. As inteligências artificiais não compram propaganda, elas compram confiança. Deixa a gente arrumar a fundação da sua empresa — o arroz com feijão do digital. Clica aqui, a gente vai te explicar como sua empresa está, onde pode chegar e como faz. Assim como fazemos para mais de 3.000 empresas há mais de 20 anos."
+    },
+    {
+      "id": "c2", "nome": "Dá pra confiar na Solutudo?",
+      "funcao": "AD", "jornada": "REMARKETING", "etapa": "Meio", "publico": "Morno (já viu c1/c3, não converteu)",
+      "estilo": "rosto-sentado", "status": "existe",
+      "objetivo": "Quebrar objeção de confiança (remarketing de aquecimento)",
+      "cta": "Sem CTA de produto — fecha com 'espero que ajude sua empresa'",
+      "destino": "Aquecer → próximo passo na sequência: c1 ou c11 (WhatsApp/VSL)",
+      "naoUsar": "Em público frio (4min de prova social sem contexto não funciona)",
+      "resumo": "100% quebra de objeção. Provas: desde 2005, topo Reclame Aqui, 4mi/mês, 3.000+ clientes, Exame/Estadão, Sebrae 10 anos, sem multa de cancelamento, telefone do dono, parceiros há 20 anos.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1uGZakTe0Jnu7FmQRBa8CEeA40W2fV5KN/view"}],
+      "transcricao": "Gostei, mas será que dá para confiar nessa Solutudo? A Solutudo existe desde 2005 — ninguém resiste tanto tempo sem fazer um trabalho com coerência. Temos o topo das notas do Reclame Aqui, atendemos 4 milhões de pessoas por mês, mais de 3.000 clientes. Já foi notícia na Exame, Pequenas Empresas, Estadão. Convidada do Sebrae por 10 anos consecutivos. Franquias em dezenas de cidades, clientes em mais de 400 cidades. Plataforma própria, uma das primeiras empresas brasileiras com app nas lojas. Já fez filme premiado fora do Brasil. Não tem multa de cancelamento — você fica porque acredita. Quando vira parceiro, recebe meu telefone direto. Temos dezenas de parceiros há mais de 20 anos. Espero que a gente possa ajudar sua empresa a ser escolhida com confiabilidade, tranquilidade e facilidade. Solutudo de bom."
+    },
+    {
+      "id": "c3", "nome": "Afinal, o que é Solutudo?",
+      "funcao": "AD", "jornada": "ATRACAO", "etapa": "Topo", "publico": "Frio",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Explicar o que é a Solutudo (awareness institucional)",
+      "cta": "'Vem com a gente, Solutudo de bom' — SEM destino explícito",
+      "destino": "Precisa de botão/overlay definido na plataforma. Natural = CADASTRO grátis",
+      "naoUsar": "Rodar sem antes definir o botão de destino na plataforma",
+      "resumo": "Dupla missão: ajuda pessoas a escolherem + empresas a serem escolhidas. 'Não é marketing digital, é verdade digital.' Mesmo quem vive de indicação perde cliente sem digital (90% checam online).",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1SGfzOApCckIztNkH8yU5_wRCyaK-0Go3/view"}],
+      "transcricao": "Mas afinal, o que é Solutudo? A Solutudo tem duas missões: de um lado ajuda as pessoas a escolherem empresas e prestadores; do outro, ajuda prestadores e empresas a serem escolhidos. Para 70% da população está mais difícil escolher — muita opção. Desde 2005 começamos com a missão de facilitar a vida da população na hora de escolher. A gente entende a verdade das empresas e transmite isso pro digital. Não trabalhamos com marketing digital, trabalhamos com verdade digital. O marketing digital é hoje o caminho principal para 90% das pessoas ao escolherem uma empresa — então mesmo quem vive de indicação perde clientes por não estar lá. Atendemos mais de 4 milhões de pessoas. Vem com a gente, Solutudo de bom."
+    },
+    {
+      "id": "c4", "nome": "Menos de R$1 por dia",
+      "funcao": "AD", "jornada": "WHATSAPP", "etapa": "Meio/Fundo", "publico": "Frio/Morno",
+      "estilo": "rosto-empe", "status": "existe",
+      "objetivo": "Agitar dor de invisibilidade digital → consulta pelo bot (WhatsApp)",
+      "cta": "'vai te EXPLICAR como fazer, a partir de R$1/dia' (consultivo, não checkout)",
+      "destino": "WhatsApp bot (low ticket automático OU sobe p/ consultor) ou página ANUNCIE",
+      "naoUsar": "Checkout automático sem intermediação (CTA não é 'compre agora')",
+      "resumo": "Agita a dor ('você tem que aparecer no Google, Instagram, Solutudo, criar conteúdo sempre…'). '2ª página do Google é onde se esconde corpo.' Oferta: a Solutudo faz por você.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1TzMwo5bKT-uk8t-lxqrhjd6dgolGKRa1/view"}],
+      "transcricao": "Você tem que aparecer no Google, no Instagram, na Solutudo, aqui, ali. Cuidar das fotos, atualizar, criar conteúdo toda vez, senão o Google não te vê e você cai na indexação. O melhor lugar para esconder o corpo é na segunda página do Google — e talvez sua empresa esteja lá. A gente pode te ajudar. A Solutudo faz isso há mais de 20 anos para mais de 3.000 empresas de maneira simplificada: você diz quem é, o que faz, como faz, e a gente cuida disso. Você cuida do negócio e a gente te ajuda a aparecer no processo de escolha do cliente. Clica aqui que a gente vai te explicar como fazer isso com um investimento que pode partir de R$1 por dia."
+    },
+    {
+      "id": "c5", "nome": "Cadastro gratuito (bastidor/UGC)",
+      "funcao": "AD", "jornada": "CADASTRO", "etapa": "Meio", "publico": "Frio",
+      "estilo": "ugc", "status": "existe",
+      "objetivo": "Cadastro gratuito — espontâneo e autêntico (sem cara de anúncio)",
+      "cta": "'Clica ali, tem cadastro grátis' (botão de cadastro)",
+      "destino": "Página de cadastro gratuito",
+      "naoUsar": "—",
+      "resumo": "Formato bastidor 'tá gravando já?', sem olhar p/ câmera. 4mi acessam/mês procurando prestadores. Cadastro grátis e rápido. Estilo UGC tira a cara de anúncio.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/18VBeH5XtFGJnbHF1J3ozAmGKf6qP96Bd/view"}],
+      "transcricao": "Tá gravando já? Eu precisava falar pra galera sobre o cadastro gratuito. Quando o pessoal olha a Solutudo sabe que tem 4 milhões de pessoas procurando prestador de serviço — marceneiro, jardineiro, tudo. E a pessoa podia estar cadastrada de graça. É rápido, clica ali, tem cadastro grátis, geralmente tem um botão, coloca o cadastro e já começa a aparecer gratuitamente. Nesse mundo tudo custa; cadastrar sua empresa de graça onde 4 milhões procuram não podia passar batido."
+    },
+    {
+      "id": "c6", "nome": "Cadastro grátis — último mês",
+      "funcao": "AD", "jornada": "CADASTRO", "etapa": "Meio", "publico": "Frio",
+      "estilo": "rosto-empe", "status": "existe",
+      "objetivo": "Cadastro gratuito — urgência + prova de volume (4mi/mês)",
+      "cta": "'Clica aqui, cadastre, é rápido'",
+      "destino": "Página de cadastro gratuito",
+      "naoUsar": "—",
+      "resumo": "'Só no último mês, +4mi entraram p/ procurar empresas/prestadores locais.' Pergunta-gatilho: você estava lá? Cadastro grátis e rápido.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1vVzNi_QWlVYNeZhvdtCDjyzRZi6I_EDX/view"}],
+      "transcricao": "Só no último mês, mais de 4 milhões de pessoas entraram nessa plataforma para procurar empresas, prestadores de serviço, empresas locais, quem resolve problema na cidade. E qual o problema? Você estava lá ou não, porque procuraram pelo que você faz. E o cadastro na Solutudo é gratuito — vai que você ainda não sabia. Clica aqui, cadastre, é muito rápido, e permita que quem procura a solução que você tem possa te encontrar."
+    },
+    {
+      "id": "c7", "nome": "Cadastro grátis — variação",
+      "funcao": "AD", "jornada": "CADASTRO", "etapa": "Meio", "publico": "Frio",
+      "estilo": "rosto-empe", "status": "existe",
+      "objetivo": "Cadastro gratuito + semente de upsell para plano pago",
+      "cta": "'Cadastre de graça; se quiser melhorar, é outra história'",
+      "destino": "Cadastro grátis → remarketing ANUNCIE/WhatsApp low ticket",
+      "naoUsar": "—",
+      "resumo": "Variação do c6. Termina com semente de upsell — 'se quiser MELHORAR seu cadastro, aí é outra história' — planta o plano pago sem forçar.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1YCoByAHY6SAry_xDy3YHghCd2vEKFtek/view"}],
+      "transcricao": "No último mês, mais de 4 milhões de pessoas entraram para procurar produtos, serviços, prestadores, empresas que resolvem problemas na cidade. A pergunta: sua empresa já está cadastrada na Solutudo? Se não, é um erro, porque o cadastro é gratuito. É só clicar, cadastrar, e você começa a existir na hora que essas pessoas procuram pelo que você faz, de graça. E se você quiser melhorar seu cadastro, aí é outra história."
+    },
+    {
+      "id": "c10", "nome": "Quando as pessoas procuram (genérico)",
+      "funcao": "AD", "jornada": "WHATSAPP", "etapa": "Topo/Meio", "publico": "Frio (empresas estabelecidas)",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Conscientizar (90% decidem no digital) → diagnóstico (WhatsApp/bot)",
+      "cta": "'Deixa a gente te apresentar a situação, o que precisa fazer, e você decide'",
+      "destino": "WhatsApp/bot (roteia high/low) ou página de diagnóstico",
+      "naoUsar": "Como venda direta",
+      "resumo": "Metáfora raiz × copa da árvore; consumidor = passarinho rápido e preguiçoso. 90% decidem antes de falar com a empresa. CTA de diagnóstico consultivo. Arquivo nomeado 'construção' mas conteúdo genérico.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1cTDJ2LHIneO4sAtlT6_boQVFtdwOT2ph/view"}, {"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/720102"}],
+      "transcricao": "Você já deu uma olhadinha no digital quando procuram pela sua categoria e não aparece? Você tem anos de empresa, clientes, é bom — e aquele outro nem é tão bom. Não adianta esse monte de raiz se a gente não leva à copa da árvore, onde o consumidor (igual passarinho: rápido, atento, mas preguiçoso — não liga pra todas as empresas) procura. Segundo o Google, 90% decidem onde comprar antes de falar com a empresa, e nessa hora você não aparece. Falta tempo, energia, conhecimento. A gente ajuda empresas como a sua a serem escolhidas, apresentando tudo que você é — não inventamos história, contamos a sua. Clica aqui, deixa a gente te apresentar a situação, o que precisa fazer, e você decide se quer ajuda."
+    },
+    {
+      "id": "c11", "nome": "Olha no meu olho (longo)",
+      "funcao": "AD", "jornada": "VSL", "etapa": "Meio/Fundo", "publico": "Morno (já teve contato com c1/c2)",
+      "estilo": "rosto-sentado", "status": "existe",
+      "objetivo": "Agendar reunião gratuita → high ticket (call com consultor)",
+      "cta": "'Um plano pra você gratuitamente, com uma reunião'",
+      "destino": "Página de agendamento (VSL) ou WhatsApp p/ marcar a call",
+      "naoUsar": "Topo/frio (longo demais sem contexto prévio)",
+      "resumo": "Empatia profunda (~3min). Dor (correria, sem tempo) → conscientização (90% decidem online, 'curtida não paga boleto') → CTA de reunião gratuita com análise. Sequência: c1/c2 → c11 → agendamento.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1aAoG0TbYZW4jj6E7nwie-cFSO7kB4ooZ/view"}],
+      "transcricao": "Olha bem no meu olho. Eu sei como é ter uma pequena empresa — não é fácil bater escanteio e correr na área. Pega o CEO de uma grande empresa e põe pra tocar uma padaria: comprar, vender, trocar estoque, e ainda dizem que tem que estar no Instagram, YouTube, Google. 90% das pessoas escolhem no digital e na correria a gente não dá tempo de estar lá. Muitas boas empresas têm história, 5+ anos, estrutura, mas não aparecem. Vivemos de indicação — é legal, mas imprevisível, e não escolho o tipo de serviço que vem. O serviço bom decide no digital. Você escolheria um prestador só pela voz no telefone? Não — decidiu antes, como 90% das pessoas. Curtida não paga boleto. A Solutudo faz isso há 20 anos pra 3.000 empresas. Não vamos te encher de clientes num clique — só garantir que sua fachada digital exista. A gente te explica onde você está, um plano gratuitamente com uma reunião, e você avalia. Investimentos muito acessíveis, menores do que se perde por não existir. Deixa a gente te ajudar."
+    },
+    {
+      "id": "c12", "nome": "Tá vendo aquela cena ali",
+      "funcao": "AD", "jornada": "VSL", "etapa": "Meio/Fundo", "publico": "Morno (vive de indicação, 5+ anos)",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Agendar reunião rápida → high ticket (gancho visual de cena)",
+      "cta": "'Em uma reunião rápida a gente mostra como'",
+      "destino": "Página de agendamento / WhatsApp p/ marcar a reunião",
+      "naoUsar": "—",
+      "resumo": "Hook visual 'tá vendo essa cena?' — alguém contratando no digital, 'aquele ali podia ser você'. 90% das escolhas online e você não está lá. Dor da indicação imprevisível. CTA de reunião rápida.",
+      "links": [{"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/990101"}],
+      "transcricao": "Tá vendo essa cena? Tem um cliente contratando pessoas. E aquele cara ali — vou dar um zoom — pode ser você. Você não está participando disso. No digital, 90% das escolhas acontecem e sua empresa não está lá. E você é bom: 5+ anos de empresa, história, clientes — só que vive de indicação. O problema da indicação é que você não escolhe o tipo de serviço que vem, e o serviço bom já decidiu online, onde sua história não está. É isso que a Solutudo faz: ajuda empresas a serem escolhidas e pessoas a acharem empresas. Há mais de 20 anos, pra mais de 3.000 empresas. Em uma reunião rápida a gente mostra como sua empresa pode fazer isso. Clica aqui e deixa a gente te ajudar."
+    },
+    {
+      "id": "c13", "nome": "Cadastro — construção civil",
+      "funcao": "AD", "jornada": "CADASTRO", "etapa": "Meio", "publico": "Construção civil",
+      "estilo": "comunicado", "status": "existe",
+      "objetivo": "Cadastro gratuito — segmento construção civil",
+      "cta": "'Clica aqui e faça seu cadastro agora'",
+      "destino": "Página de cadastro gratuito",
+      "naoUsar": "—",
+      "resumo": "'Comunicado às empresas de construção civil.' Tom de aviso direto = pertencimento. Cobre pedreiro, jardineiro, pintor, encanador, mecânico, construtor. 4mi acessos/mês. 'Maior guia de empresas do Brasil.'",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1oQYb7qI1eV11Mp1en6KQj04Ng7DvJ8w3/view"}, {"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1050101"}],
+      "transcricao": "Comunicado às empresas de construção civil. Não importa se você é pedreiro, jardineiro, pintor, encanador, mecânico, construtor. Existe um portal no Brasil com mais de 4 milhões de acessos por mês de pessoas procurando tudo que você imaginar, inclusive o que sua empresa faz. Esse portal permite um cadastro gratuito — exista nele de graça. Se sua empresa ainda não está na Solutudo, o maior guia de empresas do Brasil, você está perdendo tempo: tem gente procurando o que você faz e você provavelmente não está lá. Clica aqui e faça seu cadastro agora."
+    },
+    {
+      "id": "c14", "nome": "Fachadas do velho mundo (conteúdo longo)",
+      "funcao": "AD", "jornada": "CONFIANCA", "etapa": "Meio", "publico": "Morno",
+      "estilo": "demonstracao", "status": "existe",
+      "objetivo": "Educar com dados (ZMOT/Google) sobre a 'fachada digital' → autoridade e consideração",
+      "cta": "Soft: 'fala com a nossa equipe, manda uma mensagem' (diagnóstico)",
+      "destino": "WhatsApp/equipe (diagnóstico). Também serve como conteúdo de live.",
+      "naoUsar": "Como anúncio curto de conversão (é longo, ~10min, educativo)",
+      "resumo": "Analogia fachada física → fachada digital. ZMOT: 90% decidem antes do 'alô'. Dados de descoberta: 76% Google, 54% redes, 38% guias locais (Solutudo), 18% IA. Checklist (Google, Solutudo, redes, site), avaliações/fotos/história, multicanais, resposta em <5min. Candidato a conteúdo de live.",
+      "links": [{"tipo": "drive", "label": "Drive", "url": "https://drive.google.com/file/d/1zD--CWOOCpt2oHyJWg5maRXUzb4Wi3cG/view"}],
+      "transcricao": "Décadas atrás (anos 90, 2000, 2010), imagina uma empresa sem fachada numa rua de comércio — impossível saber o que ela faz. Fachada ninguém errava. E hoje? Segundo o ZMOT (Zero Moment of Truth/Google), 90% das decisões acontecem antes da empresa falar 'alô' — não dependem do seu atendimento, mas de você ter sido descoberto e avaliado. Objeções a 'vivo de indicação': indicação não tem previsibilidade, você não escolhe o serviço, e o serviço bom não decide só pela sua voz no telefone. Dados de descoberta: 76% Google, 54% redes sociais, 38% guias locais (ex.: Solutudo), 32% amigos, 18% IA (crescendo). 80% pesquisam semanalmente; 88% contatam em 24h. Lição: estar em todos os lugares — perfil Google, Solutudo, redes, site. Mais: 93% consultam avaliações, 87% olham fotos, 81% olham a história; 68% avaliam se você responde avaliações; 85% confiam em avaliações; 81% desistem sem informação. Nos 10% finais, responder rápido (<5min) é como o balcão da loja. Conclusão: tenha sua fachada no digital em vários canais somados. Se falta tempo/energia/conhecimento, fala com a nossa equipe — a gente explica onde você está, onde pode chegar e o caminho, como faz pra 3.000+ empresas há 20+ anos."
+    },
+    {
+      "id": "c17", "nome": "Remarketing: visitou a página de anúncio",
+      "funcao": "AD", "jornada": "REMARKETING", "etapa": "Remarketing", "publico": "Quente (visitou página anuncie, não converteu)",
+      "estilo": "rosto-empe", "status": "existe",
+      "objetivo": "Reengajar quem visitou a página 'anuncie' e não converteu → falar com a equipe",
+      "cta": "'Você foi até a nossa página de anúncio, ficou na dúvida… clica aqui'",
+      "destino": "Equipe/WhatsApp (esclarecer dúvida e apresentar)",
+      "naoUsar": "Em público frio (pressupõe ter visitado a página anuncie)",
+      "resumo": "Remarketing direto: reconhece que o lead visitou a página 'anuncie' e ficou na dúvida. Cita pesquisa do Google com 310 mil jornadas de compra. Oferece esclarecer e apresentar, como faz p/ 3.000+ empresas.",
+      "links": [{"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1350101"}],
+      "transcricao": "Eu sei que você sabe que tem concorrente com orçamentos que nem passaram por você — você não teve a chance de concorrer, e talvez tivesse ganho. Isso acontece porque no processo de escolha (descoberta, avaliação) você não estava presente. A pesquisa do Google analisou 310.000 jornadas de compra e mostrou como as pessoas decidem. A Solutudo ajuda você a ter presença melhor na descoberta e avaliação, estando no maior guia de empresas do Brasil. Eu sei que você foi até a nossa página de anúncio, ficou na dúvida — deixa a gente te esclarecer, conhecer melhor a sua empresa e apresentar como podemos ajudar, como já fazemos pra 3.000+ empresas, algumas há 20+ anos. Clica aqui e deixa a nossa equipe te mostrar como ser escolhido nesse ano."
+    },
+    {
+      "id": "c22", "nome": "Cota: ganhar ou perder (motivos p/ estar no digital)",
+      "funcao": "AD", "jornada": "CONFIANCA", "etapa": "Meio", "publico": "Morno",
+      "estilo": "storytelling", "status": "existe",
+      "objetivo": "Reframe — o motivo nº1 do digital é NÃO PERDER clientes → consideração",
+      "cta": "Soft: 'se precisar de ajuda, Solutudo faz isso'",
+      "destino": "Soft → equipe/WhatsApp",
+      "naoUsar": "—",
+      "obs": "Inclui/refere o esquete do 'escanteio' (relacionado ao c24)",
+      "resumo": "Reframe ganhar × perder. Orgânico mostra só 3-5% dos seguidores. O 1º motivo do digital não é conseguir cliente — é NÃO PERDER (orçamentos e indicações que te procuram online e não te acham). Pessoas consultam até 3 fontes antes de decidir. Inclui o esquete do empresário que bate escanteio e corre na área.",
+      "links": [{"tipo": "avoz", "label": "A Voz", "url": "https://avoz.solutudo.com.br/videos/1590101"}],
+      "transcricao": "Num mundo onde 90% procuram no digital antes de comprar, não é dúvida sobre estar ou não — a pergunta é: você vai pro digital pra ganhar ou pra perder clientes? Você já está perdendo se não for. Conseguir cliente novo não é simples: organicamente as redes mostram seu conteúdo pra 3-5% dos seguidores. O fundamental que ninguém fala: o 1º motivo de estar no digital não é conseguir mais cliente, é NÃO PERDER. Você manda um orçamento, repassam pra outra pessoa que te procura no digital pra ver quem você é — se sua rede está abandonada, perdeu. Indicação também morre quando o cliente procura o indicado e não o acha. O Google diz que se consulta até 3 fontes antes de decidir. E o pior: você nunca sabe quantos perdeu. Então é pra parar de perder o que já era seu. Se precisar, a Solutudo faz isso — porque ter empresa é bater escanteio e correr na área (esquete do 'empresário brasileiro' que bate o escanteio, cabeceia e faz o gol)."
+    },
+    {
+      "id": "vsl-pg", "nome": "VSL — vídeo de vendas (a gravar)",
+      "funcao": "PG", "jornada": "VSL", "etapa": "Fundo", "publico": "Morno → Quente",
+      "estilo": "vsl", "status": "falta",
+      "origem": "c11 (anúncio Meta 'Olha no meu olho') → página com esta VSL",
+      "objetivo": "Continuar a história do c11 e converter no preenchimento do formulário de agendamento (reunião gratuita) — high ticket",
+      "cta": "Preencha o formulário de agendamento aqui na página (marque sua reunião gratuita)",
+      "destino": "Formulário de agendamento na própria página → reunião com consultor (high ticket)",
+      "naoUsar": "Como anúncio (o anúncio é o c11); não usar em topo/frio",
+      "resumo": "VSL de ~15min (a produzir). Segue a estrutura de copy em 6 elementos (Lead → Storytelling → Mecanismo único → Objetivo → Construção do produto → Oferta), com a maior parte do tempo na história. Origem do tráfego: anúncio c11. CTA: formulário de agendamento. Estrutura de referência em funil/estrutura-copy-vsl.md.",
+      "estruturaCopy": "Lead → Storytelling → Mecanismo único → Objetivo → Construção do produto → Oferta",
+      "roteiro": "funil/estrutura-copy-vsl.md",
+      "headline": "Você pode estar perdendo clientes todo dia — e nunca ficar sabendo.",
+      "headlineDescricao": "Assista ao vídeo até o fim: vou te mostrar o ponto cego que faz empresas boas como a sua serem passadas pra trás bem na hora da escolha — e o caminho simples pra virar esse jogo, sem você precisar virar especialista em internet.",
+      "headlineOpcoes": "funil/vsl-headline.md",
+      "formato": "16:9 (página) · 12–15 min",
+      "links": []
+    }
+  ]
+}
